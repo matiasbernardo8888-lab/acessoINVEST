@@ -258,11 +258,11 @@
                     <i data-lucide="external-link" class="w-4 h-4 text-slate-600 group-hover:text-cyan-400 transition"></i>
                 </a>
 
-                <a href="https://www.youtube.com/@nordininvestimentos" target="_blank" class="flex items-center justify-between p-3.5 bg-slate-950 rounded-xl border border-slate-900 hover:border-cyan-500/50 transition duration-300 group">
+                <a href="https://www.youtube.com/@NordResearch" target="_blank" class="flex items-center justify-between p-3.5 bg-slate-950 rounded-xl border border-slate-900 hover:border-cyan-500/50 transition duration-300 group">
                     <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-cyan-400 font-bold font-logo text-sm group-hover:bg-cyan-950/30 transition">NI</div>
+                        <div class="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-cyan-400 font-bold font-logo text-sm group-hover:bg-cyan-950/30 transition">NR</div>
                         <div>
-                            <h4 class="text-xs font-bold text-white group-hover:text-cyan-400 transition">Nord Investimentos</h4>
+                            <h4 class="text-xs font-bold text-white group-hover:text-cyan-400 transition">Nord Research</h4>
                             <p class="text-[10px] text-slate-500">Análise Independente e Macroeconomia</p>
                         </div>
                     </div>
@@ -327,8 +327,7 @@
                     <div>
                         <label class="text-[10px] font-bold text-slate-500 block mb-1 uppercase">Qual sua principal meta atual?</label>
                         <select id="meta-tipo" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-cyan-500">
-                            <option value="Reserva de Emergência Completa">Reserva de Emergência Completa</
-                                option>
+                            <option value="Reserva de Emergência Completa">Reserva de Emergência Completa</option>
                             <option value="Liberdade Financeira Integrada">Liberdade Financeira Integrada</option>
                             <option value="Primeiros R$ 10.000 Investidos">Primeiros R$ 10.000 Investidos</option>
                             <option value="Troca de Veículo / Patrimônio">Troca de Veículo / Patrimônio</option>
@@ -414,25 +413,20 @@
     </div>
 
     <script>
-        // BASE DE ATIVOS ADULTOS FINCLASS
+        // BASE DE ATIVOS ADULTOS FINCLASS (Atualizada com seus novos ativos de baixo custo)
         const carteiraCompleta = [
-            { nome: 'FUNDOS PASSIVOS AO IMA-B', categoria: 'Renda Fixa', descricao: 'Fundos indexados à inflação nacional para proteger poder de compra a longo prazo.', aplicacaoMinima: 100, pesosPerfil: { conservador: 25, moderado: 15, arrojado: 10 }, ondeEncontrar: 'XP Investimentos, BTG Pactual e Home Broker' },
-            { nome: 'KDIF11 (KINEA INFRA RENDA FIXA)', categoria: 'Renda Fixa', descricao: 'Debêntures de infraestrutura isentas de Imposto de Renda com excelente prêmio.', aplicacaoMinima: 100, pesosPerfil: { conservador: 10, moderado: 8, arrojado: 5 }, ondeEncontrar: 'Qualquer Corretora via Home Broker' },
-            { nome: 'IFRA11 (ITAÚ FICFIDC DE INFRA)', categoria: 'Renda Fixa', descricao: 'Fundo focado em crédito privado estruturado ligado ao desenvolvimento do país.', aplicacaoMinima: 80, pesosPerfil: { conservador: 10, moderado: 7, arrojado: 5 }, ondeEncontrar: 'Qualquer Corretora via Home Broker' },
-            { nome: 'SOLIS CAPITAL ANTARES PIONEIRO', categoria: 'Renda Fixa', descricao: 'Fundo ativo de crédito de altíssima qualidade de gestão para diversificar além dos títulos públicos.', aplicacaoMinima: 500, pesosPerfil: { conservador: 5, moderado: 10, arrojado: 5 }, ondeEncontrar: 'BTG Pactual e XP Investimentos (CNPJ: 55.318.040/0001-78)' },
-            { nome: 'ABSOLUTE VERTEX AM', categoria: 'Multimercado', descricao: 'Fundo multimercado de alta performance com foco em juros, moedas e arbitragens.', aplicacaoMinima: 500, pesosPerfil: { conservador: 5, moderado: 10, arrojado: 4 }, ondeEncontrar: 'XP, BTG, Ágora, Rico, Inter, C6 Bank' },
-            { nome: 'GENOA CAPITAL RADAR FIC FIM', categoria: 'Multimercado', descricao: 'Gestão macro cirúrgica com foco em proteção patrimonial e retorno consistente.', aplicacaoMinima: 500, pesosPerfil: { conservador: 5, moderado: 10, arrojado: 4 }, ondeEncontrar: 'XP, BTG, Itaú, Genial, Inter, Guide, Toro' },
-            { nome: 'KINEA ATLAS FIM', categoria: 'Multimercado', descricao: 'Fundo multimercado carro-chefe da Kinea (Itaú), capturando assimetrias macro globais.', aplicacaoMinima: 1, pesosPerfil: { conservador: 5, moderado: 10, arrojado: 4 }, ondeEncontrar: 'Itaú, BTG, C6, Genial, Inter, Guide' },
-            { nome: 'DAHLIA TOTAL RETURN FIM', categoria: 'Multimercado', descricao: 'Combinação estratégica de ações de valor, renda fixa e opções de proteção tática.', aplicacaoMinima: 500, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 5 }, ondeEncontrar: 'XP, BTG, Rico, Inter, C6, Daycoval' },
-            { nome: 'IBIUNA EQUITIES RESP LIMITADA', categoria: 'Ações', descricao: 'Fundo de ações focado em grandes empresas consolidadas e geradoras de valor do país.', aplicacaoMinima: 1000, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 10 }, ondeEncontrar: 'XP, Inter, C6, Genial, Toro (CNPJ: 13.401.715/0001-06)' },
-            { nome: 'REAL INVESTOR FI AÇÕES BDR', categoria: 'Ações', descricao: 'Filosofia Value Investing pura: busca por ações muito baratas em relação ao lucro real.', aplicacaoMinima: 5000, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 5 }, ondeEncontrar: 'XP, BTG, Itaú, Inter, Rico, Genial (CNPJ: 10.500.884/0001-05)' },
-            { nome: 'FORPUS AÇÕES FIC FIA', categoria: 'Ações', descricao: 'Fundo focado em teses de crescimento acelerado e empresas de alto potencial (Small Caps).', aplicacaoMinima: 1000, pesosPerfil: { conservative: 0, moderado: 2, arrojado: 2 }, ondeEncontrar: 'XP, BTG, C6, Inter, Daycoval (CNPJ: 21.917.184/0001-29)' },
-            { nome: 'WRLD11 (ETF Global VT)', categoria: 'Global', descricao: 'Investimento automatizado em mais de 9.000 empresas em todo o mundo através de uma única cota.', aplicacaoMinima: 110, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 8.5 }, ondeEncontrar: 'Home Broker de qualquer corretora brasileira' },
-            { nome: 'VALORA VANGUARD GLOBAL', categoria: 'Global', descricao: 'Acesso simplificado a estratégias globais exclusivas de alocação de risco diversificado.', aplicacaoMinima: 100, pesosPerfil: { conservador: 0, moderado: 4, arrojado: 5 }, ondeEncontrar: 'XP, BTG Pactual e Itaú' },
-            { nome: 'USDB11 (ETF Renda Fixa EUA)', categoria: 'Global', descricao: 'Exposição direta aos títulos de dívida dos Estados Unidos protegendo o capital em dólar.', aplicacaoMinima: 100, pesosPerfil: { conservador: 5, moderado: 3, arrojado: 3 }, ondeEncontrar: 'Home Broker via B3' }
+            { nome: 'BB Seguridade', categoria: 'Ações', descricao: 'Empresa do setor de seguros com forte distribuição de dividendos e alta resiliência macroeconômica.', aplicacaoMinima: 34.00, precoMaximoCompra: 36.50, pesosPerfil: { conservador: 15, moderado: 20, arrojado: 15 }, ondeEncontrar: 'Home Broker (No Banco Inter tem)' },
+            { nome: 'Cemig', categoria: 'Ações', descricao: 'Uma das maiores empresas do setor elétrico do país, previsível e excelente pagadora de proventos.', aplicacaoMinima: 11.50, precoMaximoCompra: 13.20, pesosPerfil: { conservador: 15, moderado: 15, arrojado: 10 }, ondeEncontrar: 'Home Broker (No Banco Inter tem)' },
+            { nome: 'SLC Agrícola', categoria: 'Ações', descricao: 'Uma das maiores produtoras de commodities agrícolas do país (soja, algodão e milho).', aplicacaoMinima: 19.10, precoMaximoCompra: 22.00, pesosPerfil: { conservador: 0, moderado: 10, arrojado: 15 }, ondeEncontrar: 'Home Broker (No Banco Inter tem)' },
+            { nome: 'BTG Pactual Terras', categoria: 'Renda Fixa', ticker: 'BTCI11', descricao: 'Fundo Imobiliário de papel focado em CRIs com excelente prêmio e alta liquidez.', aplicacaoMinima: 9.80, precoMaximoCompra: 10.40, pesosPerfil: { conservador: 20, moderado: 15, arrojado: 10 }, ondeEncontrar: 'Home Broker (No Banco Inter tem)' },
+            { nome: 'Paranapanema', categoria: 'Ações', ticker: 'PSEC11', descricao: 'Ativo de infraestrutura industrial focado na transformação e refino de cobre.', aplicacaoMinima: 15.30, precoMaximoCompra: 18.05, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 10 }, ondeEncontrar: 'Home Broker (No Banco Inter tem)' },
+            { nome: 'XP Cred. Imob.', categoria: 'Multimercado', ticker: 'XPCI11', descricao: 'Fundo focado em recebíveis imobiliários indexados à inflação e ao CDI.', aplicacaoMinima: 82.50, precoMaximoCompra: 87.00, pesosPerfil: { conservador: 10, moderado: 10, arrojado: 10 }, ondeEncontrar: 'Home Broker (No Banco Inter tem)' },
+            { nome: 'XP Malls', categoria: 'Multimercado', ticker: 'XPML11', descricao: 'Portfólio diversificado focado nos maiores Shopping Centers do Brasil.', aplicacaoMinima: 112.00, precoMaximoCompra: 116.50, pesosPerfil: { conservador: 5, moderado: 10, arrojado: 10 }, ondeEncontrar: 'Home Broker (No Banco Inter tem)' },
+            { nome: 'IFRA11 (ITAÚ FICFIDC DE INFRA)', categoria: 'Renda Fixa', descricao: 'Fundo focado em crédito privado estruturado de infraestrutura e isento de IR.', aplicacaoMinima: 98.20, precoMaximoCompra: 102.00, pesosPerfil: { conservador: 20, moderado: 10, arrojado: 5 }, ondeEncontrar: 'Home Broker (No Banco Inter tem)' },
+            { nome: 'FUNDOS PASSIVOS AO IMA-B', categoria: 'Renda Fixa', descricao: 'Fundos indexados à inflação nacional para proteger poder de compra a longo prazo.', aplicacaoMinima: 100, precoMaximoCompra: 100.00, pesosPerfil: { conservador: 15, moderado: 5, arrojado: 5 }, ondeEncontrar: 'XP Investimentos, BTG Pactual' },
+            { nome: 'WRLD11 (ETF Global VT)', categoria: 'Global', descricao: 'Investimento automatizado em mais de 9.000 empresas através de uma única cota.', aplicacaoMinima: 110, precoMaximoCompra: 125.00, pesosPerfil: { conservador: 0, moderado: 0, arrojado: 10 }, ondeEncontrar: 'Home Broker (No Banco Inter tem)' }
         ];
 
-        // ATIVOS ATUALIZADOS - AGORA ADICIONANDO BOLSA DE VALORES VIA RICO PARA MENORES
         const ativosKids = [
             { nome: 'BOVA11 / IVVB11 (Bolsa de Valores)', categoria: 'Ações & Mercado Global', descricao: 'Exposição direta às maiores empresas do Brasil e dos EUA. Estratégia de crescimento agressivo de longo prazo permitida para menores na Rico.', ondeEncontrar: 'Home Broker da Rico Corretora', pesos: { faculdade: 50, intercambio: 20, independencia: 5 } },
             { nome: 'FIIs de Grandes Shoppings e Galpões', categoria: 'Fundos Imobiliários', descricao: 'Investimento em imóveis físicos de alto padrão que pingam aluguel na conta todo mês com isenção fiscal completa.', ondeEncontrar: 'Home Broker da Rico Corretora', pesos: { faculdade: 20, intercambio: 40, independencia: 15 } },
@@ -483,7 +477,6 @@
         let chartInstancia = null;
         let abaAtualAtiva = 'carteira';
 
-        // ALTERNAR ABAS ATUALIZADO (INCLUI A NOVA ABA CONHECIMENTO)
         function alternarAbas(aba) {
             abaAtualAtiva = aba;
             localStorage.setItem('matias_aba_ativa', aba);
@@ -499,7 +492,6 @@
             const divMenor = document.getElementById('aba-menor-idade');
             const divConhecimento = document.getElementById('aba-conhecimento');
 
-            // Reset de estilo nos botões
             btnCarteira.className = "flex flex-col items-center gap-1 py-1 text-slate-600";
             btnPerfil.className = "flex flex-col items-center gap-1 py-1 text-slate-600";
             btnMenor.className = "flex flex-col items-center gap-0.5 py-1 text-slate-600";
@@ -543,7 +535,6 @@
             }
         }
 
-        // --- SISTEMA INTERNO EXCLUSIVO MENOR DE IDADE ---
         function definirObjetivoKids(objetivo) {
             objetivoKidsSelecionado = objetivo;
             localStorage.setItem('matias_kids_objetivo', objetivo);
@@ -595,7 +586,8 @@
                             <div class="flex justify-between items-start mb-2">
                                 <div>
                                     <h3 class="text-xs font-bold text-white uppercase tracking-wide">${ativo.nome}</h3>
-                                    <span class="inline-block text-[9px] uppercase font-black tracking-wider px-2 py-0.5 mt-1 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                                    <span
+                                    class="inline-block text-[9px] uppercase font-black tracking-wider px-2 py-0.5 mt-1 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">
                                         ${ativo.categoria}
                                     </span>
                                 </div>
@@ -614,7 +606,6 @@
             document.getElementById('lista-ativos-kids').innerHTML = htmlHTML;
         }
 
-        // --- MANIPULAÇÃO CADASTROS ADULTOS E SALVAMENTOS ---
         function salvarDadosPerfil() {
             const nome = document.getElementById('user-nome').value;
             const phone = document.getElementById('user-phone').value;
@@ -627,7 +618,7 @@
             localStorage.setItem('matias_email', email);
             
             atualizarGamificacao();
-            alert('Cadastro do Perfil atualizado com sucesso no simulador!');
+            alert('Cadastro do Perfil updated!');
         }
 
         function salvarMeta() {
@@ -693,13 +684,11 @@
             }
         }
 
-        // MÁSCARA CELULAR
         document.getElementById('user-phone').addEventListener('input', function (e) {
             let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
             e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
         });
 
-        // RENDERIZADOR DO QUIZ
         function renderizarQuiz() {
             if (faseQuiz < perguntasQuiz.length) {
                 const perguntaAtual = perguntasQuiz[faseQuiz];
@@ -761,7 +750,6 @@
             gerarCarteira();
         }
 
-        // RESET COMPLETO
         function resetarPerfil() {
             faseQuiz = 0;
             pontuacaoTotalQuiz = 0;
@@ -797,7 +785,6 @@
             inputAporte.value = '';
             inputAporte.placeholder = "Defina seu perfil primeiro";
 
-            // Reset Kids
             document.getElementById('container-aporte-kids').classList.add('opacity-40', 'pointer-events-none');
             document.getElementById('input-valor-kids').value = '';
             document.getElementById('input-valor-kids').placeholder = "Escolha um objetivo acima";
@@ -905,10 +892,11 @@
                 return pesoDisponivel > 0;
             });
 
-            let ativosParaAlocarCount = 3;
-            if (valorTotal > 2000) ativosParaAlocarCount = 6;
-            if (valorTotal > 10000) ativosParaAlocarCount = 10;
-            if (valorTotal > 40000) ativosParaAlocarCount = ativosElegiveis.length;
+            // Ajuste na quantidade máxima de ativos para não quebrar em alocações menores
+            let ativosParaAlocarCount = 2;
+            if (valorTotal > 200) ativosParaAlocarCount = 4;
+            if (valorTotal > 1000) ativosParaAlocarCount = 6;
+            if (valorTotal > 10000) ativosParaAlocarCount = ativosElegiveis.length;
 
             let ativosSelecionados = ativosElegiveis.slice(0, ativosParaAlocarCount);
             let somaPesos = ativosSelecionados.reduce((acc, a) => acc + a.pesosPerfil[perfilInvestidor], 0);
@@ -920,22 +908,40 @@
                 let pesoIdeal = ativo.pesosPerfil[perfilInvestidor] / somaPesos;
                 let valorAlvo = valorDisponivelMercado * pesoIdeal;
 
-                if (valorAlvo >= ativo.aplicacaoMinima) {
+                // Modificado: O algoritmo tenta alocar contanto que o saldo cubra a aplicação mínima básica
+                if (saldoRestante >= ativo.aplicacaoMinima && valorAlvo >= ativo.aplicacaoMinima) {
+                    let alocacaoFinal = Math.floor(valorAlvo);
                     carteiraCalculada.push({
                         nome: ativo.nome,
                         categoria: ativo.categoria,
                         descricao: ativo.descricao,
                         ondeEncontrar: ativo.ondeEncontrar,
                         precoCota: ativo.aplicacaoMinima,
-                        valorAlocado: Math.floor(valorAlvo),
+                        precoMaximoCompra: ativo.precoMaximoCompra,
+                        valorAlocado: alocacaoFinal,
                         porcentagemReal: 0 
                     });
-                    saldoRestante -= Math.floor(valorAlvo);
+                    saldoRestante -= alocacaoFinal;
                 }
             });
 
             if (saldoRestante > 0 && carteiraCalculada.length > 0) {
                 carteiraCalculada[0].valorAlocado += saldoRestante;
+                saldoRestante = 0;
+            } else if (saldoRestante > 0) {
+                // Caso o valor seja muito baixo e nenhum ativo foi selecionado pelo filtro, força no ativo mais acessível
+                let ativoMaisBarato = ativosElegiveis.reduce((min, a) => a.aplicacaoMinima < min.aplicacaoMinima ? a : min, ativosElegiveis[0]);
+                carteiraCalculada.push({
+                    nome: ativoMaisBarato.nome,
+                    categoria: ativoMaisBarato.categoria,
+                    descricao: ativoMaisBarato.descricao,
+                    ondeEncontrar: ativoMaisBarato.ondeEncontrar,
+                    precoCota: ativoMaisBarato.aplicacaoMinima,
+                    precoMaximoCompra: ativoMaisBarato.precoMaximoCompra,
+                    valorAlocado: saldoRestante,
+                    porcentagemReal: 0
+                });
+                saldoRestante = 0;
             }
 
             const nomeLiquidez = liquidezSelecionada === 'porquinho' ? 'Porquinho Banco Inter' : 'Caixinha Nubank (Resgate Rápido)';
@@ -945,6 +951,7 @@
                 descricao: 'Seu porto seguro de liquidez imediata (D+0). Ideal para emergências ou compras imediatas.',
                 ondeEncontrar: liquidezSelecionada === 'porquinho' ? 'App Banco Inter' : 'App Nubank',
                 precoCota: 1,
+                precoMaximoCompra: 1.00,
                 valorAlocado: valorLiquidez,
                 porcentagemReal: 0
             });
@@ -1100,6 +1107,12 @@
                                             <span class="font-medium text-slate-200">${ativo.ondeEncontrar}</span>
                                         </div>
                                         <div class="text-right">
+                                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">Preço Máximo de Compra</span>
+                                            <span class="font-bold text-amber-400">R$ ${ativo.precoMaximoCompra ? ativo.precoMaximoCompra.toFixed(2) : '---'}</span>
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-1 pt-1">
+                                        <div class="text-right">
                                             <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">Ação Mínima</span>
                                             <span class="font-medium text-slate-200">A partir de R$ ${ativo.precoCota.toFixed(2)}</span>
                                         </div>
@@ -1166,7 +1179,7 @@
             if (perfilSalvo) {
                 perfilInvestidor = perfilSalvo;
                 pontuacaoTotalQuiz = parseInt(pontosSalvos) || 9;
-                faseQuiz = parseInt(faseSalva) || 3;
+                faseQuiz = parseInt(favaSalva) || 3;
                 definirPerfilFinal();
                 
                 const valorAdultoSalvo = localStorage.getItem('matias_valor_adulto_cru');
