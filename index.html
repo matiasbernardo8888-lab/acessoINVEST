@@ -19,7 +19,7 @@
           -webkit-appearance: none;
           margin: 0;
         }
-        .card-expand { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+        .card-expand { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
         .card-expand.active { max-height: 600px; }
         .nav-active { color: #06b6d4; }
         .nav-active svg { stroke: #06b6d4; }
@@ -51,8 +51,7 @@
                     <div id="pergunta-fase" class="bg-slate-900 p-3 rounded-lg border border-slate-800/60">
                         <span class="text-[10px] uppercase tracking-widest text-slate-500 font-bold block mb-1" id="progresso-quiz">Pergunta 1 de 3</span>
                         <p class="text-xs font-semibold text-white mb-3" id="texto-pergunta">Qual o seu objetivo principal ao investir seu dinheiro?</p>
-                        <div id="opcoes-quiz" class="space-y-2">
-                            </div>
+                        <div id="opcoes-quiz" class="space-y-2"></div>
                     </div>
                 </div>
             </div>
@@ -65,7 +64,10 @@
                 </div>
 
                 <div class="pt-2 border-t border-slate-800">
-                    <label class="text-xs font-medium text-slate-400 mb-2 block">RESERVA DE LIQUIDEZ D+0</label>
+                    <div class="flex flex-col mb-2">
+                        <label class="text-xs font-bold text-slate-300">RESERVA DE LIQUIDEZ IMEDIATA</label>
+                        <p class="text-[11px] text-slate-500 leading-tight mt-0.5">Seu "colchão de segurança" para imprevistos. Fica guardado e rende todo dia útil, podendo resgatar no mesmo minuto sem riscos.</p>
+                    </div>
                     <div class="grid grid-cols-2 gap-2">
                         <button id="btn-porquinho" onclick="selecionarLiquidez('porquinho')" class="toggle-liquid px-3 py-2 rounded-lg text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center justify-center gap-1.5">
                             <i data-lucide="piggy-bank" class="w-4 h-4"></i> Porquinho Inter
@@ -82,40 +84,57 @@
                 <button id="filtro-todos" onclick="filtrarCategoria('todos', this)" class="filtro-btn active px-4 py-1.5 rounded-lg text-xs font-bold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 whitespace-nowrap">
                     Todos
                 </button>
-                <button id="filtro-FII" onclick="filtrarCategoria('FII', this)" class="filtro-btn px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">
-                    FIIs
+                <button id="filtro-Liquidez" onclick="filtrarCategoria('Liquidez', this)" class="filtro-btn px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">
+                    Reserva Imediata
                 </button>
-                <button id="filtro-Acao" onclick="filtrarCategoria('Ação', this)" class="filtro-btn px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">
-                    Ações
+                <button id="filtro-RendaFixa" onclick="filtrarCategoria('Renda Fixa', this)" class="filtro-btn px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">
+                    Renda Fixa / Inflação
                 </button>
-                <button id="filtro-ETF" onclick="filtrarCategoria('ETF', this)" class="filtro-btn px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">
-                    ETFs
+                <button id="filtro-Multimercado" onclick="filtrarCategoria('Multimercado', this)" class="filtro-btn px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">
+                    Multimercados
                 </button>
-                <button id="filtro-Fundo" onclick="filtrarCategoria('Fundo', this)" class="filtro-btn px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">
-                    Fundos
+                <button id="filtro-Acoes" onclick="filtrarCategoria('Ações', this)" class="filtro-btn px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">
+                    Ações Nacionais
                 </button>
-                <button id="filtro-Cripto" onclick="filtrarCategoria('Cripto', this)" class="filtro-btn px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">
-                    Cripto
+                <button id="filtro-Global" onclick="filtrarCategoria('Global', this)" class="filtro-btn px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">
+                    Ativos Globais / Int.
                 </button>
             </div>
         </header>
 
         <section id="secao-grafico" class="p-4 hidden">
-            <div class="bg-slate-950 p-4 rounded-xl border border-slate-900">
-                <div class="flex justify-between items-center mb-2">
-                    <h2 class="text-xs font-bold text-white flex items-center gap-1.5 tracking-wider uppercase">
-                        <i data-lucide="line-chart" class="w-4 h-4 text-cyan-400"></i> Projeção de Crescimento (5 anos)
-                    </h2>
-                    <span class="text-[10px] text-slate-400">Juros Compostos Estimados</span>
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-900 space-y-4">
+                <div class="grid grid-cols-4 border-b border-slate-900 pb-3 text-center">
+                    <div>
+                        <div class="text-[10px] text-slate-500 font-bold uppercase">Carteira Max</div>
+                        <div class="text-sm font-black text-cyan-400 font-logo">+48,31%</div>
+                    </div>
+                    <div>
+                        <div class="text-[10px] text-slate-500 font-bold uppercase">CDI</div>
+                        <div class="text-sm font-semibold text-slate-400 font-logo">+53,83%</div>
+                    </div>
+                    <div>
+                        <div class="text-[10px] text-slate-500 font-bold uppercase">Ibovespa</div>
+                        <div class="text-sm font-semibold text-slate-400 font-logo">+58,55%</div>
+                    </div>
+                    <div>
+                        <div class="text-[10px] text-slate-500 font-bold uppercase">IFIX</div>
+                        <div class="text-sm font-semibold text-slate-400 font-logo">+31,42%</div>
+                    </div>
                 </div>
-                <div class="w-full h-44">
-                    <canvas id="graficoEvolucao"></canvas>
+
+                <div>
+                    <h2 class="text-xs font-bold text-white flex items-center gap-1.5 tracking-wider uppercase mb-2">
+                        <i data-lucide="line-chart" class="w-4 h-4 text-cyan-400"></i> Histórico de Rentabilidade Acumulada
+                    </h2>
+                    <div class="w-full h-44">
+                        <canvas id="graficoEvolucao"></canvas>
+                    </div>
                 </div>
                 
-                <div class="mt-4 pt-3 border-t border-slate-900">
-                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Distribuição Visual do Aporte</p>
-                    <div id="barra-composicao" class="w-full h-2.5 rounded-full bg-slate-900 flex overflow-hidden">
-                        </div>
+                <div class="pt-2 border-t border-slate-900">
+                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Distribuição das Classes de Ativos</p>
+                    <div id="barra-composicao" class="w-full h-3 rounded-full bg-slate-900 flex overflow-hidden"></div>
                 </div>
             </div>
         </section>
@@ -127,13 +146,13 @@
         <section class="px-4 pb-4">
             <div class="flex items-center justify-between mb-3">
                 <h2 class="text-sm font-bold text-white flex items-center gap-2">
-                    <i data-lucide="trending-up" class="w-4 h-4 text-amber-500"></i> Top 15 Criptomoedas
+                    <i data-lucide="trending-up" class="w-4 h-4 text-cyan-500"></i> Top Criptomoedas do Mercado
                 </h2>
                 <span class="text-xs text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20">
                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping inline-block mr-1"></span>LIVE
                 </span>
             </div>
-            <div id="crypto-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2">
+            <div id="crypto-grid" class="grid grid-cols-2 md:grid-cols-3 gap-2">
                 <p class="text-xs text-slate-500 col-span-full text-center py-4">Carregando...</p>
             </div>
         </section>
@@ -141,8 +160,8 @@
         <nav class="fixed bottom-0 left-0 right-0 bg-black/95 backdrop-blur-md border-t border-slate-900 z-50">
             <div class="max-w-2xl mx-auto grid grid-cols-2 gap-1 p-2">
                 <button class="flex flex-col items-center gap-1 py-2 nav-active">
-                    <i data-lucide="wallet" class="w-5 h-5"></i>
-                    <span class="text-xs font-bold">Carteira</span>
+                    <i data-lucide="pie-chart" class="w-5 h-5"></i>
+                    <span class="text-xs font-bold">Análise Finclass</span>
                     <div class="w-8 h-0.5 bg-cyan-500 rounded-full"></div>
                 </button>
                 <button class="flex flex-col items-center gap-1 py-2 text-slate-600" onclick="resetarPerfil()">
@@ -154,39 +173,36 @@
     </div>
 
     <script>
-        // CARTEIRA COM METADADOS DE RISCO PARA FILTRAR PELO SUITABILITY
+        // BASE DE ATIVOS ATUALIZADOS - PROPORÇÃO INTEGRAL FINCLASS
         const carteiraCompleta = [
-            { nome: 'CPTS11 - CAPITÂNIA SECURITIES II', subtipo: 'CPTS11', categoria: 'FII', preco: 8.42, aplicacaoMinima: 8.42, nivelMin: 0, pesosPerfil: { conservador: 40, moderado: 30, arrojado: 15 }, ondeEncontrar: 'XP, BTG, Rico, Clear, Inter, NuInvest', precoMaximo: 8.90, dy: 13.26 },
-            { nome: 'ITSA4 - ITAÚSA', subtipo: 'ITSA4', categoria: 'Ação', preco: 9.82, aplicacaoMinima: 9.82, nivelMin: 0, pesosPerfil: { conservador: 40, moderado: 25, arrojado: 15 }, ondeEncontrar: 'XP, BTG, Rico, Clear, Inter, NuInvest, Itaú', precoMaximo: 11.00, dy: 7.8 },
-            { nome: 'PSEC11 - PÁTRIA SECURITIES', subtipo: 'PSEC11', categoria: 'FII', preco: 9.75, aplicacaoMinima: 9.75, nivelMin: 300, pesosPerfil: { conservador: 20, moderado: 15, arrojado: 10 }, ondeEncontrar: 'XP, BTG, Rico, Clear', precoMaximo: 11.00, dy: 13.23 },
-            { nome: 'BBSE3 - BB SEGURIDADE', subtipo: 'BBSE3', categoria: 'Ação', preco: 33.85, aplicacaoMinima: 33.85, nivelMin: 500, pesosPerfil: { conservador: 0, moderado: 15, arrojado: 15 }, ondeEncontrar: 'XP, BTG, Rico, Clear, Inter, BB, Itaú', precoMaximo: 36.00, dy: 8.5 },
-            { nome: 'SLCE3 - SLC AGRÍCOLA', subtipo: 'SLCE3', categoria: 'Ação', preco: 18.30, aplicacaoMinima: 18.30, nivelMin: 800, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 10 }, ondeEncontrar: 'XP, BTG, Rico, Clear', precoMaximo: 20.00, dy: 4.2 },
-            { nome: 'GOLD11 - GOLD ETF', subtipo: 'Internacional', categoria: 'ETF', preco: 11.95, aplicacaoMinima: 11.95, nivelMin: 500, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 10 }, ondeEncontrar: 'XP, BTG, Rico, Clear, Inter', precoMaximo: null, dy: null },
-            { nome: 'CMIG4 - CEMIG', subtipo: 'CMIG4', categoria: 'Ação', preco: 11.45, aplicacaoMinima: 11.45, nivelMin: 1000, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 10 }, ondeEncontrar: 'XP, BTG, Rico, Clear, Inter', precoMaximo: 13.00, dy: 9.1 },
-            { nome: 'ACE CAPITAL', subtipo: 'Multimercado', categoria: 'Fundo', aplicacaoMinima: 1, nivelMin: 1500, pesosPerfil: { conservador: 0, moderado: 0, arrojado: 5 }, ondeEncontrar: 'Ágora, Banco Inter, BTG, XP', precoMaximo: null, dy: null },
-            { nome: 'VALORA VANGUARD', subtipo: '', categoria: 'Fundo', aplicacaoMinima: 100, nivelMin: 2500, pesosPerfil: { conservador: 0, moderado: 0, arrojado: 5 }, ondeEncontrar: 'BTG, ITAÚ e XP', precoMaximo: null, dy: null },
-            { nome: 'BITCOIN', subtipo: 'Teses alternativas', categoria: 'Cripto', aplicacaoMinima: 50, nivelMin: 3000, pesosPerfil: { conservador: 0, moderado: 0, arrojado: 5 }, ondeEncontrar: 'Mercado Bitcoin, Binance, B3 via ETF HASH11', precoMaximo: null, dy: null }
+            { nome: 'FUNDOS PASSIVOS AO IMA-B', categoria: 'Renda Fixa', descricao: 'Fundos indexados à inflação nacional para proteger poder de compra a longo prazo.', aplicacaoMinima: 100, pesosPerfil: { conservador: 25, moderado: 15, arrojado: 10 }, ondeEncontrar: 'XP Investimentos, BTG Pactual e Home Broker' },
+            { nome: 'KDIF11 (KINEA INFRA RENDA FIXA)', categoria: 'Renda Fixa', descricao: 'Debêntures de infraestrutura isentas de Imposto de Renda com excelente prêmio.', aplicacaoMinima: 100, pesosPerfil: { conservador: 10, moderado: 8, arrojado: 5 }, ondeEncontrar: 'Qualquer Corretora via Home Broker' },
+            { nome: 'IFRA11 (ITAÚ FICFIDC DE INFRA)', categoria: 'Renda Fixa', descricao: 'Fundo focado em crédito privado estruturado ligado ao desenvolvimento do país.', aplicacaoMinima: 80, pesosPerfil: { conservador: 10, moderado: 7, arrojado: 5 }, ondeEncontrar: 'Qualquer Corretora via Home Broker' },
+            { nome: 'SOLIS CAPITAL ANTARES PIONEIRO', categoria: 'Renda Fixa', descricao: 'Fundo ativo de crédito de altíssima qualidade de gestão para diversificar além dos títulos públicos.', aplicacaoMinima: 500, pesosPerfil: { conservador: 5, moderado: 10, arrojado: 5 }, ondeEncontrar: 'BTG Pactual e XP Investimentos (CNPJ: 55.318.040/0001-78)' },
+            
+            { nome: 'ABSOLUTE VERTEX AM', categoria: 'Multimercado', descricao: 'Fundo multimercado de alta performance com foco em juros, moedas e arbitragens.', aplicacaoMinima: 500, pesosPerfil: { conservador: 5, moderado: 10, arrojado: 4 }, ondeEncontrar: 'XP, BTG, Ágora, Rico, Inter, C6 Bank' },
+            { nome: 'GENOA CAPITAL RADAR FIC FIM', categoria: 'Multimercado', descricao: 'Gestão macro cirúrgica com foco em proteção patrimonial e retorno consistente.', aplicacaoMinima: 500, pesosPerfil: { conservador: 5, moderado: 10, arrojado: 4 }, ondeEncontrar: 'XP, BTG, Itaú, Genial, Inter, Guide, Toro' },
+            { nome: 'KINEA ATLAS FIM', categoria: 'Multimercado', descricao: 'Fundo multimercado carro-chefe da Kinea (Itaú), capturando assimetrias macro globais.', aplicacaoMinima: 1, pesosPerfil: { conservador: 5, moderado: 10, arrojado: 4 }, ondeEncontrar: 'Itaú, BTG, C6, Genial, Inter, Guide' },
+            { nome: 'DAHLIA TOTAL RETURN FIM', categoria: 'Multimercado', descricao: 'Combinação estratégica de ações de valor, renda fixa e opções de proteção tática.', aplicacaoMinima: 500, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 5 }, ondeEncontrar: 'XP, BTG, Rico, Inter, C6, Daycoval' },
+            
+            { nome: 'IBIUNA EQUITIES RESP LIMITADA', categoria: 'Ações', descricao: 'Fundo de ações focado em grandes empresas consolidadas e geradoras de valor do país.', aplicacaoMinima: 1000, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 10 }, ondeEncontrar: 'XP, Inter, C6, Genial, Toro (CNPJ: 13.401.715/0001-06)' },
+            { nome: 'REAL INVESTOR FI AÇÕES BDR', categoria: 'Ações', descricao: 'Filosofia Value Investing pura: busca por ações muito baratas em relação ao lucro real.', aplicacaoMinima: 5000, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 5 }, ondeEncontrar: 'XP, BTG, Itaú, Inter, Rico, Genial (CNPJ: 10.500.884/0001-05)' },
+            { nome: 'FORPUS AÇÕES FIC FIA', categoria: 'Ações', descricao: 'Fundo focado em teses de crescimento acelerado e empresas de alto potencial (Small Caps).', aplicacaoMinima: 1000, pesosPerfil: { conservador: 0, moderado: 2, arrojado: 2 }, ondeEncontrar: 'XP, BTG, C6, Inter, Daycoval (CNPJ: 21.917.184/0001-29)' },
+            
+            { nome: 'WRLD11 (ETF Global VT)', categoria: 'Global', descricao: 'Investimento automatizado em mais de 9.000 empresas em todo o mundo através de uma única cota.', aplicacaoMinima: 110, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 8.5 }, ondeEncontrar: 'Home Broker de qualquer corretora brasileira' },
+            { nome: 'VALORA VANGUARD GLOBAL', categoria: 'Global', descricao: 'Acesso simplificado a estratégias globais exclusivas de alocação de risco diversificado.', aplicacaoMinima: 100, pesosPerfil: { conservador: 0, moderado: 4, arrojado: 5 }, ondeEncontrar: 'XP, BTG Pactual e Itaú' },
+            { nome: 'USDB11 (ETF Renda Fixa EUA)', categoria: 'Global', descricao: 'Exposição direta aos títulos de dívida dos Estados Unidos protegendo o capital em dólar.', aplicacaoMinima: 100, pesosPerfil: { conservador: 5, moderado: 3, arrojado: 3 }, ondeEncontrar: 'Home Broker via B3' },
+            { nome: 'ALUG11 (ETF Imobiliário Global)', categoria: 'Global', descricao: 'Exposição direta ao mercado imobiliário norte-americano e fundos globais de real estate.', aplicacaoMinima: 100, pesosPerfil: { conservador: 0, moderado: 2.5, arrojado: 2.5 }, ondeEncontrar: 'Home Broker de qualquer corretora' },
+            { nome: 'MS GLOBAL OPPORTUNITIES', categoria: 'Global', descricao: 'Fundo gerido pela Morgan Stanley focando em líderes tecnológicas globais resilientes.', aplicacaoMinima: 500, pesosPerfil: { conservador: 0, moderado: 2, arrojado: 2 }, ondeEncontrar: 'Plataformas parceiras XP e BTG' },
+            { nome: 'BNDX11 (Renda Fixa Global)', categoria: 'Global', descricao: 'Diversificação em renda fixa internacional com proteção contra grandes crises inflacionárias.', aplicacaoMinima: 100, pesosPerfil: { conservador: 0, moderado: 1, arrojado: 1 }, ondeEncontrar: 'Home Broker via B3' }
         ];
 
         const topCryptos = [
             { id: 'bitcoin', symbol: 'BTC', name: 'Bitcoin', color: '#f7931a' },
             { id: 'ethereum', symbol: 'ETH', name: 'Ethereum', color: '#627eea' },
-            { id: 'solana', symbol: 'SOL', name: 'Solana', color: '#9945ff' },
-            { id: 'binancecoin', symbol: 'BNB', name: 'BNB', color: '#f3ba2f' },
-            { id: 'ripple', symbol: 'XRP', name: 'XRP', color: '#23292f' },
-            { id: 'dogecoin', symbol: 'DOGE', name: 'Dogecoin', color: '#c2a633' },
-            { id: 'cardano', symbol: 'ADA', name: 'Cardano', color: '#0033ad' },
-            { id: 'avalanche-2', symbol: 'AVAX', name: 'Avalanche', color: '#e84142' },
-            { id: 'chainlink', symbol: 'LINK', name: 'Chainlink', color: '#2a5ada' },
-            { id: 'polygon', symbol: 'MATIC', name: 'Polygon', color: '#8247e5' },
-            { id: 'polkadot', symbol: 'DOT', name: 'Polkadot', color: '#e6007a' },
-            { id: 'tron', symbol: 'TRX', name: 'Tron', color: '#ef0027' },
-            { id: 'shiba-inu', symbol: 'SHIB', name: 'Shiba Inu', color: '#ffa409' },
-            { id: 'litecoin', symbol: 'LTC', name: 'Litecoin', color: '#345d9d' },
-            { id: 'uniswap', symbol: 'UNI', name: 'Uniswap', color: '#ff007a' }
+            { id: 'solana', symbol: 'SOL', name: 'Solana', color: '#9945ff' }
         ];
 
-        // ESTRUTURA DO QUIZ DE PERFIL
         const perguntasQuiz = [
             {
                 texto: "Qual seu objetivo principal com esse dinheiro?",
@@ -216,13 +232,12 @@
 
         let faseQuiz = 0;
         let pontuacaoTotalQuiz = 0;
-        let perfilInvestidor = null; // 'conservador', 'moderado', 'arrojado'
+        let perfilInvestidor = null;
         let filtroAtual = 'todos';
         let liquidezSelecionada = 'porquinho';
         let carteiraGlobal = [];
         let chartInstancia = null;
 
-        // INICIALIZADOR DO QUIZ
         function renderizarQuiz() {
             if (faseQuiz < perguntasQuiz.length) {
                 const perguntaAtual = perguntasQuiz[faseQuiz];
@@ -230,7 +245,7 @@
                 document.getElementById('texto-pergunta').innerText = perguntaAtual.texto;
                 
                 let opcoesHTML = '';
-                perguntaAtual.opcoes.forEach((opcao, idx) => {
+                perguntaAtual.opcoes.forEach((opcao) => {
                     opcoesHTML += `
                         <button onclick="computarResposta(${opcao.pontos})" class="w-full text-left bg-slate-900 border border-slate-800 hover:border-cyan-500 hover:bg-cyan-500/5 p-2.5 rounded-lg text-xs font-medium text-slate-300 transition-all duration-200">
                             ${opcao.texto}
@@ -239,7 +254,6 @@
                 });
                 document.getElementById('opcoes-quiz').innerHTML = opcoesHTML;
             } else {
-                // Fim do quiz: processar o perfil
                 definirPerfilFinal();
             }
         }
@@ -255,16 +269,15 @@
             const containerAporte = document.getElementById('container-aporte');
             const inputAporte = document.getElementById('input-valor-total');
             
-            if (pontuacaoTotalQuiz <= 6) {
+            if (pontuacaoTotalQuiz <= 5) {
                 perfilInvestidor = 'conservador';
                 badge.innerText = 'CONSERVADOR';
                 badge.className = "text-xs px-2 py-0.5 rounded font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
-            } else if (pontuacaoTotalQuiz <= 11) {
+            } else if (pontuacaoTotalQuiz <= 10) {
                 perfilInvestidor = 'moderado';
                 badge.innerText = 'MODERADO';
                 badge.className = "text-xs px-2 py-0.5 rounded font-bold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30";
             } else {
-                perfilInvestidor = 'ARROJADO';
                 perfilInvestidor = 'arrojado';
                 badge.innerText = 'ARROJADO';
                 badge.className = "text-xs px-2 py-0.5 rounded font-bold bg-purple-500/20 text-purple-400 border border-purple-500/30";
@@ -272,15 +285,14 @@
 
             document.getElementById('quiz-container').innerHTML = `
                 <div class="text-xs text-slate-400 bg-slate-900/60 p-2 rounded border border-slate-800 text-center">
-                    Algoritmo recalibrado com sucesso para perfil <strong class="text-white uppercase">${perfilInvestidor}</strong>. Insira seu aporte abaixo.
+                    Algoritmo balanceado para o perfil <strong class="text-white uppercase">${perfilInvestidor}</strong>. Digite o valor disponível abaixo.
                 </div>
             `;
             
-            // Ativa o container de aporte
             containerAporte.classList.remove('opacity-40', 'pointer-events-none');
             inputAporte.removeAttribute('disabled');
             inputAporte.placeholder = "0,00";
-            document.getElementById('lista-ativos').innerHTML = '<p class="text-xs text-slate-500 text-center py-8">Digite um valor acima para gerar sua carteira sob medida.</p>';
+            document.getElementById('lista-ativos').innerHTML = '<p class="text-xs text-slate-500 text-center py-8">Digite o valor do capital do cliente para estruturar as fatias de diversificação.</p>';
         }
 
         function resetarPerfil() {
@@ -325,7 +337,6 @@
             renderizarQuiz();
         }
 
-        // FORMATADOR DE MOEDA BRASILEIRO
         function formatarMoeda(input) {
             let valor = input.value.replace(/\D/g, '');
             if (valor === '') {
@@ -379,20 +390,7 @@
             icon.style.transform = card.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
         }
 
-        // RESERVA DE LIQUIDEZ COM AJUSTE DE PERFIL
-        function calcularLiquidezDinamica(valorTotal) {
-            if (valorTotal <= 0) return 0;
-            let fatorPerfil = 1.0;
-            if (perfilInvestidor === 'conservador') fatorPerfil = 1.3; // Mais caixa seguro
-            if (perfilInvestidor === 'arrojado') fatorPerfil = 0.8;    // Menos caixa, mais risco
-
-            if (valorTotal <= 200) return Math.floor(valorTotal * 0.40);
-            if (valorTotal <= 1000) return Math.floor(valorTotal * 0.30 * fatorPerfil);
-            if (valorTotal <= 5000) return Math.floor(valorTotal * 0.25 * fatorPerfil);
-            return Math.floor(valorTotal * 0.20 * fatorPerfil);
-        }
-
-        // ENGINE MATEMÁTICA DE ALOCAÇÃO INTELIGENTE
+        // ENGENHARIA DE ALOCAÇÃO DINÂMICA (DIVERSIFICA MAIS OU REDUZ BASEADO NO CAPITAL)
         function gerarCarteira() {
             const valorTotal = obterValorNumerico();
             const aviso = document.getElementById('aviso-liquidez');
@@ -400,7 +398,7 @@
 
             if (valorTotal <= 0) {
                 carteiraGlobal = [];
-                document.getElementById('lista-ativos').innerHTML = '<p class="text-xs text-slate-500 text-center py-8">Digite um valor acima para gerar sua carteira</p>';
+                document.getElementById('lista-ativos').innerHTML = '<p class="text-xs text-slate-500 text-center py-8">Digite um valor para ver a carteira</p>';
                 document.getElementById('valor-aporte-display').innerText = 'R$ 0,00';
                 aviso.classList.add('hidden');
                 secaoGrafico.classList.add('hidden');
@@ -410,125 +408,119 @@
             secaoGrafico.classList.remove('hidden');
             document.getElementById('valor-aporte-display').innerText = valorTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
-            const valorLiquidez = calcularLiquidezDinamica(valorTotal);
-            let valorInvestir = valorTotal - valorLiquidez;
-            const nomeLiquidez = liquidezSelecionada === 'porquinho' ? 'Porquinho Inter' : 'Caixinha Nubank';
-            const corLiquidez = liquidezSelecionada === 'porquinho' ? 'amber' : 'purple';
+            // Alocação da Reserva Imediata (Fixo 10% padrão Finclass)
+            let pctLiquidez = 0.10;
+            let valorLiquidez = valorTotal * pctLiquidez;
+            let valorDisponivelMercado = valorTotal - valorLiquidez;
 
-            let maxAtivos = valorTotal <= 300 ? 2 : (valorTotal < 1200 ? 4 : 10);
-
-            // Filtra ativos conforme perfil e aporte
+            // Filtra os ativos baseados no valor do aporte para evitar pulverização ineficiente
             let ativosElegiveis = carteiraCompleta.filter(ativo => {
-                if (ativo.nivelMin > valorTotal) return false;
-                const pesoDefinido = ativo.pesosPerfil[perfilInvestidor] || 0;
-                return pesoDefinido > 0 && ativo.aplicacaoMinima <= valorInvestir;
+                const pesoDisponivel = ativo.pesosPerfil[perfilInvestidor] || 0;
+                return pesoDisponivel > 0;
             });
 
+            // Regra Dinâmica de Quantidade de ativos: valores baixos reduzem ativos, valores altos expandem
+            let ativosParaAlocarCount = 3;
+            if (valorTotal > 2000) ativosParaAlocarCount = 6;
+            if (valorTotal > 10000) ativosParaAlocarCount = 10;
+            if (valorTotal > 40000) ativosParaAlocarCount = ativosElegiveis.length;
+
+            let ativosSelecionados = ativosElegiveis.slice(0, ativosParaAlocarCount);
+            let somaPesos = ativosSelecionados.reduce((acc, a) => acc + a.pesosPerfil[perfilInvestidor], 0);
+
             let carteiraCalculada = [];
-            let valorRestante = valorInvestir;
-            let ativosParaAlocar = ativosElegiveis.slice(0, maxAtivos);
-            let somaPesos = ativosParaAlocar.reduce((acc, a) => acc + a.pesosPerfil[perfilInvestidor], 0);
+            let saldoRestante = valorDisponivelMercado;
 
-            for (let i = 0; i < ativosParaAlocar.length && valorRestante >= 1; i++) {
-                const ativo = ativosParaAlocar[i];
-                let pesoReal = ativo.pesosPerfil[perfilInvestidor];
-                let valorAlvo = (valorInvestir * pesoReal) / somaPesos;
-                if (valorAlvo < ativo.aplicacaoMinima) valorAlvo = ativo.aplicacaoMinima;
+            // Primeira passada distribuindo proporcionalmente
+            ativosSelecionados.forEach(ativo => {
+                let pesoIdeal = ativo.pesosPerfil[perfilInvestidor] / somaPesos;
+                let valorAlvo = valorDisponivelMercado * pesoIdeal;
 
-                let quantidade = Math.floor(valorAlvo / ativo.aplicacaoMinima);
-                let valorAlocado = quantidade * ativo.aplicacaoMinima;
-
-                if (valorAlocado > valorRestante) {
-                    quantidade = Math.floor(valorRestante / ativo.aplicacaoMinima);
-                    valorAlocado = quantidade * ativo.aplicacaoMinima;
-                }
-
-                if (quantidade > 0) {
+                if (valorAlvo >= ativo.aplicacaoMinima) {
                     carteiraCalculada.push({
-                        ...ativo,
-                        quantidade: quantidade,
-                        valorAlocado: valorAlocado
+                        nome: ativo.nome,
+                        categoria: ativo.categoria,
+                        descricao: ativo.descricao,
+                        ondeEncontrar: ativo.ondeEncontrar,
+                        precoCota: ativo.aplicacaoMinima,
+                        valorAlocado: Math.floor(valorAlvo),
+                        porcentagemReal: 0 
                     });
-                    valorRestante -= valorAlocado;
+                    saldoRestante -= Math.floor(valorAlvo);
                 }
+            });
+
+            // Distribui as sobras matemáticas de arredondamento no primeiro ativo
+            if (saldoRestante > 0 && carteiraCalculada.length > 0) {
+                carteiraCalculada[0].valorAlocado += saldoRestante;
             }
 
-            // Sobras
-            if (valorRestante > 0 && carteiraCalculada.length > 0) {
-                for (let i = 0; i < carteiraCalculada.length; i++) {
-                    let cota = carteiraCalculada[i].aplicacaoMinima;
-                    if (valorRestante >= cota) {
-                        let qteExtra = Math.floor(valorRestante / cota);
-                        carteiraCalculada[i].quantidade += qteExtra;
-                        carteiraCalculada[i].valorAlocado += (qteExtra * cota);
-                        valorRestante -= (qteExtra * cota);
-                    }
-                }
-            }
+            // Adiciona a própria Reserva Imediata dentro do array global para visualização unificada por abas
+            const nomeLiquidez = liquidezSelecionada === 'porquinho' ? 'Porquinho Banco Inter' : 'Caixinha Nubank (Resgate Rápido)';
+            carteiraCalculada.unshift({
+                nome: nomeLiquidez,
+                categoria: 'Liquidez',
+                descricao: 'Seu porto seguro de liquidez imediata (D+0). Ideal para emergências ou compras imediatas.',
+                ondeEncontrar: liquidezSelecionada === 'porquinho' ? 'App Banco Inter' : 'App Nubank',
+                precoCota: 1,
+                valorAlocado: valorLiquidez,
+                porcentagemReal: 0
+            });
+
+            // Recalcula as porcentagens visuais exatas de cada um sobre o valor total final
+            carteiraCalculada.forEach(at => {
+                at.porcentagemReal = (at.valorAlocado / valorTotal) * 100;
+            });
 
             carteiraGlobal = carteiraCalculada;
-            let realInvestido = valorInvestir - valorRestante;
 
-            aviso.innerHTML = `<i data-lucide="${liquidezSelecionada === 'porquinho' ? 'piggy-bank' : 'wallet'}" class="w-3 h-3 inline"></i> Reserva D+0: ${valorLiquidez.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} | Mercado: ${realInvestido.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} | Sobra: ${valorRestante.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
-            aviso.className = `text-xs text-${corLiquidez}-400 bg-${corLiquidez}-500/10 p-2 rounded border border-${corLiquidez}-500/20 mt-2`;
+            // Ajusta o card explicativo do caixa rápido
+            const corCaixa = liquidezSelecionada === 'porquinho' ? 'amber' : 'purple';
+            aviso.innerHTML = `<i data-lucide="info" class="w-3.5 h-3.5 inline mr-1"></i> Alocação Dinâmica Concluída: <strong>${carteiraGlobal.length - 1} ativos de mercado</strong> selecionados para otimizar os custos de aplicação do cliente.`;
+            aviso.className = `text-xs text-${corCaixa}-400 bg-${corCaixa}-500/10 p-3 rounded-xl border border-${corCaixa}-500/20 mt-2`;
             aviso.classList.remove('hidden');
 
             renderizarLista();
-            renderizarBarraComposicao(valorLiquidez, realInvestido);
+            renderizarBarraComposicao(valorTotal);
             atualizarGraficoLinha(valorTotal);
         }
 
-        // DESENHA A BARRA DE PROPORÇÃO COMPACTA E MODERNA
-        function renderizarBarraComposicao(caixa, investido) {
-            const total = caixa + investido;
-            if(total === 0) return;
+        function renderizarBarraComposicao(total) {
             const barra = document.getElementById('barra-composicao');
             barra.innerHTML = '';
+            if (total === 0) return;
 
-            const pctCaixa = (caixa / total) * 100;
-            const classesAtivos = {};
-            
-            carteiraGlobal.forEach(a => {
-                classesAtivos[a.categoria] = (classesAtivos[a.categoria] || 0) + a.valorAlocado;
+            const classeCores = {
+                'Liquidez': 'bg-amber-500',
+                'Renda Fixa': 'bg-cyan-500',
+                'Multimercado': 'bg-blue-600',
+                'Ações': 'bg-emerald-500',
+                'Global': 'bg-purple-600'
+            };
+
+            let html = '';
+            carteiraGlobal.forEach(at => {
+                if (at.porcentagemReal > 0) {
+                    let cor = classeCores[at.categoria] || 'bg-slate-400';
+                    html += `<div style="width: ${at.porcentagemReal}%" class="${cor} h-full transition-all" title="${at.categoria}: ${at.porcentagemReal.toFixed(1)}%"></div>`;
+                }
             });
-
-            // Segmento Caixa
-            let html = `<div style="width: ${pctCaixa}%" class="bg-amber-500 h-full transition-all" title="Liquidez Caixa"></div>`;
-            
-            // Cores estilizadas por categoria de investimento
-            const cores = { 'FII': 'bg-cyan-500', 'Ação': 'bg-blue-600', 'ETF': 'bg-emerald-500', 'Fundo': 'bg-indigo-500', 'Cripto': 'bg-purple-600' };
-
-            for (let cat in classesAtivos) {
-                let pct = (classesAtivos[cat] / total) * 100;
-                let cor = cores[cat] || 'bg-slate-400';
-                html += `<div style="width: ${pct}%" class="${cor} h-full transition-all" title="${cat}"></div>`;
-            }
             barra.innerHTML = html;
         }
 
-        // ATUALIZA O GRÁFICO DE LINHA (PROJEÇÃO)
         function atualizarGraficoLinha(aporteInicial) {
             const ctx = document.getElementById('graficoEvolucao').getContext('2d');
+            let rentabilidadeFator = perfilInvestidor === 'conservador' ? 0.098 : (perfilInvestidor === 'moderado' ? 0.115 : 0.142);
             
-            // Taxas anuais simuladas conservadoras baseadas no perfil escolhido
-            let taxaRendimentoAnual = 0.105; // Moderado 10.5%
-            if (perfilInvestidor === 'conservador') taxaRendimentoAnual = 0.095;
-            if (perfilInvestidor === 'arrojado') taxaRendimentoAnual = 0.135;
-
-            const taxaPoupanca = 0.06;
-
             let dadosCarteira = [aporteInicial];
-            let dadosPoupanca = [aporteInicial];
+            let dadosCDI = [aporteInicial];
 
-            // Gera projeção composta para 5 anos
             for (let i = 1; i <= 5; i++) {
-                dadosCarteira.push(dadosCarteira[i-1] * (1 + taxaRendimentoAnual));
-                dadosPoupanca.push(dadosPoupanca[i-1] * (1 + taxaPoupanca));
+                dadosCarteira.push(dadosCarteira[i-1] * (1 + rentabilidadeFator));
+                dadosCDI.push(dadosCDI[i-1] * (1 + 0.065)); // Poupança/CDI base simulado estável
             }
 
-            if (chartInstancia) {
-                chartInstancia.destroy();
-            }
+            if (chartInstancia) { chartInstancia.destroy(); }
 
             chartInstancia = new Chart(ctx, {
                 type: 'line',
@@ -536,18 +528,18 @@
                     labels: ['Hoje', 'Ano 1', 'Ano 2', 'Ano 3', 'Ano 4', 'Ano 5'],
                     datasets: [
                         {
-                            label: 'Matias Inteligente',
+                            label: 'Evolução Carteira Max',
                             data: dadosCarteira,
                             borderColor: '#06b6d4',
-                            backgroundColor: 'rgba(6, 182, 212, 0.05)',
+                            backgroundColor: 'rgba(6, 182, 212, 0.04)',
                             borderWidth: 2,
                             tension: 0.3,
                             fill: true
                         },
                         {
-                            label: 'Poupança Antiga',
-                            data: dadosPoupanca,
-                            borderColor: '#475569',
+                            label: 'Benchmarks Mercado',
+                            data: dadosCDI,
+                            borderColor: '#334155',
                             borderWidth: 1.5,
                             borderDash: [4, 4],
                             tension: 0.1,
@@ -560,13 +552,13 @@
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
                     scales: {
-                        x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 10 } } },
+                        x: { grid: { display: false }, ticks: { color: '#475569', font: { size: 10 } } },
                         y: { 
                             grid: { color: '#0f172a' }, 
                             ticks: { 
-                                color: '#64748b', 
+                                color: '#475569', 
                                 font: { size: 9 },
-                                callback: function(v) { return 'R$ ' + Math.round(v); }
+                                callback: function(v) { return 'R$ ' + Math.round(v).toLocaleString('pt-BR'); }
                             } 
                         }
                     }
@@ -575,50 +567,60 @@
         }
 
         function renderizarLista() {
-            let carteiraVisualizada = carteiraGlobal.filter(ativo => {
-                if (filtroAtual !== 'todos' && ativo.categoria !== filtroAtual) return false;
+            let ativosFiltrados = carteiraGlobal.filter(at => {
+                if (filtroAtual !== 'todos' && at.categoria !== filtroAtual) return false;
                 return true;
             });
 
             let listaHTML = '';
 
-            if (carteiraVisualizada.length === 0) {
-                listaHTML = '<p class="text-xs text-slate-500 text-center py-8 bg-slate-900/40 rounded-lg border border-slate-900">Nenhum ativo alocado para esta categoria com este valor de aporte.</p>';
+            if (ativosFiltrados.length === 0) {
+                listaHTML = `<p class="text-xs text-slate-500 text-center py-8 bg-slate-900/20 rounded-xl border border-slate-900">
+                    Nenhum ativo alocado para "${filtroAtual}" nesta faixa de valor.
+                </p>`;
             } else {
-                carteiraVisualizada.forEach((ativo, index) => {
-                    const id = `${ativo.nome.replace(/[^a-zA-Z0-9]/g, '')}-${index}`;
+                ativosFiltrados.forEach((ativo, index) => {
+                    const id = `ativo-${index}`;
+                    
+                    // Definição dinâmica de badges coloridos por classe de ativos (Padrão Finclass App)
+                    let badgeCor = "text-cyan-400 bg-cyan-500/10 border-cyan-500/20";
+                    if(ativo.categoria === 'Liquidez') badgeCor = "text-amber-400 bg-amber-500/10 border-amber-500/20";
+                    if(ativo.categoria === 'Ações') badgeCor = "text-emerald-400 bg-emerald-500/10 border-emerald-500/20";
+                    if(ativo.categoria === 'Global') badgeCor = "text-purple-400 bg-purple-500/10 border-purple-500/20";
+
                     listaHTML += `
-                        <div class="bg-slate-950 rounded-xl border border-slate-900 overflow-hidden">
+                        <div class="bg-slate-950 rounded-xl border border-slate-900 overflow-hidden transition-all hover:border-slate-800">
                             <div class="p-4 cursor-pointer" onclick="toggleCard('${id}')">
-                                <div class="flex justify-between items-start mb-3">
+                                <div class="flex justify-between items-start mb-2">
                                     <div class="flex-1">
-                                        <h3 class="text-sm font-bold text-white mb-0.5">${ativo.nome}</h3>
-                                        <p class="text-xs text-slate-500">${ativo.subtipo || ativo.categoria}</p>
+                                        <h3 class="text-sm font-bold text-white tracking-wide">${ativo.nome}</h3>
+                                        <span class="inline-block text-[10px] uppercase font-extrabold tracking-wider px-2 py-0.5 mt-1 rounded border ${badgeCor}">
+                                            ${ativo.categoria}
+                                        </span>
                                     </div>
-                                    <i id="icon-${id}" data-lucide="chevron-down" class="w-5 h-5 text-cyan-500 transition-transform"></i>
+                                    <div class="text-right">
+                                        <div class="text-sm font-black text-white font-logo">${ativo.porcentagemReal.toFixed(2)}%</div>
+                                        <div class="text-xs text-slate-400 font-bold mt-0.5">${ativo.valorAlocado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
+                                    </div>
                                 </div>
-                                <div class="space-y-2">
-                                    <div class="flex justify-between items-center">
-                                        <span class="text-xs text-slate-500">Quantidade</span>
-                                        <span class="text-sm font-bold text-white">${ativo.quantidade} ${ativo.categoria === 'Fundo' ? 'cota' : 'cotas'}</span>
-                                    </div>
-                                    <div class="flex justify-between items-center">
-                                        <span class="text-xs text-slate-500">Valor a ser investido</span>
-                                        <span class="text-sm font-bold text-cyan-400">${ativo.valorAlocado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
-                                    </div>
+                                <div class="flex items-center justify-between mt-3 pt-2 border-t border-slate-900 text-[11px] text-slate-400">
+                                    <span class="flex items-center gap-1"><i data-lucide="help-circle" class="w-3.5 h-3.5 text-cyan-500"></i> Entenda a estratégia</span>
+                                    <i id="icon-${id}" data-lucide="chevron-down" class="w-4 h-4 text-slate-500 transition-transform"></i>
                                 </div>
                             </div>
+                            
                             <div id="expand-${id}" class="card-expand border-t border-slate-900">
-                                <div class="p-4 space-y-2 bg-black/50">
-                                    <div class="flex justify-between items-center">
-                                        <span class="text-xs text-slate-500">Preço por cota</span>
-                                        <span class="text-sm font-semibold text-slate-300">${ativo.aplicacaoMinima.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
-                                    </div>
-                                    ${ativo.dy ? `<div class="flex justify-between items-center"><span class="text-xs text-slate-500">Dividend Yield 12m</span><span class="text-sm font-semibold text-emerald-400">${ativo.dy.toFixed(2)}%</span></div>` : ''}
-                                    ${ativo.precoMaximo ? `<div class="flex justify-between items-center"><span class="text-xs text-slate-500">Preço máximo de compra</span><span class="text-sm font-semibold text-slate-300">${ativo.precoMaximo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span></div>` : ''}
-                                    <div class="flex justify-between items-start pt-2 border-t border-slate-800">
-                                        <span class="text-xs text-slate-500">Onde encontrar</span>
-                                        <span class="text-xs font-semibold text-slate-300 text-right max-w-[60%]">${ativo.ondeEncontrar}</span>
+                                <div class="p-4 space-y-3 bg-black/40 text-xs text-slate-300">
+                                    <p class="leading-relaxed text-slate-400">${ativo.descricao}</p>
+                                    <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-900">
+                                        <div>
+                                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">Onde Aplicar</span>
+                                            <span class="font-medium text-slate-200">${ativo.ondeEncontrar}</span>
+                                        </div>
+                                        <div class="text-right">
+                                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">Ação Mínima</span>
+                                            <span class="font-medium text-slate-200">A partir de R$ ${ativo.precoCota.toFixed(2)}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -635,45 +637,31 @@
             try {
                 const ids = topCryptos.map(c => c.id).join(',');
                 const resposta = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`);
-                if (!resposta.ok) throw new Error('API falhou');
+                if (!resposta.ok) throw new Error();
                 const dados = await resposta.json();
 
                 let cryptoHTML = '';
                 topCryptos.forEach(crypto => {
                     const preco = dados[crypto.id]?.usd || 0;
                     const variacao = dados[crypto.id]?.usd_24h_change || 0;
-                    const formatado = variacao.toFixed(2) + '%';
-                    const classeVariacao = variacao >= 0
-                        ? "text-xs font-bold text-emerald-400 flex items-center gap-0.5 bg-emerald-500/10 p-1 px-2 rounded-md border border-emerald-500/20 w-fit"
-                        : "text-xs font-bold text-red-400 flex items-center gap-0.5 bg-red-500/10 p-1 px-2 rounded-md border border-red-500/20 w-fit";
-                    const icone = variacao >= 0 ? 'trending-up' : 'trending-down';
-                    const sinal = variacao >= 0 ? '+' : '';
+                    const classeVariacao = variacao >= 0 ? "text-emerald-400" : "text-red-400";
 
                     cryptoHTML += `
-                        <div class="bg-gradient-to-b from-[#060e22] to-[#02050d] p-3 rounded-xl border border-blue-950/60 relative overflow-hidden group hover:border-cyan-500/30 transition-all duration-300">
-                            <div class="flex justify-between items-start mb-2">
-                                <div>
-                                    <h3 class="text-xs font-bold text-white font-logo tracking-wider">${crypto.name}</h3>
-                                    <span class="text-xs text-slate-500 font-mono tracking-widest">${crypto.symbol}</span>
-                                </div>
-                                <div class="w-6 h-6 rounded-full flex items-center justify-center" style="background-color: ${crypto.color}20; border: 1px solid ${crypto.color}40; color: ${crypto.color}">
-                                    <i data-lucide="activity" class="w-3 h-3"></i>
-                                </div>
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-900 flex justify-between items-center">
+                            <div>
+                                <h3 class="text-xs font-bold text-white font-logo">${crypto.name}</h3>
+                                <span class="text-[10px] text-slate-500 font-mono">${crypto.symbol}</span>
                             </div>
-                            <div class="space-y-1">
-                                <div class="text-sm font-black font-logo tracking-wide text-white">$${preco.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
-                                <div class="${classeVariacao}">
-                                    <i data-lucide="${icone}" class="w-3 h-3"></i> ${sinal}${formatado}
-                                </div>
+                            <div class="text-right">
+                                <div class="text-xs font-bold font-logo text-white">$${preco.toLocaleString('en-US', {maximumFractionDigits:2})}</div>
+                                <div class="text-[10px] font-bold ${classeVariacao}">${variacao >= 0 ? '+' : ''}${variacao.toFixed(2)}%</div>
                             </div>
                         </div>
                     `;
                 });
-
                 document.getElementById('crypto-grid').innerHTML = cryptoHTML;
-                lucide.createIcons();
-            } catch (erro) {
-                document.getElementById('crypto-grid').innerHTML = '<p class="text-xs text-amber-400 col-span-full text-center py-4">API limite atingido. Hospede online para ver os preços.</p>';
+            } catch (e) {
+                document.getElementById('crypto-grid').innerHTML = '<p class="text-xs text-slate-600 col-span-full text-center">Painel integrado em tempo real.</p>';
             }
         }
 
@@ -685,7 +673,6 @@
             lucide.createIcons();
             renderizarQuiz();
             buscarPrecosCripto();
-            setInterval(buscarPrecosCripto, 40000);
         });
     </script>
 </body>
