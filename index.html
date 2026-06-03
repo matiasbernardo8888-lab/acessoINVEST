@@ -6,7 +6,7 @@
     <title>Matias Invest | Carteira Inteligente</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght=700;900&family=Plus+Jakarta+Sans:wght=400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -98,7 +98,7 @@
                         Reserva Imediata
                     </button>
                     <button id="filtro-RendaFixa" onclick="filtrarCategoria('Renda Fixa', this)" class="filtro-btn px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">
-                        Renda Fixa / Inflação
+                        Renda Fixa / Infra
                     </button>
                     <button id="filtro-Multimercado" onclick="filtrarCategoria('Multimercado', this)" class="filtro-btn px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">
                         Multimercados
@@ -141,7 +141,6 @@
                             <canvas id="graficoEvolucao"></canvas>
                         </div>
                     </div>
-                    
                     <div class="pt-2 border-t border-slate-900">
                         <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Distribuição das Classes de Ativos</p>
                         <div id="barra-composicao" class="w-full h-3 rounded-full bg-slate-900 flex overflow-hidden"></div>
@@ -178,7 +177,7 @@
                 <p class="text-xs text-slate-300 leading-relaxed">
                     Enquanto a maioria dos bancos tradicionais limitam menores apenas à renda fixa básica, o jogo mudou. **Você tem total permissão para esmagar o mercado e investir diretamente na Bolsa de Valores!** </p>
                 <div class="bg-purple-950/40 p-3 rounded-lg border border-purple-500/30 text-xs text-purple-200">
-                    💥 <strong>A REGRA DO JOGO:</strong> Menores de idade podem abrir uma conta 100% gratuita na <strong>Corretora Rico</strong>. Lá dentro, o acesso à Bolsa de Valores é liberado para você investir em Ações Reais, Fundos Imobiliários e construir patrimônio agressivo desde cedo. Não espere fazer 18 anos para ficar rico!
+                    💥 <strong>A REGRA DO JOGO:</strong> Menores de idade podem abrir uma conta 100% gratuita na <strong>Corretora Rico</strong>. Lá dentro, o acesso à Bolsa de Valores é liberado para você investir em Ações Reais, Fundos Imobiliários e construir patrimônio agressivo desde cedo. Não espere fazer 18 anos para fique rico!
                 </div>
             </div>
 
@@ -413,18 +412,37 @@
     </div>
 
     <script>
-        // BASE DE ATIVOS ADULTOS TOTALMENTE REVISADA COM TICKERS OFICIAIS E BANCOS MULTIPLATAFORMAS
+        // NOVA BASE DE ATIVOS ATUALIZADA EXATAMENTE COM AS SUAS ESPECIFICAÇÕES E VALORES MÍNIMOS
         const carteiraCompleta = [
-            { nome: 'BB Seguridade (BBSE3)', categoria: 'Ações', descricao: 'Empresa líder do setor de seguros conectada ao agronegócio, com forte distribuição de dividendos e alta resiliência macroeconômica.', aplicacaoMinima: 34.00, precoMaximoCompra: 36.50, pesosPerfil: { conservador: 15, moderado: 20, arrojado: 15 }, ondeEncontrar: 'Disponível via Home Broker (XP, BTG Pactual, Inter, Nu Invest, etc.)' },
-            { nome: 'Cemig (CMIG4)', categoria: 'Ações', descricao: 'Uma das maiores empresas do setor elétrico do país, altamente previsível e excelente pagadora de proventos.', aplicacaoMinima: 11.50, precoMaximoCompra: 13.20, pesosPerfil: { conservador: 15, moderado: 15, arrojado: 10 }, ondeEncontrar: 'Disponível via Home Broker (XP, BTG Pactual, Inter, Nu Invest, etc.)' },
-            { nome: 'SLC Agrícola (SLCE3)', categoria: 'Ações', descricao: 'Uma das maiores produtoras globais de commodities agrícolas (soja, algodão e milho) com terras de alto valor de mercado.', aplicacaoMinima: 19.10, precoMaximoCompra: 22.00, pesosPerfil: { conservador: 0, moderado: 10, arrojado: 15 }, ondeEncontrar: 'Disponível via Home Broker (XP, BTG Pactual, Inter, Nu Invest, etc.)' },
-            { nome: 'BTG Pactual Terras Agricolas (BTRA11)', categoria: 'Renda Fixa', descricao: 'Fundo Imobiliário focado no setor do agronegócio com contratos atípicos de longo prazo e excelente prêmio.', aplicacaoMinima: 75.80, precoMaximoCompra: 85.40, pesosPerfil: { conservador: 20, moderado: 15, arrojado: 10 }, ondeEncontrar: 'Disponível via Home Broker ou plataformas integradas de grandes corretoras.' },
-            { nome: 'Banese (BGIP4)', categoria: 'Ações', descricao: 'Ativo bancário regional com forte posicionamento estratégico e bom histórico de distribuição corporativa.', aplicacaoMinima: 25.30, precoMaximoCompra: 29.05, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 10 }, ondeEncontrar: 'Disponível via Home Broker (XP, BTG Pactual, Inter, Nu Invest, etc.)' },
-            { nome: 'Ipanema FII (IPAN11)', categoria: 'Multimercado', descricao: 'Fundo focado em recebíveis imobiliários estruturados e títulos de crédito privado indexados à inflação.', aplicacaoMinima: 92.50, precoMaximoCompra: 98.00, pesosPerfil: { conservador: 10, moderado: 10, arrojado: 10 }, ondeEncontrar: 'Disponível nas principais plataformas de investimentos brasileiras.' },
-            { nome: 'XP Malls (XPML11)', categoria: 'Multimercado', descricao: 'Portfólio imobiliário diversificado e focado na participação direta nos maiores Shopping Centers do Brasil.', aplicacaoMinima: 112.00, precoMaximoCompra: 116.50, pesosPerfil: { conservador: 5, moderado: 10, arrojado: 10 }, ondeEncontrar: 'Disponível via Home Broker em qualquer plataforma credenciada à B3.' },
-            { nome: 'IFRA11 (Itaú Infraestrutura)', categoria: 'Renda Fixa', descricao: 'Fundo focado em crédito privado estruturado de grandes projetos de infraestrutura nacional, isento de Imposto de Renda.', aplicacaoMinima: 98.20, precoMaximoCompra: 102.00, pesosPerfil: { conservador: 20, moderado: 10, arrojado: 5 }, ondeEncontrar: 'Disponível nos catálogos de Renda Fixa/Fundos das principais instituições.' },
-            { nome: 'Fundos Passivos IMA-B (Inflação)', categoria: 'Renda Fixa', descricao: 'Fundos indexados à carteira de títulos públicos IPCA+ para blindar o poder de compra real a longo prazo.', aplicacaoMinima: 100, precoMaximoCompra: 100.00, pesosPerfil: { conservador: 15, moderado: 5, arrojado: 5 }, ondeEncontrar: 'Plataformas XP, BTG Pactual, Nubank, Inter e grandes bancos.' },
-            { nome: 'WRLD11 (ETF Global Vanguard)', categoria: 'Global', descricao: 'Investimento internacional diversificado automatizado em mais de 9.000 empresas globais através de uma única cota na Bolsa brasileira.', aplicacaoMinima: 110, precoMaximoCompra: 125.00, pesosPerfil: { conservador: 0, moderado: 0, arrojado: 10 }, ondeEncontrar: 'Disponível via Home Broker (XP, BTG Pactual, Inter, Nu Invest, etc.)' }
+            // Renda Fixa & Inflação
+            { nome: 'VALORA VANGUARD', categoria: 'Renda Fixa', descricao: 'Fundo focado em títulos de crédito de alta performance, unindo prêmio e segurança estrutural.', aplicacaoMinima: 100.00, pesosPerfil: { conservador: 25, moderado: 15, arrojado: 5 }, ondeEncontrar: 'BTG Pactual, Itaú e XP' },
+            { nome: 'SOLIS CAPITAL ANTARES PIONEIRO (CNPJ: 55.318.040/0001-78)', categoria: 'Renda Fixa', descricao: 'Fundo de direitos creditórios estruturados focado em previsibilidade de prêmio.', aplicacaoMinima: 500.00, pesosPerfil: { conservador: 20, moderado: 10, arrojado: 5 }, ondeEncontrar: 'BTG Pactual e XP' },
+            { nome: 'KDIF11 (KINEA INFRA RENDA FIXA)', categoria: 'Renda Fixa', descricao: 'Fundo focado em debêntures de infraestrutura com rendimentos isentos de Imposto de Renda.', aplicacaoMinima: 10.00, pesosPerfil: { conservador: 15, moderado: 15, arrojado: 10 }, ondeEncontrar: 'Home Broker (Preço da cota atual)' },
+            { nome: 'IFRA11 (ITAÚ FICFIDC DE INFRAESTRUTURA)', categoria: 'Renda Fixa', descricao: 'Crédito privado em infraestrutura com o selo de gestão de risco e liquidez do Itaú.', aplicacaoMinima: 80.00, pesosPerfil: { conservador: 15, moderado: 10, arrojado: 5 }, ondeEncontrar: 'Disponível no catálogo Itaú / Corretoras parceiras' },
+            { nome: 'FUNDOS PASSIVOS AO IMA-B', categoria: 'Renda Fixa', descricao: 'Estratégia indexada à variação da inflação real para blindagem de poder de compra em longo prazo.', aplicacaoMinima: 100.00, pesosPerfil: { conservador: 25, moderado: 10, arrojado: 5 }, ondeEncontrar: 'XP Investimentos e Home Broker' },
+            
+            // Multimercados
+            { nome: 'DAHLIA TOTAL RETURN', categoria: 'Multimercado', descricao: 'Gestão multimercado dinâmica combinando ações, renda fixa e proteção global macro.', aplicacaoMinima: 500.00, pesosPerfil: { conservador: 0, moderado: 15, arrojado: 10 }, ondeEncontrar: 'Ágora, BTG, C6, Daycoval, Genial, Guide, Inter, NuInvest, Toro e XP' },
+            { nome: 'ABSOLUTE VERTEX', categoria: 'Multimercado', descricao: 'Fundo multimercado focado em distorções táticas macroeconômicas com forte histórico de retorno.', aplicacaoMinima: 500.00, pesosPerfil: { conservador: 0, moderado: 10, arrojado: 10 }, ondeEncontrar: 'Ágora, C6, BTG, Inter, Rico, Safra e XP' },
+            { nome: 'GENOA CAPITAL RADAR', categoria: 'Multimercado', descricao: 'Fundo focado em arbitragem de juros, câmbio e índices com volatilidade controlada.', aplicacaoMinima: 500.00, pesosPerfil: { conservador: 0, moderado: 10, arrojado: 5 }, ondeEncontrar: 'Ágora, Inter, BTG, Genial, Guide, Itaú, NuInvest, Toro, Safra e XP' },
+            { nome: 'KINEA ATLAS', categoria: 'Multimercado', descricao: 'Estratégia multimercado flagship da Kinea com mandato amplo e alocação super barata.', aplicacaoMinima: 1.00, pesosPerfil: { conservador: 0, moderado: 15, arrojado: 15 }, ondeEncontrar: 'BTG, C6, Genial, Guide, Inter, Itaú, NuInvest e Toro' },
+            
+            // Ações Nacionais
+            { nome: 'IBIUNA EQUITIES RESP LIMITADA FIF CIC (CNPJ: 13.401.715/0001-06)', categoria: 'Ações', descricao: 'Fundo focado em selecionar ações altamente resilientes e com potencial de destravamento corporativo.', aplicacaoMinima: 1000.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 10 }, ondeEncontrar: 'C6 Bank, Inter, Genial, Toro e XP' },
+            { nome: 'FORPUS AÇÕES FIC FIA (CNPJ: 21.917.184/0001-29)', categoria: 'Ações', descricao: 'Gestão focada em teses direcionais agressivas de alto potencial na Bolsa brasileira.', aplicacaoMinima: 1000.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 15 }, onde Encontrar: 'BTG, C6, Daycoval, Genial, Guide, Inter, NuInvest e XP' },
+            { nome: 'REAL INVESTOR FI AÇÕES BDR NÍVEL I (CNPJ: 10.500.884/0001-05)', categoria: 'Ações', descricao: 'Value investing puro focado em grandes assimetrias de lucros no Brasil e no exterior.', aplicacaoMinima: 5000.00, pesosPerfil: { conservador: 0, moderado: 0, arrojado: 15 }, ondeEncontrar: 'BTG, Daycoval, Genial, Guide, Inter, Itaú, NuInvest, Rico e XP' },
+            { nome: 'WIZC3 | WIZ CO.', categoria: 'Ações', descricao: 'Ações focadas em forte fluxo tático de receita no mercado de corretagem e distribuição de seguros.', aplicacaoMinima: 6.00, pesosPerfil: { conservador: 0, moderado: 10, arrojado: 10 }, ondeEncontrar: 'Home Broker de qualquer corretora' },
+            { nome: 'ABCB4 | BANCO ABC', categoria: 'Ações', descricao: 'Instituição bancária focada no setor corporativo (Mid-Corporate) e pagamento consistente de dividendos.', aplicacaoMinima: 20.00, pesosPerfil: { conservador: 0, moderado: 10, arrojado: 10 }, ondeEncontrar: 'Home Broker' },
+            { nome: 'SLCE3 | SLC AGRÍCOLA', categoria: 'Ações', descricao: 'Líder nacional na produção de commodities agrícolas com gigantesco patrimônio de terras cultiváveis.', aplicacaoMinima: 19.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 10 }, ondeEncontrar: 'Home Broker' },
+            { nome: 'GMAT3 | GRUPO MATEUS', categoria: 'Ações', descricao: 'Gigante do varejo alimentar regional em plena expansão operacional no Norte e Nordeste.', aplicacaoMinima: 8.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 5 }, ondeEncontrar: 'Home Broker' },
+            { nome: 'BTHF11 | BTG PACTUAL HF', categoria: 'Ações', descricao: 'Fundo focado em posições estruturadas e portfólios híbridos coordenados pelo BTG.', aplicacaoMinima: 10.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 5 }, ondeEncontrar: 'Home Broker' },
+            
+            // Internacionais / Globais
+            { nome: 'WRLD11 (Mundo Todo via Vanguard VT)', categoria: 'Global', descricao: 'Investimento automatizado em mais de 9.000 ações ao redor do planeta através de uma cota na B3.', aplicacaoMinima: 10.00, pesosPerfil: { conservador: 0, moderado: 10, arrojado: 15 }, ondeEncontrar: 'Home Broker' },
+            { nome: 'MS GLOBAL OPPORTUNITIES', categoria: 'Global', descricao: 'Acesso às teses de alto crescimento global geridas pela Morgan Stanley.', aplicacaoMinima: 100.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 10 }, ondeEncontrar: 'Plataformas de investimento integradas' },
+            { nome: 'ALUG11 (Mercado Imobiliário Global VNQ)', categoria: 'Global', descricao: 'Fundo focado no mercado de Real Estate internacional de alta renda.', aplicacaoMinima: 110.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 5 }, ondeEncontrar: 'Home Broker' },
+            { nome: 'USDB11 (Renda Fixa Americana BND)', categoria: 'Global', descricao: 'Exposição à segurança dos títulos públicos e corporativos de renda fixa nos Estados Unidos.', aplicacaoMinima: 10.00, pesosPerfil: { conservador: 0, moderado: 10, arrojado: 5 }, ondeEncontrar: 'Home Broker' },
+            { nome: 'BNDX11 (Renda Fixa Global ex-EUA)', categoria: 'Global', descricao: 'Indexador focado em títulos de renda fixa internacional de países desenvolvidos fora do eixo americano.', aplicacaoMinima: 10.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 5 }, ondeEncontrar: 'Home Broker' }
         ];
 
         const ativosKids = [
@@ -871,6 +889,7 @@
             if(icon) icon.style.transform = card.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
         }
 
+        // ALGORITMO CORRIGIDO COM SELEÇÃO DINÂMICA DE ATIVOS DE ACORDO COM O VALOR DEPOSITADO
         function gerarCarteira() {
             const valorTotal = obterValorNumerico();
             localStorage.setItem('matias_valor_adulto_cru', document.getElementById('input-valor-total').value);
@@ -890,64 +909,82 @@
             secaoGrafico.classList.remove('hidden');
             recalcularExibicaoTotal();
 
+            // 10% vai para a reserva imediata escolhida pelo cliente
             let pctLiquidez = 0.10;
             let valorLiquidez = valorTotal * pctLiquidez;
             let valorDisponivelMercado = valorTotal - valorLiquidez;
 
+            // Filtra os ativos que possuem peso maior que zero para o perfil definido
             let ativosElegiveis = carteiraCompleta.filter(ativo => {
                 const pesoDisponivel = ativo.pesosPerfil[perfilInvestidor] || 0;
                 return pesoDisponivel > 0;
             });
 
-            let ativosParaAlocarCount = 2;
-            if (valorTotal > 200) ativosParaAlocarCount = 4;
-            if (valorTotal > 1000) ativosParaAlocarCount = 6;
-            if (valorTotal > 10000) ativosParaAlocarCount = ativosElegiveis.length;
+            // REGRA DE SEGURANÇA SOLICITADA: Quantidade de ativos baseada no valor investido
+            let ativosParaAlocarCount = 1;
+            if (valorTotal > 150) ativosParaAlocarCount = 2;
+            if (valorTotal > 600) ativosParaAlocarCount = 4;
+            if (valorTotal > 2000) ativosParaAlocarCount = 6;
+            if (valorTotal > 8000) ativosParaAlocarCount = ativosElegiveis.length;
 
+            // Ordena os ativos do mais barato (menor aplicação mínima) para o mais caro
+            ativosElegiveis.sort((a, b) => a.aplicacaoMinima - b.aplicacaoMinima);
+
+            // Seleciona a quantidade permitida de ativos, priorizando os mais baratos primeiro
             let ativosSelecionados = ativosElegiveis.slice(0, ativosParaAlocarCount);
             let somaPesos = ativosSelecionados.reduce((acc, a) => acc + a.pesosPerfil[perfilInvestidor], 0);
 
             let carteiraCalculada = [];
             let saldoRestante = valorDisponivelMercado;
 
+            // Aloca o dinheiro respeitando as travas de entrada e as proporções
             ativosSelecionados.forEach(ativo => {
                 let pesoIdeal = ativo.pesosPerfil[perfilInvestidor] / somaPesos;
                 let valorAlvo = valorDisponivelMercado * pesoIdeal;
 
-                if (saldoRestante >= ativo.aplicacaoMinima && valorAlvo >= ativo.aplicacaoMinima) {
+                if (saldoRestante >= ativo.aplicacaoMinima && valorTotal >= ativo.aplicacaoMinima) {
                     let alocacaoFinal = Math.floor(valorAlvo);
-                    carteiraCalculada.push({
-                        nome: ativo.nome,
-                        categoria: ativo.categoria,
-                        descricao: ativo.descricao,
-                        ondeEncontrar: ativo.ondeEncontrar,
-                        precoCota: ativo.aplicacaoMinima,
-                        precoMaximoCompra: ativo.precoMaximoCompra,
-                        valorAlocado: alocacaoFinal,
-                        porcentagemReal: 0 
-                    });
-                    saldoRestante -= alocacaoFinal;
+                    
+                    // Garante que a alocação final não quebre o mínimo do ativo
+                    if (alocacaoFinal < ativo.aplicacaoMinima) {
+                        alocacaoFinal = ativo.aplicacaoMinima;
+                    }
+
+                    if (saldoRestante >= alocacaoFinal) {
+                        carteiraCalculada.push({
+                            nome: ativo.nome,
+                            categoria: ativo.categoria,
+                            descricao: ativo.descricao,
+                            ondeEncontrar: ativo.ondeEncontrar,
+                            precoCota: ativo.aplicacaoMinima,
+                            valorAlocado: alocacaoFinal,
+                            porcentagemReal: 0 
+                        });
+                        saldoRestante -= alocacaoFinal;
+                    }
                 }
             });
 
+            // Caso o dinheiro remanescente não consiga cobrir os mínimos dos próximos ativos, junta no primeiro ativo ativo
             if (saldoRestante > 0 && carteiraCalculada.length > 0) {
                 carteiraCalculada[0].valorAlocado += saldoRestante;
                 saldoRestante = 0;
-            } else if (saldoRestante > 0) {
-                let ativoMaisBarato = ativosElegiveis.reduce((min, a) => a.aplicacaoMinima < min.aplicacaoMinima ? a : min, ativosElegiveis[0]);
+            } else if (saldoRestante > 0 || carteiraCalculada.length === 0) {
+                // Se sobrou saldo e nenhum ativo entrou por barreira de valor mínimo, força o ativo mais barato disponível
+                let ativoMaisBarato = ativosElegiveis[0];
                 carteiraCalculada.push({
                     nome: ativoMaisBarato.nome,
                     categoria: ativoMaisBarato.categoria,
                     descricao: ativoMaisBarato.descricao,
                     ondeEncontrar: ativoMaisBarato.ondeEncontrar,
                     precoCota: ativoMaisBarato.aplicacaoMinima,
-                    precoMaximoCompra: ativoMaisBarato.precoMaximoCompra,
-                    valorAlocado: saldoRestante,
+                    valorAlocado: saldoRestante + (carteiraCalculada[0]?.valorAlocado || 0),
                     porcentagemReal: 0
                 });
                 saldoRestante = 0;
             }
 
+            // Adiciona a Reserva de Liquidez Imediata na primeira posição
             const nomeLiquidez = liquidezSelecionada === 'porquinho' ? 'Porquinho Banco Inter' : 'Caixinha Nubank (Resgate Rápido)';
             carteiraCalculada.unshift({
                 nome: nomeLiquidez,
@@ -955,11 +992,11 @@
                 descricao: 'Seu porto seguro de liquidez imediata (D+0). Ideal para emergências ou compras imediatas.',
                 ondeEncontrar: liquidezSelecionada === 'porquinho' ? 'Aplicativo Banco Inter' : 'Aplicativo Nubank',
                 precoCota: 1,
-                precoMaximoCompra: 1.00,
                 valorAlocado: valorLiquidez,
                 porcentagemReal: 0
             });
 
+            // Calcula o percentual real final baseado no aporte total
             carteiraCalculada.forEach(at => {
                 at.porcentagemReal = (at.valorAlocado / valorTotal) * 100;
             });
@@ -967,7 +1004,7 @@
             carteiraGlobal = carteiraCalculada;
 
             const corCaixa = liquidezSelecionada === 'porquinho' ? 'amber' : 'purple';
-            aviso.innerHTML = `<i data-lucide="info" class="w-3.5 h-3.5 inline mr-1"></i> Alocação Dinâmica Concluída: <strong>${carteiraGlobal.length - 1} ativos de mercado</strong> selecionados para o perfil adulto.`;
+            aviso.innerHTML = `<i data-lucide="info" class="w-3.5 h-3.5 inline mr-1"></i> Alocação Dinâmica Concluída: <strong>${carteiraGlobal.length - 1} ativos de mercado</strong> adequados para este valor.`;
             aviso.className = `text-xs text-${corCaixa}-400 bg-${corCaixa}-500/10 p-3 rounded-xl border border-${corCaixa}-500/20 mt-2`;
             aviso.classList.remove('hidden');
 
@@ -1080,7 +1117,6 @@
                     if(ativo.categoria === 'Liquidez') badgeCor = "text-amber-400 bg-amber-500/10 border-amber-500/20";
                     if(ativo.categoria === 'Ações') badgeCor = "text-emerald-400 bg-emerald-500/10 border-emerald-500/20";
                     if(ativo.categoria === 'Global') badgeCor = "text-purple-400 bg-purple-500/10 border-purple-500/20";
-
                     listaHTML += `
                         <div class="bg-slate-950 rounded-xl border border-slate-900 overflow-hidden transition-all hover:border-slate-800">
                             <div class="p-4 cursor-pointer" onclick="toggleCard('${id}')">
@@ -1105,20 +1141,16 @@
                             <div id="expand-${id}" class="card-expand border-t border-slate-900">
                                 <div class="p-4 space-y-3 bg-black/40 text-xs text-slate-300">
                                     <p class="leading-relaxed text-slate-400">${ativo.descricao}</p>
-                                    <div class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-900">
+                                    <div class="grid grid-cols-1 gap-2 pt-2 border-t border-slate-900">
                                         <div>
-                                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">Onde Aplicar</span>
+                                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">Onde Aplicar / Onde Encontrar</span>
                                             <span class="font-medium text-slate-200">${ativo.ondeEncontrar}</span>
-                                        </div>
-                                        <div class="text-right">
-                                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">Preço Máximo de Compra</span>
-                                            <span class="font-bold text-amber-400">R$ ${ativo.precoMaximoCompra ? ativo.precoMaximoCompra.toFixed(2) : '---'}</span>
                                         </div>
                                     </div>
                                     <div class="grid grid-cols-1 pt-1">
-                                        <div class="text-right">
-                                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">Ação Mínima</span>
-                                            <span class="font-medium text-slate-200">A partir de R$ ${ativo.precoCota.toFixed(2)}</span>
+                                        <div>
+                                            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-500 block">Investimento Mínimo Base</span>
+                                            <span class="font-medium text-cyan-400">A partir de R$ ${ativo.precoCota.toFixed(2)}</span>
                                         </div>
                                     </div>
                                 </div>
