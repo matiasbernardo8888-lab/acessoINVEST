@@ -141,6 +141,7 @@
                             <canvas id="graficoEvolucao"></canvas>
                         </div>
                     </div>
+                    
                     <div class="pt-2 border-t border-slate-900">
                         <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Distribuição das Classes de Ativos</p>
                         <div id="barra-composicao" class="w-full h-3 rounded-full bg-slate-900 flex overflow-hidden"></div>
@@ -412,7 +413,6 @@
     </div>
 
     <script>
-        // NOVA BASE DE ATIVOS ATUALIZADA EXATAMENTE COM AS SUAS ESPECIFICAÇÕES E VALORES MÍNIMOS
         const carteiraCompleta = [
             // Renda Fixa & Inflação
             { nome: 'VALORA VANGUARD', categoria: 'Renda Fixa', descricao: 'Fundo focado em títulos de crédito de alta performance, unindo prêmio e segurança estrutural.', aplicacaoMinima: 100.00, pesosPerfil: { conservador: 25, moderado: 15, arrojado: 5 }, ondeEncontrar: 'BTG Pactual, Itaú e XP' },
@@ -429,7 +429,7 @@
             
             // Ações Nacionais
             { nome: 'IBIUNA EQUITIES RESP LIMITADA FIF CIC (CNPJ: 13.401.715/0001-06)', categoria: 'Ações', descricao: 'Fundo focado em selecionar ações altamente resilientes e com potencial de destravamento corporativo.', aplicacaoMinima: 1000.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 10 }, ondeEncontrar: 'C6 Bank, Inter, Genial, Toro e XP' },
-            { nome: 'FORPUS AÇÕES FIC FIA (CNPJ: 21.917.184/0001-29)', categoria: 'Ações', descricao: 'Gestão focada em teses direcionais agressivas de alto potencial na Bolsa brasileira.', aplicacaoMinima: 1000.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 15 }, onde Encontrar: 'BTG, C6, Daycoval, Genial, Guide, Inter, NuInvest e XP' },
+            { nome: 'FORPUS AÇÕES FIC FIA (CNPJ: 21.917.184/0001-29)', categoria: 'Ações', descricao: 'Gestão focada em teses direcionais agressivas de alto potencial na Bolsa brasileira.', aplicacaoMinima: 1000.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 15 }, ondeEncontrar: 'BTG, C6, Daycoval, Genial, Guide, Inter, NuInvest e XP' },
             { nome: 'REAL INVESTOR FI AÇÕES BDR NÍVEL I (CNPJ: 10.500.884/0001-05)', categoria: 'Ações', descricao: 'Value investing puro focado em grandes assimetrias de lucros no Brasil e no exterior.', aplicacaoMinima: 5000.00, pesosPerfil: { conservador: 0, moderado: 0, arrojado: 15 }, ondeEncontrar: 'BTG, Daycoval, Genial, Guide, Inter, Itaú, NuInvest, Rico e XP' },
             { nome: 'WIZC3 | WIZ CO.', categoria: 'Ações', descricao: 'Ações focadas em forte fluxo tático de receita no mercado de corretagem e distribuição de seguros.', aplicacaoMinima: 6.00, pesosPerfil: { conservador: 0, moderado: 10, arrojado: 10 }, ondeEncontrar: 'Home Broker de qualquer corretora' },
             { nome: 'ABCB4 | BANCO ABC', categoria: 'Ações', descricao: 'Instituição bancária focada no setor corporativo (Mid-Corporate) e pagamento consistente de dividendos.', aplicacaoMinima: 20.00, pesosPerfil: { conservador: 0, moderado: 10, arrojado: 10 }, ondeEncontrar: 'Home Broker' },
@@ -562,7 +562,7 @@
         }
 
         function definirObjetivoKids(objetivo) {
-            objetivoKidsSelecionado = objetivo;
+            objetivoKidsSelecionado = objective;
             localStorage.setItem('matias_kids_objetivo', objetivo);
 
             ['faculdade', 'intercambio', 'independencia'].forEach(obj => {
@@ -643,7 +643,7 @@
             localStorage.setItem('matias_email', email);
             
             atualizarGamificacao();
-            alert('Cadastro do Perfil atualizado!');
+            alert('Cadastro do Perfil updated!');
         }
 
         function salvarMeta() {
@@ -828,7 +828,6 @@
             document.getElementById('user-email').value = '';
             document.getElementById('meta-valor').value = '';
             document.getElementById('perfil-nome-titulo').innerText = "Investidor Anonimizado";
-            
             alternarAbas('carteira');
             lucide.createIcons();
             renderizarQuiz();
@@ -889,7 +888,6 @@
             if(icon) icon.style.transform = card.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
         }
 
-        // ALGORITMO CORRIGIDO COM SELEÇÃO DINÂMICA DE ATIVOS DE ACORDO COM O VALOR DEPOSITADO
         function gerarCarteira() {
             const valorTotal = obterValorNumerico();
             localStorage.setItem('matias_valor_adulto_cru', document.getElementById('input-valor-total').value);
@@ -909,35 +907,29 @@
             secaoGrafico.classList.remove('hidden');
             recalcularExibicaoTotal();
 
-            // 10% vai para a reserva imediata escolhida pelo cliente
             let pctLiquidez = 0.10;
             let valorLiquidez = valorTotal * pctLiquidez;
             let valorDisponivelMercado = valorTotal - valorLiquidez;
 
-            // Filtra os ativos que possuem peso maior que zero para o perfil definido
             let ativosElegiveis = carteiraCompleta.filter(ativo => {
                 const pesoDisponivel = ativo.pesosPerfil[perfilInvestidor] || 0;
                 return pesoDisponivel > 0;
             });
 
-            // REGRA DE SEGURANÇA SOLICITADA: Quantidade de ativos baseada no valor investido
             let ativosParaAlocarCount = 1;
             if (valorTotal > 150) ativosParaAlocarCount = 2;
             if (valorTotal > 600) ativosParaAlocarCount = 4;
             if (valorTotal > 2000) ativosParaAlocarCount = 6;
             if (valorTotal > 8000) ativosParaAlocarCount = ativosElegiveis.length;
 
-            // Ordena os ativos do mais barato (menor aplicação mínima) para o mais caro
             ativosElegiveis.sort((a, b) => a.aplicacaoMinima - b.aplicacaoMinima);
 
-            // Seleciona a quantidade permitida de ativos, priorizando os mais baratos primeiro
             let ativosSelecionados = ativosElegiveis.slice(0, ativosParaAlocarCount);
             let somaPesos = ativosSelecionados.reduce((acc, a) => acc + a.pesosPerfil[perfilInvestidor], 0);
 
             let carteiraCalculada = [];
             let saldoRestante = valorDisponivelMercado;
 
-            // Aloca o dinheiro respeitando as travas de entrada e as proporções
             ativosSelecionados.forEach(ativo => {
                 let pesoIdeal = ativo.pesosPerfil[perfilInvestidor] / somaPesos;
                 let valorAlvo = valorDisponivelMercado * pesoIdeal;
@@ -945,7 +937,6 @@
                 if (saldoRestante >= ativo.aplicacaoMinima && valorTotal >= ativo.aplicacaoMinima) {
                     let alocacaoFinal = Math.floor(valorAlvo);
                     
-                    // Garante que a alocação final não quebre o mínimo do ativo
                     if (alocacaoFinal < ativo.aplicacaoMinima) {
                         alocacaoFinal = ativo.aplicacaoMinima;
                     }
@@ -965,12 +956,10 @@
                 }
             });
 
-            // Caso o dinheiro remanescente não consiga cobrir os mínimos dos próximos ativos, junta no primeiro ativo ativo
             if (saldoRestante > 0 && carteiraCalculada.length > 0) {
                 carteiraCalculada[0].valorAlocado += saldoRestante;
                 saldoRestante = 0;
             } else if (saldoRestante > 0 || carteiraCalculada.length === 0) {
-                // Se sobrou saldo e nenhum ativo entrou por barreira de valor mínimo, força o ativo mais barato disponível
                 let ativoMaisBarato = ativosElegiveis[0];
                 carteiraCalculada.push({
                     nome: ativoMaisBarato.nome,
@@ -984,7 +973,6 @@
                 saldoRestante = 0;
             }
 
-            // Adiciona a Reserva de Liquidez Imediata na primeira posição
             const nomeLiquidez = liquidezSelecionada === 'porquinho' ? 'Porquinho Banco Inter' : 'Caixinha Nubank (Resgate Rápido)';
             carteiraCalculada.unshift({
                 nome: nomeLiquidez,
@@ -996,7 +984,6 @@
                 porcentagemReal: 0
             });
 
-            // Calcula o percentual real final baseado no aporte total
             carteiraCalculada.forEach(at => {
                 at.porcentagemReal = (at.valorAlocado / valorTotal) * 100;
             });
@@ -1117,6 +1104,7 @@
                     if(ativo.categoria === 'Liquidez') badgeCor = "text-amber-400 bg-amber-500/10 border-amber-500/20";
                     if(ativo.categoria === 'Ações') badgeCor = "text-emerald-400 bg-emerald-500/10 border-emerald-500/20";
                     if(ativo.categoria === 'Global') badgeCor = "text-purple-400 bg-purple-500/10 border-purple-500/20";
+
                     listaHTML += `
                         <div class="bg-slate-950 rounded-xl border border-slate-900 overflow-hidden transition-all hover:border-slate-800">
                             <div class="p-4 cursor-pointer" onclick="toggleCard('${id}')">
