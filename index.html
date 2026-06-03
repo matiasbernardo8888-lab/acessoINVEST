@@ -13,19 +13,19 @@
 
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: #000; }
-     .font-logo { font-family: 'Orbitron', sans-serif; }
+    .font-logo { font-family: 'Orbitron', sans-serif; }
         input[type=number]::-webkit-inner-spin-button,
         input[type=number]::-webkit-outer-spin-button {
           -webkit-appearance: none;
           margin: 0;
         }
-     .card-expand { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
-     .card-expand.active { max-height: 600px; }
-     .nav-active { color: #06b6d4; }
-     .nav-active svg { stroke: #06b6d4; }
-     .perfil-btn.active { background: #06b6d4; color: #020617; border-color: #06b6d4; }
-     .tab-content { display: none; }
-     .tab-content.active { display: block; }
+    .card-expand { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+    .card-expand.active { max-height: 600px; }
+    .nav-active { color: #06b6d4; }
+    .nav-active svg { stroke: #06b6d4; }
+    .perfil-btn.active { background: #06b6d4; color: #020617; border-color: #06b6d4; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
     </style>
 </head>
 <body class="bg-black text-slate-100 min-h-screen pb-24">
@@ -223,6 +223,7 @@
         let carteiraGlobal = [];
         let chartInstance = null;
 
+        // EXPÕE FUNÇÕES PRO HTML - ISSO QUE TRAVOU ANTES
         window.formatarMoeda = formatarMoeda;
         window.setPerfil = setPerfil;
         window.selecionarLiquidez = selecionarLiquidez;
@@ -357,7 +358,7 @@
 
                 if (quantidade > 0) {
                     carteiraCalculada.push({
-                    ...ativo,
+                   ...ativo,
                         quantidade: quantidade,
                         valorAlocado: valorAlocado
                     });
@@ -468,11 +469,4 @@
                 });
             }
 
-            document.getElementById('lista-ativos').innerHTML = listaHTML;
-            lucide.createIcons();
-        }
-
-        function enviarWhatsApp() {
-            const valor = document.getElementById('input-valor-total').value || '0,00';
-            const perfil = perfilSelecionado.charAt(0).toUpperCase() + perfilSelecionado.slice(1);
-            const msg = `Olá Bernardo! Simulei uma carteira de R$ ${valor
+            document.getElementById('lista-ativos
