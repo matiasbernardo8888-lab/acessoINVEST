@@ -60,7 +60,7 @@
                         <p class="text-xs text-slate-400">Responda rápido para calibrar seu algoritmo de alocação:</p>
                         <div id="pergunta-fase" class="bg-slate-900 p-3 rounded-lg border border-slate-800/60">
                             <span class="text-[10px] uppercase tracking-widest text-slate-500 font-bold block mb-1" id="progresso-quiz">Pergunta 1 de 4</span>
-                            <p class="text-xs font-semibold text-white mb-3" id="texto-pergunta">Qual o seu objective principal ao investir seu dinheiro?</p>
+                            <p class="text-xs font-semibold text-white mb-3" id="texto-pergunta">Qual o seu objetivo principal ao investir seu dinheiro?</p>
                             <div id="opcoes-quiz" class="space-y-2"></div>
                         </div>
                     </div>
@@ -415,40 +415,38 @@
     <script>
         const carteiraCompleta = [
             // Renda Fixa & Inflação
-            { nome: 'VALORA VANGUARD', categoria: 'Renda Fixa', descricao: 'Fundo focado em títulos de crédito de alta performance, unindo prêmio e segurança estrutural.', aplicacaoMinima: 100.00, pesosPerfil: { conservador: 25, moderado: 15, arrojado: 5 }, ondeEncontrar: 'BTG Pactual, Itaú e XP' },
-            { nome: 'SOLIS CAPITAL ANTARES PIONEIRO (CNPJ: 55.318.040/0001-78)', categoria: 'Renda Fixa', descricao: 'Fundo de direitos creditórios estruturados focado em previsibilidade de prêmio.', aplicacaoMinima: 500.00, pesosPerfil: { conservador: 20, moderado: 10, arrojado: 5 }, ondeEncontrar: 'BTG Pactual e XP' },
-            
-            { nome: 'IFRA11 (ITAÚ FICFIDC DE INFRAESTRUTURA)', categoria: 'Renda Fixa', descricao: 'Crédito privado em infraestrutura com o selo de gestão de risco e liquidez do Itaú.', aplicacaoMinima: 80.00, pesosPerfil: { conservador: 15, moderado: 10, arrojado: 5 }, ondeEncontrar: 'Disponível no catálogo Itaú / Corretoras parceiras' },
-            { nome: 'FUNDOS PASSIVOS AO IMA-B', categoria: 'Renda Fixa', descricao: 'Estratégia indexada à variação da inflação real para blindagem de poder de compra em longo prazo.', aplicacaoMinima: 100.00, pesosPerfil: { conservador: 25, moderado: 10, arrojado: 5 }, ondeEncontrar: 'XP Investimentos e Home Broker' },
+            { nome: 'VALORA VANGUARD', categoria: 'Renda Fixa', descricao: 'Fundo focado em títulos de crédito de alta performance, unindo prêmio e segurança estrutural.', aplicacaoMinima: 100.00, pesosPerfil: { conservador: 25, moderado: 15, arrojado: 5 }, ondeEncontrar: 'BTG Pactual, Itaú e XP Investimentos' },
+            { nome: 'SOLIS CAPITAL ANTARES PIONEIRO (CNPJ: 55.318.040/0001-78)', categoria: 'Renda Fixa', descricao: 'Fundo de direitos creditórios estruturados focado em previsibilidade de prêmio.', aplicacaoMinima: 500.00, pesosPerfil: { conservador: 20, moderado: 10, arrojado: 5 }, ondeEncontrar: 'BTG Pactual e XP Investimentos' },
+            { nome: 'IFRA11 (ITAÚ FICFIDC DE INFRAESTRUTURA)', categoria: 'Renda Fixa', descricao: 'Crédito privado em infraestrutura com o selo de gestão de risco e liquidez do Itaú.', aplicacaoMinima: 80.00, pesosPerfil: { conservador: 15, moderado: 10, arrojado: 5 }, ondeEncontrar: 'Disponível no catálogo Itaú e Corretoras parceiras' },
+            { nome: 'FUNDOS PASSIVOS AO IMA-B', categoria: 'Renda Fixa', descricao: 'Estratégia indexada à variação da inflação real para blindagem de poder de compra em longo prazo.', aplicacaoMinima: 100.00, pesosPerfil: { conservador: 25, moderado: 10, arrojado: 5 }, ondeEncontrar: 'XP Investimentos e Home Broker (de qualquer corretora)' },
             
             // Multimercados
-            { nome: 'DAHLIA TOTAL RETURN', categoria: 'Multimercado', descricao: 'Gestão multimercado dinâmica combinando ações, renda fixa e proteção global macro.', aplicacaoMinima: 500.00, pesosPerfil: { conservador: 0, moderado: 15, arrojado: 10 }, ondeEncontrar: 'Ágora, BTG, C6, Daycoval, Genial, Guide, Inter, NuInvest, Toro e XP' },
-            { nome: 'ABSOLUTE VERTEX', categoria: 'Multimercado', descricao: 'Fundo multimercado focado em distorções táticas macroeconômicas com forte histórico de retorno.', aplicacaoMinima: 500.00, pesosPerfil: { conservador: 0, moderado: 10, arrojado: 10 }, ondeEncontrar: 'Ágora, C6, BTG, Inter, Rico, Safra e XP' },
-            { nome: 'GENOA CAPITAL RADAR', categoria: 'Multimercado', descricao: 'Fundo focado em arbitragem de juros, câmbio e índices com volatilidade controlada.', aplicacaoMinima: 500.00, pesosPerfil: { conservador: 0, moderado: 10, arrojado: 5 }, ondeEncontrar: 'Ágora, Inter, BTG, Genial, Guide, Itaú, NuInvest, Toro, Safra e XP' },
-            
+            { nome: 'DAHLIA TOTAL RETURN', categoria: 'Multimercado', descricao: 'Gestão multimercado dinâmica combinando ações, renda fixa e proteção global macro.', aplicacaoMinima: 500.00, pesosPerfil: { conservador: 0, moderado: 15, arrojado: 10 }, ondeEncontrar: 'Ágora, BTG Pactual, C6 Bank, Daycoval, Genial, Guide, Inter, NuInvest, Toro e XP Investimentos' },
+            { nome: 'ABSOLUTE VERTEX', categoria: 'Multimercado', descricao: 'Fundo multimercado focado em distorções táticas macroeconômicas com forte histórico de retorno.', aplicacaoMinima: 500.00, pesosPerfil: { conservador: 0, moderado: 10, arrojado: 10 }, ondeEncontrar: 'Ágora, C6 Bank, BTG Pactual, Inter, Rico, Safra e XP Investimentos' },
+            { nome: 'GENOA CAPITAL RADAR', categoria: 'Multimercado', descricao: 'Fundo focado em arbitragem de juros, câmbio e índices com volatilidade controlada.', aplicacaoMinima: 500.00, pesosPerfil: { conservador: 0, moderado: 10, arrojado: 5 }, ondeEncontrar: 'Ágora, Inter, BTG Pactual, Genial, Guide, Itaú, NuInvest, Toro, Safra e XP Investimentos' },
             
             // Ações Nacionais
-            { nome: 'IBIUNA EQUITIES RESP LIMITADA FIF CIC (CNPJ: 13.401.715/0001-06)', categoria: 'Ações', descricao: 'Fundo focado em selecionar ações altamente resilientes e com potencial de destravamento corporativo.', aplicacaoMinima: 1000.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 10 }, ondeEncontrar: 'C6 Bank, Inter, Genial, Toro e XP' },
-            { nome: 'FORPUS AÇÕES FIC FIA (CNPJ: 21.917.184/0001-29)', categoria: 'Ações', descricao: 'Gestão focada em teses direcionais agressivas de alto potencial na Bolsa brasileira.', aplicacaoMinima: 1000.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 15 }, ondeEncontrar: 'BTG, C6, Daycoval, Genial, Guide, Inter, NuInvest e XP' },
-            { nome: 'REAL INVESTOR FI AÇÕES BDR NÍVEL I (CNPJ: 10.500.884/0001-05)', categoria: 'Ações', descricao: 'Value investing puro focado em grandes assimetrias de lucros no Brasil e no exterior.', aplicacaoMinima: 5000.00, pesosPerfil: { conservador: 0, moderado: 0, arrojado: 15 }, ondeEncontrar: 'BTG, Daycoval, Genial, Guide, Inter, Itaú, NuInvest, Rico e XP' },
-
-            { nome: 'ABCB4 | BANCO ABC', categoria: 'Ações', descricao: 'Instituição bancária focada no setor corporativo (Mid-Corporate) e pagamento consistente de dividendos.', aplicacaoMinima: 20.00, pesosPerfil: { conservador: 0, moderado: 10, arrojado: 10 }, ondeEncontrar: 'Home Broker' },
-            { nome: 'SLCE3 | SLC AGRÍCOLA', categoria: 'Ações', descricao: 'Líder nacional na produção de commodities agrícolas com gigantesco patrimônio de terras cultiváveis.', aplicacaoMinima: 19.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 10 }, ondeEncontrar: 'Home Broker' },
-            { nome: 'GMAT3 | GRUPO MATEUS', categoria: 'Ações', descricao: 'Gigante do varejo alimentar regional em plena expansão operacional no Norte e Nordeste.', aplicacaoMinima: 8.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 5 }, ondeEncontrar: 'Home Broker' },
-            { nome: 'BTHF11 | BTG PACTUAL HF', categoria: 'Ações', descricao: 'Fundo focado em posições estruturadas e portfólios híbridos coordenados pelo BTG.', aplicacaoMinima: 10.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 5 }, ondeEncontrar: 'Home Broker' },
+            { nome: 'IBIUNA EQUITIES RESP LIMITADA FIF CIC (CNPJ: 13.401.715/0001-06)', categoria: 'Ações', descricao: 'Fundo focado em selecionar ações altamente resilientes e com potencial de destravamento corporativo.', aplicacaoMinima: 1000.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 10 }, ondeEncontrar: 'C6 Bank, Inter, Genial, Toro e XP Investimentos' },
+            { nome: 'FORPUS AÇÕES FIC FIA (CNPJ: 21.917.184/0001-29)', categoria: 'Ações', descricao: 'Gestão focada em teses direcionais agressivas de alto potencial na Bolsa brasileira.', aplicacaoMinima: 1000.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 15 }, ondeEncontrar: 'BTG Pactual, C6 Bank, Daycoval, Genial, Guide, Inter, NuInvest e XP Investimentos' },
+            { nome: 'REAL INVESTOR FI AÇÕES BDR NÍVEL I (CNPJ: 10.500.884/0001-05)', categoria: 'Ações', descricao: 'Value investing puro focado em grandes assimetrias de lucros no Brasil e no exterior.', aplicacaoMinima: 5000.00, pesosPerfil: { conservador: 0, moderado: 0, arrojado: 15 }, ondeEncontrar: 'BTG Pactual, Daycoval, Genial, Guide, Inter, Itaú, NuInvest, Rico e XP Investimentos' },
+            { nome: 'BBC3 | BCO BRASILCEN', categoria: 'Ações', descricao: 'Ações focadas em forte fluxo tático de receita no mercado financeiro regional e distribuição de serviços.', aplicacaoMinima: 6.00, pesosPerfil: { conservador: 0, moderado: 10, arrojado: 10 }, ondeEncontrar: 'Home Broker (de qualquer corretora)' },
+            { nome: 'ABCB4 | BANCO ABC', categoria: 'Ações', descricao: 'Instituição bancária focada no setor corporativo (Mid-Corporate) e pagamento consistente de dividendos.', aplicacaoMinima: 20.00, pesosPerfil: { conservador: 0, moderado: 10, arrojado: 10 }, ondeEncontrar: 'Home Broker (de qualquer corretora)' },
+            { nome: 'SLCE3 | SLC AGRÍCOLA', categoria: 'Ações', descricao: 'Líder nacional na produção de commodities agrícolas com gigantesco patrimônio de terras cultiváveis.', aplicacaoMinima: 19.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 10 }, ondeEncontrar: 'Home Broker (de qualquer corretora)' },
+            { nome: 'GMAT3 | GRUPO MATEUS', categoria: 'Ações', descricao: 'Gigante do varejo alimentar regional em plena expansão operacional no Norte e Nordeste.', aplicacaoMinima: 8.00, pesosPerfil: { conservador: 0, modrado: 5, arrojado: 5 }, ondeEncontrar: 'Home Broker (de qualquer corretora)' },
+            { nome: 'BTHF11 | BTG PACTUAL HF', categoria: 'Ações', descricao: 'Fundo focado em posições estruturadas e portfólios híbridos coordenados pelo BTG.', aplicacaoMinima: 10.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 5 }, ondeEncontrar: 'Home Broker (de qualquer corretora)' },
             
             // Internacionais / Globais
-            { nome: 'WRLD11 (Mundo Todo via Vanguard VT)', categoria: 'Global', descricao: 'Investimento automatizado em mais de 9.000 ações ao redor do planeta através de uma cota na B3.', aplicacaoMinima: 10.00, pesosPerfil: { conservador: 0, moderado: 10, arrojado: 15 }, ondeEncontrar: 'Home Broker' },
-            { nome: 'MS GLOBAL OPPORTUNITIES', categoria: 'Global', descricao: 'Acesso às teses de alto crescimento global geridas pela Morgan Stanley.', aplicacaoMinima: 100.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 10 }, ondeEncontrar: 'Plataformas de investimento integradas' },
-            { nome: 'ALUG11 (Mercado Imobiliário Global VNQ)', categoria: 'Global', descricao: 'Fundo focado no mercado de Real Estate internacional de alta renda.', aplicacaoMinima: 110.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 5 }, ondeEncontrar: 'Home Broker' },
-            { nome: 'USDB11 (Renda Fixa Americana BND)', categoria: 'Global', descricao: 'Exposição à segurança dos títulos públicos e corporativos de renda fixa nos Estados Unidos.', aplicacaoMinima: 10.00, pesosPerfil: { conservador: 0, moderado: 10, arrojado: 5 }, ondeEncontrar: 'Home Broker' },
-            { nome: 'BNDX11 (Renda Fixa Global ex-EUA)', categoria: 'Global', descricao: 'Indexador focado em títulos de renda fixa internacional de países desenvolvidos fora do eixo americano.', aplicacaoMinima: 10.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 5 }, ondeEncontrar: 'Home Broker' }
+            { nome: 'WRLD11 (Mundo Todo via Vanguard VT)', categoria: 'Global', descricao: 'Investimento automatizado em mais de 9.000 ações ao redor do planeta através de uma cota na B3.', aplicacaoMinima: 10.00, pesosPerfil: { conservador: 0, moderado: 10, arrojado: 15 }, ondeEncontrar: 'Home Broker (de qualquer corretora)' },
+            { nome: 'MS GLOBAL OPPORTUNITIES', categoria: 'Global', descricao: 'Acesso às teses de alto crescimento global geridas pela Morgan Stanley.', aplicacaoMinima: 100.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 10 }, ondeEncontrar: 'Plataformas de investimento integradas e XP Investimentos' },
+            { nome: 'ALUG11 (Mercado Imobiliário Global VNQ)', categoria: 'Global', descricao: 'Fundo focado no mercado de Real Estate internacional de alta renda.', aplicacaoMinima: 110.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 5 }, ondeEncontrar: 'Home Broker (de qualquer corretora)' },
+            { nome: 'USDB11 (Renda Fixa Americana BND)', categoria: 'Global', descricao: 'Exposição à segurança dos títulos públicos e corporativos de renda fixa nos Estados Unidos.', aplicacaoMinima: 10.00, pesosPerfil: { conservador: 0, moderado: 10, arrojado: 5 }, ondeEncontrar: 'Home Broker (de qualquer corretora)' },
+            { nome: 'BNDX11 (Renda Fixa Global ex-EUA)', categoria: 'Global', descricao: 'Indexador focado em títulos de renda fixa internacional de países desenvolvidos fora do eixo americano.', aplicacaoMinima: 10.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 5 }, ondeEncontrar: 'Home Broker (de qualquer corretora)' }
         ];
 
         const ativosKids = [
-            { nome: 'BOVA11 / IVVB11 (Mercado Global)', categoria: 'Ações & Mercado Global', descricao: 'Exposição direta às maiores empresas do Brasil e dos EUA. Estratégia de crescimento agressivo de longo prazo permitida para menores na Rico.', ondeEncontrar: 'Home Broker da Rico Corretora', pesos: { faculdade: 50, intercambio: 20, independencia: 5 } },
-            { nome: 'FIIs de Grandes Shoppings e Galpões', categoria: 'Fundos Imobiliários', descricao: 'Investimento em imóveis físicos de alto padrão que pingam aluguel na conta todo mês com isenção fiscal completa.', ondeEncontrar: 'Home Broker da Rico Corretora', pesos: { faculdade: 20, intercambio: 40, independencia: 15 } },
-            { nome: 'CDB 100% CDI com Liquidez Diária', categoria: 'Reserva Prática', descricao: 'O colchão de liquidez para imprevistos e oportunidades rápidas de compra no mercado.', ondeEncontrar: 'Conta de Menor (Rico, Inter ou Nubank)', pesos: { faculdade: 10, intercambio: 20, independencia: 60 } },
+            { nome: 'BOVA11 / IVVB11 (Mercado Global)', categoria: 'Ações & Mercado Global', descricao: 'Exposição direta às maiores empresas do Brasil e dos EUA. Estratégia de crescimento agressivo de longo prazo permitida para menores na Rico.', ondeEncontrar: 'Home Broker (de qualquer corretora) da Rico Corretora', pesos: { faculdade: 50, intercambio: 20, independencia: 5 } },
+            { nome: 'FIIs de Grandes Shoppings e Galpões', categoria: 'Fundos Imobiliários', descricao: 'Investimento em imóveis físicos de alto padrão que pingam aluguel na conta todo mês com isenção fiscal completa.', ondeEncontrar: 'Home Broker (de qualquer corretora) da Rico Corretora', pesos: { faculdade: 20, intercambio: 40, independencia: 15 } },
+            { nome: 'CDB 100% CDI com Liquidez Diária', categoria: 'Reserva Prática', descricao: 'O colchão de liquidez para imprevistos e oportunidades rápidas de compra no mercado.', ondeEncontrar: 'Conta de Menor (Rico Corretora, Banco Inter ou Nubank)', pesos: { faculdade: 10, intercambio: 20, independencia: 60 } },
             { nome: 'Tesouro IPCA+ (Proteção Real)', categoria: 'Renda Fixa Premium', descricao: 'Título público ultra-seguro que garante rentabilidade real sempre acima da inflação do país.', ondeEncontrar: 'Área do Tesouro Direto na Rico Corretora', pesos: { faculdade: 20, intercambio: 20, independencia: 20 } }
         ];
 
@@ -562,7 +560,7 @@
         }
 
         function definirObjetivoKids(objetivo) {
-            objetivoKidsSelecionado = objective;
+            objetivoKidsSelecionado = objetivo;
             localStorage.setItem('matias_kids_objetivo', objetivo);
 
             ['faculdade', 'intercambio', 'independencia'].forEach(obj => {
@@ -643,7 +641,7 @@
             localStorage.setItem('matias_email', email);
             
             atualizarGamificacao();
-            alert('Cadastro do Perfil updated!');
+            alert('Cadastro do Perfil atualizado!');
         }
 
         function salvarMeta() {
@@ -828,6 +826,7 @@
             document.getElementById('user-email').value = '';
             document.getElementById('meta-valor').value = '';
             document.getElementById('perfil-nome-titulo').innerText = "Investidor Anonimizado";
+            
             alternarAbas('carteira');
             lucide.createIcons();
             renderizarQuiz();
@@ -910,7 +909,6 @@
             let pctLiquidez = 0.10;
             let valorLiquidez = valorTotal * pctLiquidez;
             let valorDisponivelMercado = valorTotal - valorLiquidez;
-
             let ativosElegiveis = carteiraCompleta.filter(ativo => {
                 const pesoDisponivel = ativo.pesosPerfil[perfilInvestidor] || 0;
                 return pesoDisponivel > 0;
