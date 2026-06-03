@@ -178,7 +178,7 @@
                 <p class="text-xs text-slate-300 leading-relaxed">
                     Enquanto a maioria dos bancos tradicionais como Inter e Nubank travam a sua evolução limitando menores apenas à renda fixa básica, o jogo mudou. **Você tem total permissão para esmagar o mercado e investir diretamente na Bolsa de Valores!** </p>
                 <div class="bg-purple-950/40 p-3 rounded-lg border border-purple-500/30 text-xs text-purple-200">
-                    💥 <strong>A REGRA DO JOGO:</strong> Menores de idade podem abrir uma conta 100% gratuita na <strong>Corretora Rico</strong>. Lá dentro, o acesso à Bolsa de Valores é liberado para você investir em Ações Reais, Fundos Imobiliários e construir patrimônio agressivo desde cedo. Não espere fazer 18 anos para ficar rico!
+                    💥 <strong>A REGRA DO JOGO:</strong> Menores de idade podem abrir uma conta 100% gratuita na <strong>Corretora Rico</strong>. Lá dentro, o acesso à Bolsa de Valores é liberado para você investir em Ações Reais, Fundos Imobiliários e construir patrimônio agressivo desde cedo. Não espere fazer 18 anos para fique rico!
                 </div>
             </div>
 
@@ -225,7 +225,7 @@
             <div class="space-y-2">
                 <h3 class="text-xs font-bold text-slate-400 tracking-wider uppercase mb-1">Canais Recomendados para Estudo:</h3>
                 
-                <a href="https://www.youtube.com/@oprimorico" target="_blank" class="flex items-center justify-between p-3.5 bg-slate-950 rounded-xl border border-slate-900 hover:border-cyan-500/50 transition duration-300 group">
+                <a href="https://www.youtube.com/@BRprimorico" target="_blank" class="flex items-center justify-between p-3.5 bg-slate-950 rounded-xl border border-slate-900 hover:border-cyan-500/50 transition duration-300 group">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-cyan-400 font-bold font-logo text-sm group-hover:bg-cyan-950/30 transition">PR</div>
                         <div>
@@ -258,7 +258,7 @@
                     <i data-lucide="external-link" class="w-4 h-4 text-slate-600 group-hover:text-cyan-400 transition"></i>
                 </a>
 
-                <a href="https://www.youtube.com/@nordininvestimentos" target="_blank" class="flex items-center justify-between p-3.5 bg-slate-950 rounded-xl border border-slate-900 hover:border-cyan-500/50 transition duration-300 group">
+                <a href="https://www.youtube.com/@nordinvestimentos" target="_blank" class="flex items-center justify-between p-3.5 bg-slate-950 rounded-xl border border-slate-900 hover:border-cyan-500/50 transition duration-300 group">
                     <div class="flex items-center gap-3">
                         <div class="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-cyan-400 font-bold font-logo text-sm group-hover:bg-cyan-950/30 transition">NI</div>
                         <div>
@@ -327,8 +327,7 @@
                     <div>
                         <label class="text-[10px] font-bold text-slate-500 block mb-1 uppercase">Qual sua principal meta atual?</label>
                         <select id="meta-tipo" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-cyan-500">
-                            <option value="Reserva de Emergência Completa">Reserva de Emergência Completa</
-                                option>
+                            <option value="Reserva de Emergência Completa">Reserva de Emergência Completa</option>
                             <option value="Liberdade Financeira Integrada">Liberdade Financeira Integrada</option>
                             <option value="Primeiros R$ 10.000 Investidos">Primeiros R$ 10.000 Investidos</option>
                             <option value="Troca de Veículo / Patrimônio">Troca de Veículo / Patrimônio</option>
@@ -920,6 +919,8 @@
                 let pesoIdeal = ativo.pesosPerfil[perfilInvestidor] / somaPesos;
                 let valorAlvo = valorDisponivelMercado * pesoIdeal;
 
+                //
+                                       Modificado para guardar apenas se atingir a aplicação mínima do fundo
                 if (valorAlvo >= ativo.aplicacaoMinima) {
                     carteiraCalculada.push({
                         nome: ativo.nome,
@@ -934,9 +935,9 @@
                 }
             });
 
-            if (saldoRestante > 0 && carteiraCalculada.length > 0) {
-                carteiraCalculada[0].valorAlocado += saldoRestante;
-            }
+            // CORREÇÃO DA CAIXINHA/PORQUINHO: Se sobrou saldo que não pôde ser alocado em fundos (ex: aportes pequenos como R$100), 
+            // esse restante (R$90) é empurrado de volta para somar junto com os R$10 da sua reserva imediata.
+            valorLiquidez += saldoRestante; 
 
             const nomeLiquidez = liquidezSelecionada === 'porquinho' ? 'Porquinho Banco Inter' : 'Caixinha Nubank (Resgate Rápido)';
             carteiraCalculada.unshift({
@@ -956,7 +957,14 @@
             carteiraGlobal = carteiraCalculada;
 
             const corCaixa = liquidezSelecionada === 'porquinho' ? 'amber' : 'purple';
-            aviso.innerHTML = `<i data-lucide="info" class="w-3.5 h-3.5 inline mr-1"></i> Alocação Dinâmica Concluída: <strong>${carteiraGlobal.length - 1} ativos de mercado</strong> selecionados para o perfil adulto.`;
+            
+            // Tratamento visual dinâmico do aviso para o usuário entender o comportamento
+            if (carteiraGlobal.length > 1) {
+                aviso.innerHTML = `<i data-lucide="info" class="w-3.5 h-3.5 inline mr-1"></i> Alocação Dinâmica Concluída: <strong>${carteiraGlobal.length - 1} ativos de mercado</strong> selecionados para o perfil adulto.`;
+            } else {
+                aviso.innerHTML = `<i data-lucide="info" class="w-3.5 h-3.5 inline mr-1"></i> Valor abaixo da aplicação mínima dos ativos de mercado. <strong>100% do saldo protegido na sua Reserva Especial.</strong>`;
+            }
+            
             aviso.className = `text-xs text-${corCaixa}-400 bg-${corCaixa}-500/10 p-3 rounded-xl border border-${corCaixa}-500/20 mt-2`;
             aviso.classList.remove('hidden');
 
