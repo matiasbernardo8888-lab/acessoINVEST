@@ -28,7 +28,7 @@
 <body class="bg-black text-slate-100 min-h-screen pb-24">
     <div class="max-w-2xl mx-auto">
         <header class="sticky top-0 z-50 bg-black/95 backdrop-blur-md border-b border-slate-900 p-4">
-            <div class="flex justify-between items-center mb-4">
+            <div class="flex justify-between items-center">
                 <h1 class="font-logo text-2xl font-black tracking-wider bg-gradient-to-r from-white to-cyan-400 bg-clip-text text-transparent">
                     MATIAS INVEST
                 </h1>
@@ -37,136 +37,232 @@
                     <div id="valor-aporte-display" class="text-xl font-black text-cyan-400 font-logo">R$ 0,00</div>
                 </div>
             </div>
-
-            <div id="secao-suitability" class="bg-slate-950 p-4 rounded-xl border border-slate-900 space-y-3 mb-3">
-                <div class="flex justify-between items-center">
-                    <label class="text-xs font-bold text-cyan-400 tracking-wider flex items-center gap-1">
-                        <i data-lucide="shield-check" class="w-4 h-4"></i> DEFINA SEU PERFIL DE INVESTIDOR
-                    </label>
-                    <span id="badge-perfil" class="text-xs px-2 py-0.5 rounded font-bold bg-slate-900 text-slate-400 border border-slate-800">Não Definido</span>
-                </div>
-                
-                <div id="quiz-container" class="space-y-3">
-                    <p class="text-xs text-slate-400">Responda rápido para calibrar seu algoritmo de alocação:</p>
-                    <div id="pergunta-fase" class="bg-slate-900 p-3 rounded-lg border border-slate-800/60">
-                        <span class="text-[10px] uppercase tracking-widest text-slate-500 font-bold block mb-1" id="progresso-quiz">Pergunta 1 de 3</span>
-                        <p class="text-xs font-semibold text-white mb-3" id="texto-pergunta">Qual o seu objetivo principal ao investir seu dinheiro?</p>
-                        <div id="opcoes-quiz" class="space-y-2"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="container-aporte" class="bg-slate-950 p-3 rounded-xl border border-slate-900 space-y-3 opacity-40 pointer-events-none transition-all duration-300">
-                <label class="text-xs font-medium text-slate-400">SIMULAR APORTE COM SEU PERFIL</label>
-                <div class="relative">
-                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600 font-bold text-sm">R$</span>
-                    <input type="text" id="input-valor-total" placeholder="Defina seu perfil primeiro" class="w-full bg-slate-900 border border-slate-800 rounded-lg pl-10 pr-4 py-2.5 text-white font-bold font-logo focus:outline-none focus:border-cyan-500 transition">
-                </div>
-
-                <div class="pt-2 border-t border-slate-800">
-                    <div class="flex flex-col mb-2">
-                        <label class="text-xs font-bold text-slate-300">RESERVA DE LIQUIDEZ IMEDIATA</label>
-                        <p class="text-[11px] text-slate-500 leading-tight mt-0.5">Seu "colchão de segurança" para imprevistos. Fica guardado e rende todo dia útil, podendo resgatar no mesmo minuto sem riscos.</p>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <button id="btn-porquinho" onclick="selecionarLiquidez('porquinho')" class="toggle-liquid px-3 py-2 rounded-lg text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center justify-center gap-1.5">
-                            <i data-lucide="piggy-bank" class="w-4 h-4"></i> Porquinho Inter
-                        </button>
-                        <button id="btn-nubank" onclick="selecionarLiquidez('nubank')" class="toggle-liquid px-3 py-2 rounded-lg text-xs font-bold bg-slate-900 text-slate-500 border border-slate-800 flex items-center justify-center gap-1.5">
-                            <i data-lucide="wallet" class="w-4 h-4"></i> Caixinha Nubank
-                        </button>
-                    </div>
-                    <div id="aviso-liquidez" class="text-xs text-amber-400 bg-amber-500/10 p-2 rounded border border-amber-500/20 mt-2 hidden"></div>
-                </div>
-            </div>
-
-            <div class="flex gap-2 mt-3 overflow-x-auto pb-1">
-                <button id="filtro-todos" onclick="filtrarCategoria('todos', this)" class="filtro-btn active px-4 py-1.5 rounded-lg text-xs font-bold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 whitespace-nowrap">
-                    Todos
-                </button>
-                <button id="filtro-Liquidez" onclick="filtrarCategoria('Liquidez', this)" class="filtro-btn px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">
-                    Reserva Imediata
-                </button>
-                <button id="filtro-RendaFixa" onclick="filtrarCategoria('Renda Fixa', this)" class="filtro-btn px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">
-                    Renda Fixa / Inflação
-                </button>
-                <button id="filtro-Multimercado" onclick="filtrarCategoria('Multimercado', this)" class="filtro-btn px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">
-                    Multimercados
-                </button>
-                <button id="filtro-Acoes" onclick="filtrarCategoria('Ações', this)" class="filtro-btn px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">
-                    Ações Nacionais
-                </button>
-                <button id="filtro-Global" onclick="filtrarCategoria('Global', this)" class="filtro-btn px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">
-                    Ativos Globais / Int.
-                </button>
-            </div>
         </header>
 
-        <section id="secao-grafico" class="p-4 hidden">
-            <div class="bg-slate-950 p-4 rounded-xl border border-slate-900 space-y-4">
-                <div class="grid grid-cols-4 border-b border-slate-900 pb-3 text-center">
-                    <div>
-                        <div class="text-[10px] text-slate-500 font-bold uppercase">Carteira Max</div>
-                        <div class="text-sm font-black text-cyan-400 font-logo">+48,31%</div>
+        <div id="aba-conteudo-investimentos" class="block">
+            <div class="p-4 space-y-3">
+                <div id="secao-suitability" class="bg-slate-950 p-4 rounded-xl border border-slate-900 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <label class="text-xs font-bold text-cyan-400 tracking-wider flex items-center gap-1">
+                            <i data-lucide="shield-check" class="w-4 h-4"></i> DEFINA SEU PERFIL DE INVESTIDOR
+                        </label>
+                        <span id="badge-perfil" class="text-xs px-2 py-0.5 rounded font-bold bg-slate-900 text-slate-400 border border-slate-800">Não Definido</span>
                     </div>
-                    <div>
-                        <div class="text-[10px] text-slate-500 font-bold uppercase">CDI</div>
-                        <div class="text-sm font-semibold text-slate-400 font-logo">+53,83%</div>
-                    </div>
-                    <div>
-                        <div class="text-[10px] text-slate-500 font-bold uppercase">Ibovespa</div>
-                        <div class="text-sm font-semibold text-slate-400 font-logo">+58,55%</div>
-                    </div>
-                    <div>
-                        <div class="text-[10px] text-slate-500 font-bold uppercase">IFIX</div>
-                        <div class="text-sm font-semibold text-slate-400 font-logo">+31,42%</div>
+                    
+                    <div id="quiz-container" class="space-y-3">
+                        <p class="text-xs text-slate-400">Responda rápido para calibrar seu algoritmo de alocação:</p>
+                        <div id="pergunta-fase" class="bg-slate-900 p-3 rounded-lg border border-slate-800/60">
+                            <span class="text-[10px] uppercase tracking-widest text-slate-500 font-bold block mb-1" id="progresso-quiz">Pergunta 1 de 3</span>
+                            <p class="text-xs font-semibold text-white mb-3" id="texto-pergunta">Qual o seu objetivo principal ao investir seu dinheiro?</p>
+                            <div id="opcoes-quiz" class="space-y-2"></div>
+                        </div>
                     </div>
                 </div>
 
-                <div>
-                    <h2 class="text-xs font-bold text-white flex items-center gap-1.5 tracking-wider uppercase mb-2">
-                        <i data-lucide="line-chart" class="w-4 h-4 text-cyan-400"></i> Histórico de Rentabilidade Acumulada
+                <div id="container-aporte" class="bg-slate-950 p-3 rounded-xl border border-slate-900 space-y-3 opacity-40 pointer-events-none transition-all duration-300">
+                    <label class="text-xs font-medium text-slate-400">SIMULAR APORTE COM SEU PERFIL</label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600 font-bold text-sm">R$</span>
+                        <input type="text" id="input-valor-total" placeholder="Defina seu perfil primeiro" class="w-full bg-slate-900 border border-slate-800 rounded-lg pl-10 pr-4 py-2.5 text-white font-bold font-logo focus:outline-none focus:border-cyan-500 transition">
+                    </div>
+
+                    <div class="pt-2 border-t border-slate-800">
+                        <div class="flex flex-col mb-2">
+                            <label class="text-xs font-bold text-slate-300">RESERVA DE LIQUIDEZ IMEDIATA</label>
+                            <p class="text-[11px] text-slate-500 leading-tight mt-0.5">Seu "colchão de segurança" para imprevistos. Fica guardado e rende todo dia útil, podendo resgatar no mesmo minuto sem riscos.</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button id="btn-porquinho" onclick="selecionarLiquidez('porquinho')" class="toggle-liquid px-3 py-2 rounded-lg text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center justify-center gap-1.5">
+                                <i data-lucide="piggy-bank" class="w-4 h-4"></i> Porquinho Inter
+                            </button>
+                            <button id="btn-nubank" onclick="selecionarLiquidez('nubank')" class="toggle-liquid px-3 py-2 rounded-lg text-xs font-bold bg-slate-900 text-slate-500 border border-slate-800 flex items-center justify-center gap-1.5">
+                                <i data-lucide="wallet" class="w-4 h-4"></i> Caixinha Nubank
+                            </button>
+                        </div>
+                        <div id="aviso-liquidez" class="text-xs text-amber-400 bg-amber-500/10 p-2 rounded border border-amber-500/20 mt-2 hidden"></div>
+                    </div>
+                </div>
+
+                <div class="flex gap-2 overflow-x-auto pb-1 pt-1">
+                    <button id="filtro-todos" onclick="filtrarCategoria('todos', this)" class="filtro-btn active px-4 py-1.5 rounded-lg text-xs font-bold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 whitespace-nowrap">
+                        Todos
+                    </button>
+                    <button id="filtro-Liquidez" onclick="filtrarCategoria('Liquidez', this)" class="filtro-btn px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">
+                        Reserva Imediata
+                    </button>
+                    <button id="filtro-RendaFixa" onclick="filtrarCategoria('Renda Fixa', this)" class="filtro-btn px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">
+                        Renda Fixa / Inflação
+                    </button>
+                    <button id="filtro-Multimercado" onclick="filtrarCategoria('Multimercado', this)" class="filtro-btn px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">
+                        Multimercados
+                    </button>
+                    <button id="filtro-Acoes" onclick="filtrarCategoria('Ações', this)" class="filtro-btn px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">
+                        Ações Nacionais
+                    </button>
+                    <button id="filtro-Global" onclick="filtrarCategoria('Global', this)" class="filtro-btn px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">
+                        Ativos Globais / Int.
+                    </button>
+                </div>
+            </div>
+
+            <section id="secao-grafico" class="p-4 hidden">
+                <div class="bg-slate-950 p-4 rounded-xl border border-slate-900 space-y-4">
+                    <div class="grid grid-cols-4 border-b border-slate-900 pb-3 text-center">
+                        <div>
+                            <div class="text-[10px] text-slate-500 font-bold uppercase">Carteira Max</div>
+                            <div class="text-sm font-black text-cyan-400 font-logo">+48,31%</div>
+                        </div>
+                        <div>
+                            <div class="text-[10px] text-slate-500 font-bold uppercase">CDI</div>
+                            <div class="text-sm font-semibold text-slate-400 font-logo">+53,83%</div>
+                        </div>
+                        <div>
+                            <div class="text-[10px] text-slate-500 font-bold uppercase">Ibovespa</div>
+                            <div class="text-sm font-semibold text-slate-400 font-logo">+58,55%</div>
+                        </div>
+                        <div>
+                            <div class="text-[10px] text-slate-500 font-bold uppercase">IFIX</div>
+                            <div class="text-sm font-semibold text-slate-400 font-logo">+31,42%</div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2 class="text-xs font-bold text-white flex items-center gap-1.5 tracking-wider uppercase mb-2">
+                            <i data-lucide="line-chart" class="w-4 h-4 text-cyan-400"></i> Histórico de Rentabilidade Acumulada
+                        </h2>
+                        <div class="w-full h-44">
+                            <canvas id="graficoEvolucao"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="pt-2 border-t border-slate-900">
+                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Distribuição das Classes de Ativos</p>
+                        <div id="barra-composicao" class="w-full h-3 rounded-full bg-slate-900 flex overflow-hidden"></div>
+                    </div>
+                </div>
+            </section>
+
+            <main id="lista-ativos" class="p-4 space-y-3">
+                <p class="text-xs text-slate-500 text-center py-8">Defina seu perfil de investidor para liberar os investimentos.</p>
+            </main>
+
+            <section class="p-4">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-sm font-bold text-white flex items-center gap-2">
+                        <i data-lucide="trending-up" class="w-4 h-4 text-cyan-500"></i> Top Criptomoedas do Mercado
                     </h2>
-                    <div class="w-full h-44">
-                        <canvas id="graficoEvolucao"></canvas>
+                    <span class="text-xs text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping inline-block mr-1"></span>LIVE
+                    </span>
+                </div>
+                <div id="crypto-grid" class="grid grid-cols-2 md:grid-cols-3 gap-2">
+                    <p class="text-xs text-slate-500 col-span-full text-center py-4">Carregando...</p>
+                </div>
+            </section>
+        </div>
+
+        <div id="aba-painel-perfil" class="hidden p-4 space-y-4">
+            <div class="bg-gradient-to-br from-slate-950 to-slate-900 p-4 rounded-xl border border-slate-800 space-y-3">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-cyan-400">STATUS DA CONTA</span>
+                        <h2 class="text-base font-black text-white tracking-wide" id="perfil-nome-titulo">Investidor Anonimizado</h2>
+                    </div>
+                    <div class="bg-cyan-500/10 px-2.5 py-1 rounded-lg border border-cyan-500/20 text-center">
+                        <span class="text-[9px] block text-slate-500 font-bold">NÍVEL</span>
+                        <span class="text-xs font-black text-cyan-400 font-logo" id="perfil-nivel-tag">PRE-SEED</span>
                     </div>
                 </div>
-                
-                <div class="pt-2 border-t border-slate-900">
-                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Distribuição das Classes de Ativos</p>
-                    <div id="barra-composicao" class="w-full h-3 rounded-full bg-slate-900 flex overflow-hidden"></div>
+                <div class="space-y-1">
+                    <div class="flex justify-between text-[11px] font-medium text-slate-400">
+                        <span>Experiência da Carteira</span>
+                        <span id="txt-progresso-experiencia">20% concluído</span>
+                    </div>
+                    <div class="w-full h-2 bg-slate-900 rounded-full overflow-hidden border border-slate-800/50">
+                        <div id="barra-progresso-perfil" class="h-full bg-gradient-to-r from-cyan-500 to-blue-500 transition-all duration-500" style="width: 20%"></div>
+                    </div>
                 </div>
             </div>
-        </section>
 
-        <main id="lista-ativos" class="p-4 space-y-3">
-            <p class="text-xs text-slate-500 text-center py-8">Defina seu perfil de investidor para liberar os investimentos.</p>
-        </main>
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-900 space-y-3">
+                <div class="flex items-center gap-2 border-b border-slate-900 pb-2">
+                    <i data-lucide="target" class="w-4 h-4 text-cyan-500"></i>
+                    <h3 class="text-xs font-bold text-white uppercase tracking-wider">Definição Prática de Metas</h3>
+                </div>
+                <p class="text-[11px] text-slate-400 leading-normal">Configure seu próximo objetivo financeiro para alinhar com as recomendações de alocação.</p>
+                
+                <div class="space-y-3 pt-1">
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-500 block mb-1 uppercase">Qual sua principal meta atual?</label>
+                        <select id="meta-tipo" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-cyan-500">
+                            <option value="Reserva de Emergência Completa">Reserva de Emergência Completa</option>
+                            <option value="Liberdade Financeira Integrada">Liberdade Financeira Integrada</option>
+                            <option value="Primeiros R$ 10.000 Investidos">Primeiros R$ 10.000 Investidos</option>
+                            <option value="Troca de Veículo / Patrimônio">Troca de Veículo / Patrimônio</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-500 block mb-1 uppercase">Valor Alvo (R$)</label>
+                        <input type="number" id="meta-valor" placeholder="Ex: 10000" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white font-logo focus:outline-none focus:border-cyan-500">
+                    </div>
+                    <button onclick="salvarMeta()" class="w-full bg-cyan-500 hover:bg-cyan-600 text-black font-bold text-xs py-2 rounded-lg transition">
+                        Ativar e Monitorar Meta
+                    </button>
+                </div>
 
-        <section class="px-4 pb-4">
-            <div class="flex items-center justify-between mb-3">
-                <h2 class="text-sm font-bold text-white flex items-center gap-2">
-                    <i data-lucide="trending-up" class="w-4 h-4 text-cyan-500"></i> Top Criptomoedas do Mercado
-                </h2>
-                <span class="text-xs text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping inline-block mr-1"></span>LIVE
-                </span>
+                <div id="meta-visualizer" class="hidden bg-slate-900/40 border border-slate-800/60 p-3 rounded-lg mt-2 space-y-2">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="font-bold text-slate-300" id="lbl-meta-ativa">Nenhuma Meta</span>
+                        <span class="font-logo font-black text-cyan-400" id="lbl-meta-porcentagem">0%</span>
+                    </div>
+                    <div class="w-full h-1.5 bg-slate-950 rounded-full overflow-hidden">
+                        <div id="barra-meta-ativa" class="h-full bg-cyan-500 transition-all" style="width: 0%"></div>
+                    </div>
+                    <div class="flex justify-between text-[10px] text-slate-500">
+                        <span id="lbl-meta-atual">Aporte: R$ 0,00</span>
+                        <span id="lbl-meta-alvo">Alvo: R$ 0,00</span>
+                    </div>
+                </div>
             </div>
-            <div id="crypto-grid" class="grid grid-cols-2 md:grid-cols-3 gap-2">
-                <p class="text-xs text-slate-500 col-span-full text-center py-4">Carregando...</p>
+
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-900 space-y-3">
+                <div class="flex items-center gap-2 border-b border-slate-900 pb-2">
+                    <i data-lucide="user-cog" class="w-4 h-4 text-cyan-500"></i>
+                    <h3 class="text-xs font-bold text-white uppercase tracking-wider">Dados Básicos do Investidor</h3>
+                </div>
+                <div class="space-y-3 pt-1">
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-500 block mb-1 uppercase">Nome Completo</label>
+                        <input type="text" id="user-nome" placeholder="Nome do Cliente" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-cyan-500">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-500 block mb-1 uppercase">WhatsApp / Celular</label>
+                        <input type="text" id="user-phone" placeholder="(11) 99999-9999" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white font-logo focus:outline-none focus:border-cyan-500">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-bold text-slate-500 block mb-1 uppercase">E-mail Corporativo</label>
+                        <input type="email" id="user-email" placeholder="cliente@provedor.com" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-cyan-500">
+                    </div>
+                    <button onclick="salvarDadosPerfil()" class="w-full bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 font-bold text-xs py-2 rounded-lg transition flex items-center justify-center gap-1.5">
+                        <i data-lucide="save" class="w-3.5 h-3.5"></i> Salvar Registro do Perfil
+                    </button>
+                </div>
             </div>
-        </section>
+        </div>
 
         <nav class="fixed bottom-0 left-0 right-0 bg-black/95 backdrop-blur-md border-t border-slate-900 z-50">
-            <div class="max-w-2xl mx-auto grid grid-cols-2 gap-1 p-2">
-                <button class="flex flex-col items-center gap-1 py-2 nav-active">
-                    <i data-lucide="pie-chart" class="w-5 h-5"></i>
-                    <span class="text-xs font-bold">Análise Finclass</span>
-                    <div class="w-8 h-0.5 bg-cyan-500 rounded-full"></div>
+            <div class="max-w-2xl mx-auto grid grid-cols-3 gap-1 p-2">
+                <button id="nav-btn-carteira" class="flex flex-col items-center gap-1 py-1.5 nav-active" onclick="alternarAbas('carteira')">
+                    <i data-lucide="pie-chart" class="w-4 h-4"></i>
+                    <span class="text-[10px] font-bold">Análise Finclass</span>
                 </button>
-                <button class="flex flex-col items-center gap-1 py-2 text-slate-600" onclick="resetarPerfil()">
-                    <i data-lucide="refresh-cw" class="w-5 h-5"></i>
-                    <span class="text-xs font-medium">Resetar Perfil</span>
+                <button id="nav-btn-perfil" class="flex flex-col items-center gap-1 py-1.5 text-slate-600" onclick="alternarAbas('perfil')">
+                    <i data-lucide="user" class="w-4 h-4"></i>
+                    <span class="text-[10px] font-medium">Perfil</span>
+                </button>
+                <button class="flex flex-col items-center gap-1 py-1.5 text-slate-600" onclick="resetarPerfil()">
+                    <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+                    <span class="text-[10px] font-medium">Resetar Perfil</span>
                 </button>
             </div>
         </nav>
@@ -238,6 +334,119 @@
         let carteiraGlobal = [];
         let chartInstancia = null;
 
+        // CONTROLE DE NAVEGAÇÃO DE ABAS REVISADA
+        function alternarAbas(aba) {
+            const btnCarteira = document.getElementById('nav-btn-carteira');
+            const btnPerfil = document.getElementById('nav-btn-perfil');
+            const divInvestimentos = document.getElementById('aba-conteudo-investimentos');
+            const divPerfil = document.getElementById('aba-painel-perfil');
+
+            if (aba === 'carteira') {
+                divInvestimentos.classList.remove('hidden');
+                divPerfil.classList.add('hidden');
+                btnCarteira.className = "flex flex-col items-center gap-1 py-1.5 nav-active";
+                btnPerfil.className = "flex flex-col items-center gap-1 py-1.5 text-slate-600";
+            } else {
+                divInvestimentos.classList.add('hidden');
+                divPerfil.classList.remove('hidden');
+                btnPerfil.className = "flex flex-col items-center gap-1 py-1.5 nav-active";
+                btnCarteira.className = "flex flex-col items-center gap-1 py-1.5 text-slate-600";
+                atualizarGamificacao();
+            }
+        }
+
+        // FUNÇÕES DO MÓDULO INTERATIVO DE PERFIL
+        function salvarDadosPerfil() {
+            const nome = document.getElementById('user-nome').value;
+            const phone = document.getElementById('user-phone').value;
+            const email = document.getElementById('user-email').value;
+
+            if (nome) {
+                document.getElementById('perfil-nome-titulo').innerText = nome;
+            }
+            
+            localStorage.setItem('matias_nome', nome);
+            localStorage.setItem('matias_phone', phone);
+            localStorage.setItem('matias_email', email);
+            
+            atualizarGamificacao();
+            alert('Cadastro do Perfil atualizado com sucesso no simulador!');
+        }
+
+        function salvarMeta() {
+            const tipo = document.getElementById('meta-tipo').value;
+            const valor = parseFloat(document.getElementById('meta-valor').value) || 0;
+
+            if (valor <= 0) {
+                alert('Por favor, defina um valor alvo válido para a meta.');
+                return;
+            }
+
+            localStorage.setItem('matias_meta_tipo', tipo);
+            localStorage.setItem('matias_meta_valor', valor);
+            
+            atualizarGamificacao();
+        }
+
+        function atualizarGamificacao() {
+            let progresso = 20; // Inicial padrão por abrir a conta
+            
+            // Verifica preenchimento de dados
+            const nome = localStorage.getItem('matias_nome') || "";
+            const phone = localStorage.getItem('matias_phone') || "";
+            const email = localStorage.getItem('matias_email') || "";
+            const metaTipo = localStorage.getItem('matias_meta_tipo');
+            const metaValor = parseFloat(localStorage.getItem('matias_meta_valor')) || 0;
+            const aporteAtual = obterValorNumerico();
+
+            if (nome) document.getElementById('user-nome').value = nome;
+            if (phone) document.getElementById('user-phone').value = phone;
+            if (email) document.getElementById('user-email').value = email;
+
+            if (nome || phone || email) progresso += 20;
+            if (perfilInvestidor) progresso += 30;
+            if (aporteAtual > 0) progresso += 30;
+
+            // Atualiza Interface de Experiência
+            document.getElementById('barra-progresso-perfil').style.width = `${progresso}%`;
+            document.getElementById('txt-progresso-experiencia').innerText = `${progresso}% concluído`;
+
+            // Define Tag de Nível baseado em progresso e valor simulado
+            let tagNivel = "PRE-SEED";
+            if (progresso >= 50) tagNivel = "SEED CAPITAL";
+            if (progresso >= 80 && aporteAtual > 5000) tagNivel = "SERIES A";
+            if (progresso === 100 && aporteAtual > 50000) tagNivel = "PRIVATE EQUITY";
+            document.getElementById('perfil-nivel-tag').innerText = tagNivel;
+            if (nome) document.getElementById('perfil-nome-titulo').innerText = nome;
+
+            // Renderiza bloco de monitoramento de metas ativo
+            const metaContainer = document.getElementById('meta-visualizer');
+            if (metaValor > 0) {
+                metaContainer.classList.remove('hidden');
+                document.getElementById('lbl-meta-ativa').innerText = metaTipo;
+                document.getElementById('lbl-meta-alvo').innerText = `Alvo: ${metaValor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
+                document.getElementById('lbl-meta-atual').innerText = `Aporte: ${aporteAtual.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
+
+                let pctMeta = (aporteAtual / metaValor) * 100;
+                if (pctMeta > 100) pctMeta = 100;
+                
+                document.getElementById('lbl-meta-porcentagem').innerText = `${pctMeta.toFixed(1)}%`;
+                document.getElementById('barra-meta-ativa').style.width = `${pctMeta}%`;
+                
+                document.getElementById('meta-tipo').value = metaTipo;
+                document.getElementById('meta-valor').value = metaValor;
+            } else {
+                metaContainer.classList.add('hidden');
+            }
+        }
+
+        // MÁSCARA CELULAR
+        document.getElementById('user-phone').addEventListener('input', function (e) {
+            let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
+            e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
+        });
+
+        // RENDERIZADOR DO QUIZ
         function renderizarQuiz() {
             if (faseQuiz < perguntasQuiz.length) {
                 const perguntaAtual = perguntasQuiz[faseQuiz];
@@ -293,6 +502,7 @@
             inputAporte.removeAttribute('disabled');
             inputAporte.placeholder = "0,00";
             document.getElementById('lista-ativos').innerHTML = '<p class="text-xs text-slate-500 text-center py-8">Digite o valor do capital do cliente para estruturar as fatias de diversificação.</p>';
+            atualizarGamificacao();
         }
 
         function resetarPerfil() {
@@ -300,6 +510,7 @@
             pontuacaoTotalQuiz = 0;
             perfilInvestidor = null;
             carteiraGlobal = [];
+            localStorage.clear();
             
             const badge = document.getElementById('badge-perfil');
             badge.innerText = 'Não Definido';
@@ -333,6 +544,14 @@
             document.getElementById('secao-grafico').classList.add('hidden');
             document.getElementById('lista-ativos').innerHTML = '<p class="text-xs text-slate-500 text-center py-8">Defina seu perfil de investidor para liberar os investimentos.</p>';
             
+            // Limpa Inputs do painel de perfil
+            document.getElementById('user-nome').value = '';
+            document.getElementById('user-phone').value = '';
+            document.getElementById('user-email').value = '';
+            document.getElementById('meta-valor').value = '';
+            document.getElementById('perfil-nome-titulo').innerText = "Investidor Anonimizado";
+            
+            alternarAbas('carteira');
             lucide.createIcons();
             renderizarQuiz();
         }
@@ -390,7 +609,6 @@
             icon.style.transform = card.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
         }
 
-        // ENGENHARIA DE ALOCAÇÃO DINÂMICA (DIVERSIFICA MAIS OU REDUZ BASEADO NO CAPITAL)
         function gerarCarteira() {
             const valorTotal = obterValorNumerico();
             const aviso = document.getElementById('aviso-liquidez');
@@ -408,18 +626,15 @@
             secaoGrafico.classList.remove('hidden');
             document.getElementById('valor-aporte-display').innerText = valorTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
-            // Alocação da Reserva Imediata (Fixo 10% padrão Finclass)
             let pctLiquidez = 0.10;
             let valorLiquidez = valorTotal * pctLiquidez;
             let valorDisponivelMercado = valorTotal - valorLiquidez;
 
-            // Filtra os ativos baseados no valor do aporte para evitar pulverização ineficiente
             let ativosElegiveis = carteiraCompleta.filter(ativo => {
                 const pesoDisponivel = ativo.pesosPerfil[perfilInvestidor] || 0;
                 return pesoDisponivel > 0;
             });
 
-            // Regra Dinâmica de Quantidade de ativos: valores baixos reduzem ativos, valores altos expandem
             let ativosParaAlocarCount = 3;
             if (valorTotal > 2000) ativosParaAlocarCount = 6;
             if (valorTotal > 10000) ativosParaAlocarCount = 10;
@@ -431,7 +646,6 @@
             let carteiraCalculada = [];
             let saldoRestante = valorDisponivelMercado;
 
-            // Primeira passada distribuindo proporcionalmente
             ativosSelecionados.forEach(ativo => {
                 let pesoIdeal = ativo.pesosPerfil[perfilInvestidor] / somaPesos;
                 let valorAlvo = valorDisponivelMercado * pesoIdeal;
@@ -450,12 +664,10 @@
                 }
             });
 
-            // Distribui as sobras matemáticas de arredondamento no primeiro ativo
             if (saldoRestante > 0 && carteiraCalculada.length > 0) {
                 carteiraCalculada[0].valorAlocado += saldoRestante;
             }
 
-            // Adiciona a própria Reserva Imediata dentro do array global para visualização unificada por abas
             const nomeLiquidez = liquidezSelecionada === 'porquinho' ? 'Porquinho Banco Inter' : 'Caixinha Nubank (Resgate Rápido)';
             carteiraCalculada.unshift({
                 nome: nomeLiquidez,
@@ -467,14 +679,12 @@
                 porcentagemReal: 0
             });
 
-            // Recalcula as porcentagens visuais exatas de cada um sobre o valor total final
             carteiraCalculada.forEach(at => {
                 at.porcentagemReal = (at.valorAlocado / valorTotal) * 100;
             });
 
             carteiraGlobal = carteiraCalculada;
 
-            // Ajusta o card explicativo do caixa rápido
             const corCaixa = liquidezSelecionada === 'porquinho' ? 'amber' : 'purple';
             aviso.innerHTML = `<i data-lucide="info" class="w-3.5 h-3.5 inline mr-1"></i> Alocação Dinâmica Concluída: <strong>${carteiraGlobal.length - 1} ativos de mercado</strong> selecionados para otimizar os custos de aplicação do cliente.`;
             aviso.className = `text-xs text-${corCaixa}-400 bg-${corCaixa}-500/10 p-3 rounded-xl border border-${corCaixa}-500/20 mt-2`;
@@ -483,6 +693,7 @@
             renderizarLista();
             renderizarBarraComposicao(valorTotal);
             atualizarGraficoLinha(valorTotal);
+            atualizarGamificacao();
         }
 
         function renderizarBarraComposicao(total) {
@@ -517,7 +728,7 @@
 
             for (let i = 1; i <= 5; i++) {
                 dadosCarteira.push(dadosCarteira[i-1] * (1 + rentabilidadeFator));
-                dadosCDI.push(dadosCDI[i-1] * (1 + 0.065)); // Poupança/CDI base simulado estável
+                dadosCDI.push(dadosCDI[i-1] * (1 + 0.065));
             }
 
             if (chartInstancia) { chartInstancia.destroy(); }
@@ -582,7 +793,6 @@
                 ativosFiltrados.forEach((ativo, index) => {
                     const id = `ativo-${index}`;
                     
-                    // Definição dinâmica de badges coloridos por classe de ativos (Padrão Finclass App)
                     let badgeCor = "text-cyan-400 bg-cyan-500/10 border-cyan-500/20";
                     if(ativo.categoria === 'Liquidez') badgeCor = "text-amber-400 bg-amber-500/10 border-amber-500/20";
                     if(ativo.categoria === 'Ações') badgeCor = "text-emerald-400 bg-emerald-500/10 border-emerald-500/20";
@@ -673,6 +883,7 @@
             lucide.createIcons();
             renderizarQuiz();
             buscarPrecosCripto();
+            atualizarGamificacao();
         });
     </script>
 </body>
