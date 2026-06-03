@@ -23,9 +23,16 @@
         .card-expand.active { max-height: 600px; }
         .nav-active { color: #06b6d4; }
         .nav-active svg { stroke: #06b6d4; }
+        .nav-active span { color: #06b6d4; font-weight: 700; }
+        .btn-agressivo-anim { animation: pulseGlow 2s infinite; }
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(6, 182, 212, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); }
+        }
     </style>
 </head>
-<body class="bg-black text-slate-100 min-h-screen pb-24">
+<body class="bg-black text-slate-100 min-h-screen pb-28">
     <div class="max-w-2xl mx-auto">
         <header class="sticky top-0 z-50 bg-black/95 backdrop-blur-md border-b border-slate-900 p-4">
             <div class="flex justify-between items-center">
@@ -53,7 +60,7 @@
                         <p class="text-xs text-slate-400">Responda rápido para calibrar seu algoritmo de alocação:</p>
                         <div id="pergunta-fase" class="bg-slate-900 p-3 rounded-lg border border-slate-800/60">
                             <span class="text-[10px] uppercase tracking-widest text-slate-500 font-bold block mb-1" id="progresso-quiz">Pergunta 1 de 3</span>
-                            <p class="text-xs font-semibold text-white mb-3" id="texto-pergunta">Qual o seu objetivo principal ao investir seu dinheiro?</p>
+                            <p class="text-xs font-semibold text-white mb-3" id="texto-pergunta">Qual o seu objectivo principal ao investir seu dinheiro?</p>
                             <div id="opcoes-quiz" class="space-y-2"></div>
                         </div>
                     </div>
@@ -162,43 +169,128 @@
         </div>
 
         <div id="aba-menor-idade" class="hidden p-4 space-y-4">
-            <div class="bg-gradient-to-r from-purple-950/40 to-slate-950 p-4 rounded-xl border border-purple-900/40 space-y-2">
+            <div class="bg-gradient-to-br from-purple-950/50 via-slate-950 to-black p-5 rounded-2xl border-2 border-purple-500/40 space-y-3 shadow-xl shadow-purple-950/20">
                 <div class="flex items-center gap-2 text-purple-400">
-                    <span class="bg-purple-500/20 text-purple-400 text-[11px] font-black px-2 py-0.5 rounded border border-purple-500/30 font-logo">-18</span>
-                    <h2 class="text-sm font-black uppercase tracking-wider">Matias Kids & Teen</h2>
+                    <span class="bg-purple-500 text-black text-xs font-black px-2 py-0.5 rounded-md font-logo animate-pulse">PLUS</span>
+                    <h2 class="text-lg font-black uppercase tracking-wider font-logo text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">Matias Kids & Teen</h2>
                 </div>
-                <p class="text-xs text-slate-400 leading-relaxed">
-                    Bancos como <strong>Inter</strong> e <strong>Nubank</strong> restringem o acesso à Bolsa de Valores (Ações e FIIs) para menores de idade. Montamos uma alocação automatizada e ultra-segura focada em renda fixa de alto rendimento autorizada para contas menores.
-                </p>
+                <h3 class="text-sm font-extrabold text-white leading-snug">QUEM DISSE QUE MENOR DE IDADE SÓ PODE COLOCOAR DINHEIRO EM POUPANÇA OU CDB DE BANCO?</h3>
+                <p class="text-xs text-slate-300 leading-relaxed">
+                    Enquanto a maioria dos bancos tradicionais como Inter e Nubank travam a sua evolução limitando menores apenas à renda fixa básica, o jogo mudou. **Você tem total permissão para esmagar o mercado e investir diretamente na Bolsa de Valores!** </p>
+                <div class="bg-purple-950/40 p-3 rounded-lg border border-purple-500/30 text-xs text-purple-200">
+                    💥 <strong>A REGRA DO JOGO:</strong> Menores de idade podem abrir uma conta 100% gratuita na <strong>Corretora Rico</strong>. Lá dentro, o acesso à Bolsa de Valores é liberado para você investir em Ações Reais, Fundos Imobiliários e construir patrimônio agressivo desde cedo. Não espere fazer 18 anos para ficar rico!
+                </div>
             </div>
 
             <div id="kids-suitability" class="bg-slate-950 p-4 rounded-xl border border-slate-900 space-y-3">
-                <label class="text-xs font-bold text-purple-400 tracking-wider flex items-center gap-1">
-                    <i data-lucide="target" class="w-4 h-4"></i> SELECIONE O OBJETIVO DO SEU FUTURO
+                <label class="text-xs font-bold text-purple-400 tracking-wider flex items-center gap-1 uppercase">
+                    <i data-lucide="zap" class="w-4 h-4 text-purple-500"></i> Escolha a sua Estratégia de Dominação:
                 </label>
                 <div class="grid grid-cols-1 gap-2" id="kids-options-container">
                     <button onclick="definirObjetivoKids('faculdade')" id="btn-kids-faculdade" class="w-full text-left bg-slate-900 border border-slate-800 hover:border-purple-500 p-3 rounded-lg text-xs font-medium text-slate-300 transition">
-                        🎓 Fundo Faculdade / Estudos de Longo Prazo
+                        📈 Alocação Multiplicadora na Bolsa (Ações + Dividendos)
                     </button>
                     <button onclick="definirObjetivoKids('intercambio')" id="btn-kids-intercambio" class="w-full text-left bg-slate-900 border border-slate-800 hover:border-purple-500 p-3 rounded-lg text-xs font-medium text-slate-300 transition">
-                        ✈️ Intercâmbio / Viagens nos próximos anos
+                        🌍 Passaporte Global (ETFs de Tecnologia e Dólar via Rico)
                     </button>
                     <button onclick="definirObjetivoKids('independencia')" id="btn-kids-independencia" class="w-full text-left bg-slate-900 border border-slate-800 hover:border-purple-500 p-3 rounded-lg text-xs font-medium text-slate-300 transition">
-                        🚀 Primeiros passos e Reserva de Autonomia Geral
+                        🥷 Consistência Blindada (Renda Fixa Premium + Proteção IPCA)
                     </button>
                 </div>
             </div>
 
             <div id="container-aporte-kids" class="bg-slate-950 p-4 rounded-xl border border-slate-900 space-y-3 opacity-40 pointer-events-none transition-all">
-                <label class="text-xs font-medium text-slate-400">VALOR QUE DESEJA GUARDAR / APORTAR</label>
+                <label class="text-xs font-medium text-slate-400 uppercase">VALOR QUE VOCÊ VAI FAZER TRABALHAR PARA VOCÊ</label>
                 <div class="relative">
-                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600 font-bold text-sm">R$</span>
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-purple-500 font-bold text-sm">R$</span>
                     <input type="text" id="input-valor-kids" placeholder="Escolha um objetivo acima" class="w-full bg-slate-900 border border-slate-800 rounded-lg pl-10 pr-4 py-2.5 text-white font-bold font-logo focus:outline-none focus:border-purple-500 transition">
                 </div>
             </div>
 
             <main id="lista-ativos-kids" class="space-y-3">
                 </main>
+        </div>
+
+        <div id="aba-conhecimento" class="hidden p-4 space-y-5">
+            <div class="bg-gradient-to-r from-cyan-950/40 via-slate-950 to-slate-950 p-5 rounded-xl border border-cyan-500/20 space-y-3">
+                <div class="flex items-center gap-2 text-cyan-400">
+                    <i data-lucide="graduation-cap" class="w-6 h-6"></i>
+                    <h2 class="text-base font-black uppercase tracking-wider font-logo">Hub de Conhecimento Independente</h2>
+                </div>
+                <p class="text-xs text-slate-300 leading-relaxed">
+                    Você quer aprender a dominar o mercado e estudar investimentos de forma **totalmente gratuita**? O segredo dos grandes investidores é a busca por conhecimento por conta própria. Acesse as maiores referências do país nos links abaixo, crie sua base teórica e gerencie seu patrimônio com autoridade absoluta!
+                </p>
+            </div>
+
+            <div class="space-y-2">
+                <h3 class="text-xs font-bold text-slate-400 tracking-wider uppercase mb-1">Canais Recomendados para Estudo:</h3>
+                
+                <a href="https://www.youtube.com/@oprimorico" target="_blank" class="flex items-center justify-between p-3.5 bg-slate-950 rounded-xl border border-slate-900 hover:border-cyan-500/50 transition duration-300 group">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-cyan-400 font-bold font-logo text-sm group-hover:bg-cyan-950/30 transition">PR</div>
+                        <div>
+                            <h4 class="text-xs font-bold text-white group-hover:text-cyan-400 transition">O Primo Rico</h4>
+                            <p class="text-[10px] text-slate-500">Finanças, Mentalidade e Negócios</p>
+                        </div>
+                    </div>
+                    <i data-lucide="external-link" class="w-4 h-4 text-slate-600 group-hover:text-cyan-400 transition"></i>
+                </a>
+
+                <a href="https://www.youtube.com/@gustavocerbasibr" target="_blank" class="flex items-center justify-between p-3.5 bg-slate-950 rounded-xl border border-slate-900 hover:border-cyan-500/50 transition duration-300 group">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-cyan-400 font-bold font-logo text-sm group-hover:bg-cyan-950/30 transition">GC</div>
+                        <div>
+                            <h4 class="text-xs font-bold text-white group-hover:text-cyan-400 transition">Gustavo Cerbasi</h4>
+                            <p class="text-[10px] text-slate-500">Planejamento Inteligente e Inteligência Financeira</p>
+                        </div>
+                    </div>
+                    <i data-lucide="external-link" class="w-4 h-4 text-slate-600 group-hover:text-cyan-400 transition"></i>
+                </a>
+
+                <a href="https://www.youtube.com/@leandersonreis" target="_blank" class="flex items-center justify-between p-3.5 bg-slate-950 rounded-xl border border-slate-900 hover:border-cyan-500/50 transition duration-300 group">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-cyan-400 font-bold font-logo text-sm group-hover:bg-cyan-950/30 transition">LR</div>
+                        <div>
+                            <h4 class="text-xs font-bold text-white group-hover:text-cyan-400 transition">Leanderson Reis</h4>
+                            <p class="text-[10px] text-slate-500">Análise de Ativos e Estratégias Práticas</p>
+                        </div>
+                    </div>
+                    <i data-lucide="external-link" class="w-4 h-4 text-slate-600 group-hover:text-cyan-400 transition"></i>
+                </a>
+
+                <a href="https://www.youtube.com/@nordininvestimentos" target="_blank" class="flex items-center justify-between p-3.5 bg-slate-950 rounded-xl border border-slate-900 hover:border-cyan-500/50 transition duration-300 group">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-cyan-400 font-bold font-logo text-sm group-hover:bg-cyan-950/30 transition">NI</div>
+                        <div>
+                            <h4 class="text-xs font-bold text-white group-hover:text-cyan-400 transition">Nord Investimentos</h4>
+                            <p class="text-[10px] text-slate-500">Análise Independente e Macroeconomia</p>
+                        </div>
+                    </div>
+                    <i data-lucide="external-link" class="w-4 h-4 text-slate-600 group-hover:text-cyan-400 transition"></i>
+                </a>
+            </div>
+
+            <div class="pt-4 border-t border-slate-900">
+                <div class="bg-gradient-to-br from-cyan-950 via-slate-950 to-purple-950/40 p-5 rounded-2xl border-2 border-cyan-500/40 space-y-4 text-center">
+                    <div class="inline-flex items-center gap-1.5 bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest font-logo">
+                        Aceleração de Resultados Privada
+                    </div>
+                    <h3 class="text-lg font-black text-white uppercase tracking-tight leading-tight">
+                        Quer pular a curva de aprendizado e montar sua carteira perfeita cara a cara comigo?
+                    </h3>
+                    <p class="text-xs text-slate-400 max-w-md mx-auto leading-relaxed">
+                        Chega de perder tempo batendo a cabeça sozinho. Eu vou analisar seu perfil pessoalmente, desenhar sua estratégia sob medida e te guiar na prática rumo à alta rentabilidade.
+                    </p>
+                    <div class="bg-black/60 py-3 px-4 rounded-xl inline-block border border-slate-800">
+                        <span class="text-[10px] text-slate-500 block uppercase font-bold tracking-wider">Investimento Único</span>
+                        <span class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 font-logo">R$ 279,90</span>
+                    </div>
+                    
+                    <a href="https://wa.me/5533991925305?text=Quero%20agendar%20minha%20Consultoria%20Individual%20Matias%20Invest" target="_blank" class="btn-agressivo-anim block w-full bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 hover:from-cyan-400 hover:to-purple-500 text-black font-black text-sm py-3.5 rounded-xl uppercase font-logo tracking-wider transition-all duration-300 transform hover:scale-[1.01] flex items-center justify-center gap-2">
+                        <i data-lucide="phone-call" class="w-4 h-4 fill-black"></i> COMPRAR CONSULTORIA INDIVIDUAL
+                    </a>
+                </div>
+            </div>
         </div>
 
         <div id="aba-painel-perfil" class="hidden p-4 space-y-4">
@@ -235,7 +327,8 @@
                     <div>
                         <label class="text-[10px] font-bold text-slate-500 block mb-1 uppercase">Qual sua principal meta atual?</label>
                         <select id="meta-tipo" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-cyan-500">
-                            <option value="Reserva de Emergência Completa">Reserva de Emergência Completa</option>
+                            <option value="Reserva de Emergência Completa">Reserva de Emergência Completa</
+                                option>
                             <option value="Liberdade Financeira Integrada">Liberdade Financeira Integrada</option>
                             <option value="Primeiros R$ 10.000 Investidos">Primeiros R$ 10.000 Investidos</option>
                             <option value="Troca de Veículo / Patrimônio">Troca de Veículo / Patrimônio</option>
@@ -291,29 +384,37 @@
         </div>
 
         <nav class="fixed bottom-0 left-0 right-0 bg-black/95 backdrop-blur-md border-t border-slate-900 z-50">
-            <div class="max-w-2xl mx-auto grid grid-cols-4 gap-1 p-2">
-                <button id="nav-btn-menor" class="flex flex-col items-center gap-0.5 py-1.5 text-slate-600" onclick="alternarAbas('menor')">
+            <div class="max-w-2xl mx-auto grid grid-cols-5 gap-0.5 p-2 text-center">
+                <button id="nav-btn-menor" class="flex flex-col items-center gap-0.5 py-1" onclick="alternarAbas('menor')">
                     <span class="text-[10px] bg-slate-900 text-slate-400 font-black px-1.5 py-0.5 rounded border border-slate-800 font-logo transition-colors" id="icon-menor-tag">-18</span>
-                    <span class="text-[9px] font-bold">Matias Kids</span>
+                    <span class="text-[9px] font-bold text-slate-500">Matias Kids</span>
                 </button>
-                <button id="nav-btn-carteira" class="flex flex-col items-center gap-1 py-1.5 nav-active" onclick="alternarAbas('carteira')">
+                
+                <button id="nav-btn-carteira" class="flex flex-col items-center gap-1 py-1 nav-active" onclick="alternarAbas('carteira')">
                     <i data-lucide="pie-chart" class="w-4 h-4"></i>
-                    <span class="text-[10px] font-bold">Análise </span>
+                    <span class="text-[9px] font-bold">Carteira Max</span>
                 </button>
-                <button id="nav-btn-perfil" class="flex flex-col items-center gap-1 py-1.5 text-slate-600" onclick="alternarAbas('perfil')">
+
+                <button id="nav-btn-conhecimento" class="flex flex-col items-center gap-1 py-1 text-slate-600" onclick="alternarAbas('conhecimento')">
+                    <i data-lucide="graduation-cap" class="w-4 h-4"></i>
+                    <span class="text-[9px] font-medium text-slate-500">Conhecimento</span>
+                </button>
+
+                <button id="nav-btn-perfil" class="flex flex-col items-center gap-1 py-1 text-slate-600" onclick="alternarAbas('perfil')">
                     <i data-lucide="user" class="w-4 h-4"></i>
-                    <span class="text-[10px] font-medium">Perfil</span>
+                    <span class="text-[9px] font-medium text-slate-500">Perfil</span>
                 </button>
-                <button class="flex flex-col items-center gap-1 py-1.5 text-slate-500 hover:text-red-400 transition" onclick="resetarPerfil()">
+                
+                <button class="flex flex-col items-center gap-1 py-1 text-slate-600 hover:text-red-400 transition" onclick="resetarPerfil()">
                     <i data-lucide="refresh-cw" class="w-4 h-4"></i>
-                    <span class="text-[10px] font-medium">Resetar</span>
+                    <span class="text-[9px] font-medium text-slate-500">Reset</span>
                 </button>
             </div>
         </nav>
     </div>
 
     <script>
-        // BASE DE ATIVOS ADULTOS 
+        // BASE DE ATIVOS ADULTOS FINCLASS
         const carteiraCompleta = [
             { nome: 'FUNDOS PASSIVOS AO IMA-B', categoria: 'Renda Fixa', descricao: 'Fundos indexados à inflação nacional para proteger poder de compra a longo prazo.', aplicacaoMinima: 100, pesosPerfil: { conservador: 25, moderado: 15, arrojado: 10 }, ondeEncontrar: 'XP Investimentos, BTG Pactual e Home Broker' },
             { nome: 'KDIF11 (KINEA INFRA RENDA FIXA)', categoria: 'Renda Fixa', descricao: 'Debêntures de infraestrutura isentas de Imposto de Renda com excelente prêmio.', aplicacaoMinima: 100, pesosPerfil: { conservador: 10, moderado: 8, arrojado: 5 }, ondeEncontrar: 'Qualquer Corretora via Home Broker' },
@@ -331,13 +432,12 @@
             { nome: 'USDB11 (ETF Renda Fixa EUA)', categoria: 'Global', descricao: 'Exposição direta aos títulos de dívida dos Estados Unidos protegendo o capital em dólar.', aplicacaoMinima: 100, pesosPerfil: { conservador: 5, moderado: 3, arrojado: 3 }, ondeEncontrar: 'Home Broker via B3' }
         ];
 
-        // ATIVOS PERSONALIZADOS E EXCLUSIVOS PARA MENORES DE IDADE (-18)
-        // Sem Bolsa de Valores, focado em Contas Kids autorizadas (Inter e Nubank)
+        // ATIVOS ATUALIZADOS - AGORA ADICIONANDO BOLSA DE VALORES VIA RICO PARA MENORES
         const ativosKids = [
-            { nome: 'CDB INTER KIDS 100% CDI', categoria: 'Liquidez Diária', descricao: 'Rendimento garantido imediato. Ideal para a reserva do menor com liquidez diária e segurança total do FGC.', ondeEncontrar: 'App Banco Inter (Conta Kids)', pesos: { faculdade: 10, intercambio: 25, independencia: 40 } },
-            { nome: 'CDB NUBANK CAIXINHAS', categoria: 'Liquidez Diária', descricao: 'Rendimento de 100% do CDI desde o primeiro dia útil, focado em resgate rápido direto pelo app.', ondeEncontrar: 'App Nubank (Conta de Menor)', pesos: { faculdade: 10, intercambio: 25, independencia: 40 } },
-            { nome: 'CDB INTER INFLAÇÃO MAIS (IPCA+)', categoria: 'Longo Prazo', descricao: 'Título de renda fixa protegido contra a inflação. Perfeito para garantir o poder de compra da faculdade ou futuro.', ondeEncontrar: 'App Banco Inter (Menu Investimentos)', pesos: { faculdade: 50, intercambio: 30, independencia: 10 } },
-            { nome: 'TESOURO DIRETO SELIC 2029 (Via Inter)', categoria: 'Tesouro Nacional', descricao: 'O investimento mais seguro do país. O dinheiro fica emprestado para o Governo Federal rendendo juros diários superiores à poupança.', ondeEncontrar: 'Sessão Tesouro Direto no Inter Kids', pesos: { faculdade: 30, intercambio: 20, independencia: 10 } }
+            { nome: 'BOVA11 / IVVB11 (Bolsa de Valores)', categoria: 'Ações & Mercado Global', descricao: 'Exposição direta às maiores empresas do Brasil e dos EUA. Estratégia de crescimento agressivo de longo prazo permitida para menores na Rico.', ondeEncontrar: 'Home Broker da Rico Corretora', pesos: { faculdade: 50, intercambio: 20, independencia: 5 } },
+            { nome: 'FIIs de Grandes Shoppings e Galpões', categoria: 'Fundos Imobiliários', descricao: 'Investimento em imóveis físicos de alto padrão que pingam aluguel na conta todo mês com isenção fiscal completa.', ondeEncontrar: 'Home Broker da Rico Corretora', pesos: { faculdade: 20, intercambio: 40, independencia: 15 } },
+            { nome: 'CDB 100% CDI com Liquidez Diária', categoria: 'Reserva Prática', descricao: 'O colchão de liquidez para imprevistos e oportunidades rápidas de compra no mercado.', ondeEncontrar: 'Conta de Menor (Rico, Inter ou Nubank)', pesos: { faculdade: 10, intercambio: 20, independencia: 60 } },
+            { nome: 'Tesouro IPCA+ (Proteção Real)', categoria: 'Renda Fixa Premium', descricao: 'Título público ultra-seguro que garante rentabilidade real sempre acima da inflação do país.', ondeEncontrar: 'Área do Tesouro Direto na Rico Corretora', pesos: { faculdade: 20, intercambio: 20, independencia: 20 } }
         ];
 
         const topCryptos = [
@@ -383,7 +483,7 @@
         let chartInstancia = null;
         let abaAtualAtiva = 'carteira';
 
-        // ALTERNAR ENTRE AS ABAS INCLUINDO MENOR DE IDADE
+        // ALTERNAR ABAS ATUALIZADO (INCLUI A NOVA ABA CONHECIMENTO)
         function alternarAbas(aba) {
             abaAtualAtiva = aba;
             localStorage.setItem('matias_aba_ativa', aba);
@@ -391,34 +491,42 @@
             const btnCarteira = document.getElementById('nav-btn-carteira');
             const btnPerfil = document.getElementById('nav-btn-perfil');
             const btnMenor = document.getElementById('nav-btn-menor');
+            const btnConhecimento = document.getElementById('nav-btn-conhecimento');
             const tagMenor = document.getElementById('icon-menor-tag');
 
             const divInvestimentos = document.getElementById('aba-conteudo-investimentos');
             const divPerfil = document.getElementById('aba-painel-perfil');
             const divMenor = document.getElementById('aba-menor-idade');
+            const divConhecimento = document.getElementById('aba-conhecimento');
 
-            // Reset Classes Básicas
-            btnCarteira.className = "flex flex-col items-center gap-1 py-1.5 text-slate-600";
-            btnPerfil.className = "flex flex-col items-center gap-1 py-1.5 text-slate-600";
-            btnMenor.className = "flex flex-col items-center gap-0.5 py-1.5 text-slate-600";
+            // Reset de estilo nos botões
+            btnCarteira.className = "flex flex-col items-center gap-1 py-1 text-slate-600";
+            btnPerfil.className = "flex flex-col items-center gap-1 py-1 text-slate-600";
+            btnMenor.className = "flex flex-col items-center gap-0.5 py-1 text-slate-600";
+            btnConhecimento.className = "flex flex-col items-center gap-1 py-1 text-slate-600";
             tagMenor.className = "text-[10px] bg-slate-900 text-slate-400 font-black px-1.5 py-0.5 rounded border border-slate-800 font-logo";
 
             divInvestimentos.classList.add('hidden');
             divPerfil.classList.add('hidden');
             divMenor.classList.add('hidden');
+            divConhecimento.classList.add('hidden');
 
             if (aba === 'carteira') {
                 divInvestimentos.classList.remove('hidden');
-                btnCarteira.className = "flex flex-col items-center gap-1 py-1.5 nav-active";
+                btnCarteira.className = "flex flex-col items-center gap-1 py-1 nav-active";
                 recalcularExibicaoTotal();
             } else if (aba === 'perfil') {
                 divPerfil.classList.remove('hidden');
-                btnPerfil.className = "flex flex-col items-center gap-1 py-1.5 nav-active";
+                btnPerfil.className = "flex flex-col items-center gap-1 py-1 nav-active";
                 atualizarGamificacao();
             } else if (aba === 'menor') {
                 divMenor.classList.remove('hidden');
-                btnMenor.className = "flex flex-col items-center gap-0.5 py-1.5 text-purple-400";
+                btnMenor.className = "flex flex-col items-center gap-0.5 py-1 text-purple-400";
                 tagMenor.className = "text-[10px] bg-purple-500/20 text-purple-400 font-black px-1.5 py-0.5 rounded border border-purple-500/40 font-logo";
+                recalcularExibicaoTotal();
+            } else if (aba === 'conhecimento') {
+                divConhecimento.classList.remove('hidden');
+                btnConhecimento.className = "flex flex-col items-center gap-1 py-1 nav-active";
                 recalcularExibicaoTotal();
             }
         }
@@ -427,18 +535,19 @@
             if (abaAtualAtiva === 'menor') {
                 const totalKids = obterValorKids();
                 document.getElementById('valor-aporte-display').innerText = totalKids.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            } else if (abaAtualAtiva === 'conhecimento') {
+                document.getElementById('valor-aporte-display').innerText = "EDUCAÇÃO";
             } else {
                 const totalAdulto = obterValorNumerico();
                 document.getElementById('valor-aporte-display').innerText = totalAdulto.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
             }
         }
 
-        // --- SISTEMA INTERNO EXCLUSIVO MENOR DE IDADE (-18) ---
+        // --- SISTEMA INTERNO EXCLUSIVO MENOR DE IDADE ---
         function definirObjetivoKids(objetivo) {
             objetivoKidsSelecionado = objetivo;
             localStorage.setItem('matias_kids_objetivo', objetivo);
 
-            // Estilizar botões ativos
             ['faculdade', 'intercambio', 'independencia'].forEach(obj => {
                 const btn = document.getElementById(`btn-kids-${obj}`);
                 if (obj === objetivo) {
@@ -469,7 +578,7 @@
             recalcularExibicaoTotal();
 
             if (valorTotal <= 0 || !objetivoKidsSelecionado) {
-                document.getElementById('lista-ativos-kids').innerHTML = '<p class="text-xs text-slate-500 text-center py-8">Defina o objetivo e insira o valor para estruturar a carteira Kids.</p>';
+                document.getElementById('lista-ativos-kids').innerHTML = '<p class="text-xs text-slate-500 text-center py-8">Defina sua meta tática e insira o valor para estruturar os algoritmos na Rico.</p>';
                 return;
             }
 
@@ -496,7 +605,7 @@
                                 </div>
                             </div>
                             <p class="text-[11px] text-slate-400 leading-relaxed mt-2 border-t border-slate-900 pt-2">${ativo.descricao}</p>
-                            <div class="text-[10px] text-slate-500 mt-1">📍 Onde encontrar: <span class="text-slate-300">${ativo.ondeEncontrar}</span></div>
+                            <div class="text-[10px] text-slate-500 mt-1">📍 Execução obrigatória em: <span class="text-purple-400 font-bold">${ativo.ondeEncontrar}</span></div>
                         </div>
                     `;
                 }
@@ -504,7 +613,6 @@
 
             document.getElementById('lista-ativos-kids').innerHTML = htmlHTML;
         }
-
 
         // --- MANIPULAÇÃO CADASTROS ADULTOS E SALVAMENTOS ---
         function salvarDadosPerfil() {
@@ -653,7 +761,7 @@
             gerarCarteira();
         }
 
-        // RESET COMPLETO DO PERFIL (BOTÃO RESETAR PERFIL)
+        // RESET COMPLETO
         function resetarPerfil() {
             faseQuiz = 0;
             pontuacaoTotalQuiz = 0;
@@ -689,7 +797,7 @@
             inputAporte.value = '';
             inputAporte.placeholder = "Defina seu perfil primeiro";
 
-            // Reset Kids Interface
+            // Reset Kids
             document.getElementById('container-aporte-kids').classList.add('opacity-40', 'pointer-events-none');
             document.getElementById('input-valor-kids').value = '';
             document.getElementById('input-valor-kids').placeholder = "Escolha um objetivo acima";
@@ -1039,7 +1147,6 @@
             }
         }
 
-        // CAPTURA AUTOMÁTICA DE EVENTOS COM LOCALSTORAGE INTEGRADO
         document.getElementById('input-valor-total').addEventListener('input', function() {
             formatarMoeda(this, 'adulto');
         });
@@ -1048,12 +1155,10 @@
             formatarMoeda(this, 'kids');
         });
 
-        // RECARREGAR AUTOMATICAMENTE TODAS AS INFORMAÇÕES SALVAS AO ENTRAR
         window.addEventListener('DOMContentLoaded', function() {
             lucide.createIcons();
             buscarPrecosCripto();
 
-            // Verificar se existiam dados persistidos do Adulto
             const perfilSalvo = localStorage.getItem('matias_perfil_definido');
             const pontosSalvos = localStorage.getItem('matias_pontos_quiz');
             const faseSalva = localStorage.getItem('matias_fase_quiz');
@@ -1073,11 +1178,9 @@
                 renderizarQuiz();
             }
 
-            // Verificar Tipo de Liquidez Salva
             const liqSalva = localStorage.getItem('matias_liquidez_tipo');
             if(liqSalva) selecionarLiquidez(liqSalva);
 
-            // Verificar se existiam dados persistidos do Sistema Kids (-18)
             const objKidsSalvo = localStorage.getItem('matias_kids_objetivo');
             if(objKidsSalvo) {
                 definirObjetivoKids(objKidsSalvo);
@@ -1088,7 +1191,6 @@
                 }
             }
 
-            // Ativar Última Aba Aberta
             const abaSalva = localStorage.getItem('matias_aba_ativa');
             if(abaSalva) alternarAbas(abaSalva); else alternarAbas('carteira');
 
