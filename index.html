@@ -13,19 +13,16 @@
 
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: #000; }
-  .font-logo { font-family: 'Orbitron', sans-serif; }
+        .font-logo { font-family: 'Orbitron', sans-serif; }
         input[type=number]::-webkit-inner-spin-button,
         input[type=number]::-webkit-outer-spin-button {
           -webkit-appearance: none;
           margin: 0;
         }
-  .card-expand { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
-  .card-expand.active { max-height: 600px; }
-  .nav-active { color: #06b6d4; }
-  .nav-active svg { stroke: #06b6d4; }
-  .perfil-btn.active { background: #06b6d4; color: #020617; border-color: #06b6d4; }
-  .tab-content { display: none; }
-  .tab-content.active { display: block; }
+        .card-expand { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+        .card-expand.active { max-height: 600px; }
+        .nav-active { color: #06b6d4; }
+        .nav-active svg { stroke: #06b6d4; }
     </style>
 </head>
 <body class="bg-black text-slate-100 min-h-screen pb-24">
@@ -41,26 +38,30 @@
                 </div>
             </div>
 
-            <div class="bg-slate-950 p-3 rounded-xl border border-slate-900 space-y-3">
-                <label class="text-xs font-medium text-slate-400">SIMULAR APORTE</label>
+            <div id="secao-suitability" class="bg-slate-950 p-4 rounded-xl border border-slate-900 space-y-3 mb-3">
+                <div class="flex justify-between items-center">
+                    <label class="text-xs font-bold text-cyan-400 tracking-wider flex items-center gap-1">
+                        <i data-lucide="shield-check" class="w-4 h-4"></i> DEFINA SEU PERFIL DE INVESTIDOR
+                    </label>
+                    <span id="badge-perfil" class="text-xs px-2 py-0.5 rounded font-bold bg-slate-900 text-slate-400 border border-slate-800">Não Definido</span>
+                </div>
+                
+                <div id="quiz-container" class="space-y-3">
+                    <p class="text-xs text-slate-400">Responda rápido para calibrar seu algoritmo de alocação:</p>
+                    <div id="pergunta-fase" class="bg-slate-900 p-3 rounded-lg border border-slate-800/60">
+                        <span class="text-[10px] uppercase tracking-widest text-slate-500 font-bold block mb-1" id="progresso-quiz">Pergunta 1 de 3</span>
+                        <p class="text-xs font-semibold text-white mb-3" id="texto-pergunta">Qual o seu objetivo principal ao investir seu dinheiro?</p>
+                        <div id="opcoes-quiz" class="space-y-2">
+                            </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="container-aporte" class="bg-slate-950 p-3 rounded-xl border border-slate-900 space-y-3 opacity-40 pointer-events-none transition-all duration-300">
+                <label class="text-xs font-medium text-slate-400">SIMULAR APORTE COM SEU PERFIL</label>
                 <div class="relative">
                     <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600 font-bold text-sm">R$</span>
-                    <input type="text" id="input-valor-total" placeholder="0,00" class="w-full bg-slate-900 border border-slate-800 rounded-lg pl-10 pr-4 py-2.5 text-white font-bold font-logo focus:outline-none focus:border-cyan-500 transition">
-                </div>
-
-                <div class="pt-2 border-t border-slate-800">
-                    <label class="text-xs font-medium text-slate-400 mb-2 block">PERFIL DE INVESTIDOR</label>
-                    <div class="grid grid-cols-3 gap-2">
-                        <button onclick="setPerfil('conservador',0)" class="perfil-btn px-3 py-2 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800">
-                            <i data-lucide="shield" class="w-4 h-4 mx-auto mb-1"></i>Conservador
-                        </button>
-                        <button onclick="setPerfil('moderado',1)" class="perfil-btn active px-3 py-2 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800">
-                            <i data-lucide="scale" class="w-4 h-4 mx-auto mb-1"></i>Moderado
-                        </button>
-                        <button onclick="setPerfil('arrojado',2)" class="perfil-btn px-3 py-2 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800">
-                            <i data-lucide="rocket" class="w-4 h-4 mx-auto mb-1"></i>Compro mais
-                        </button>
-                    </div>
+                    <input type="text" id="input-valor-total" placeholder="Defina seu perfil primeiro" class="w-full bg-slate-900 border border-slate-800 rounded-lg pl-10 pr-4 py-2.5 text-white font-bold font-logo focus:outline-none focus:border-cyan-500 transition">
                 </div>
 
                 <div class="pt-2 border-t border-slate-800">
@@ -99,105 +100,73 @@
             </div>
         </header>
 
-        <!-- TAB CARTEIRA -->
-        <div id="view-carteira" class="tab-content active">
-            <!-- RESULTADO: GRÁFICO + PROJEÇÃO -->
-            <section class="px-4 py-4" id="resultado-carteira" style="display:none">
-                <div class="bg-slate-950 p-4 rounded-xl border border-slate-900 mb-4">
-                    <h2 class="text-sm font-bold text-white mb-3 flex items-center gap-2">
-                        <i data-lucide="pie-chart" class="w-4 h-4 text-cyan-400"></i>Sua Carteira Sugerida
+        <section id="secao-grafico" class="p-4 hidden">
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-900">
+                <div class="flex justify-between items-center mb-2">
+                    <h2 class="text-xs font-bold text-white flex items-center gap-1.5 tracking-wider uppercase">
+                        <i data-lucide="line-chart" class="w-4 h-4 text-cyan-400"></i> Projeção de Crescimento (5 anos)
                     </h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
-                        <div class="h-48"><canvas id="chartAlocacao"></canvas></div>
-                        <div id="lista-alocacao" class="space-y-2 text-xs"></div>
-                    </div>
+                    <span class="text-[10px] text-slate-400">Juros Compostos Estimados</span>
                 </div>
-                <div class="bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border border-cyan-500/30 rounded-xl p-4 mb-4">
-                    <h3 class="text-sm font-bold text-white mb-2 flex items-center gap-2">
-                        <i data-lucide="trending-up" class="w-4 h-4 text-cyan-400"></i>Projeção em 5 anos
-                    </h3>
-                    <p class="text-xs text-slate-300 mb-1">Com aportes de <span class="text-cyan-400 font-bold">R$ 500/mês</span>:</p>
-                    <div class="text-2xl font-black text-cyan-400 font-logo" id="projecao-valor">R$ 0,00</div>
-                    <p class="text-xs text-slate-500 mt-1">*Simulação com 12% a.a. Rentabilidade passada não garante retorno futuro.</p>
+                <div class="w-full h-44">
+                    <canvas id="graficoEvolucao"></canvas>
                 </div>
-                <button onclick="enviarWhatsApp()" class="w-full py-3 rounded-lg text-white font-bold text-sm flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 transition-all">
-                    <i data-lucide="send" class="w-4 h-4"></i>QUERO ESSA CARTEIRA NO WHATSAPP
-                </button>
-            </section>
+                
+                <div class="mt-4 pt-3 border-t border-slate-900">
+                    <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Distribuição Visual do Aporte</p>
+                    <div id="barra-composicao" class="w-full h-2.5 rounded-full bg-slate-900 flex overflow-hidden">
+                        </div>
+                </div>
+            </div>
+        </section>
 
-            <main id="lista-ativos" class="p-4 space-y-3">
-                <p class="text-xs text-slate-500 text-center py-8">Digite um valor acima para gerar sua carteira</p>
-            </main>
-        </div>
+        <main id="lista-ativos" class="p-4 space-y-3">
+            <p class="text-xs text-slate-500 text-center py-8">Defina seu perfil de investidor para liberar os investimentos.</p>
+        </main>
 
-        <!-- TAB CRIPTO -->
-        <div id="view-perfil" class="tab-content">
-            <section class="px-4 py-4">
-                <div class="flex items-center justify-between mb-3">
-                    <h2 class="text-sm font-bold text-white flex items-center gap-2">
-                        <i data-lucide="bitcoin" class="w-4 h-4 text-amber-500"></i> Top 15 Criptomoedas
-                    </h2>
-                    <span class="text-xs text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping inline-block mr-1"></span>LIVE
-                    </span>
-                </div>
-                <div id="crypto-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2">
-                    <p class="text-xs text-slate-500 col-span-full text-center py-4">Carregando...</p>
-                </div>
-            </section>
-        </div>
+        <section class="px-4 pb-4">
+            <div class="flex items-center justify-between mb-3">
+                <h2 class="text-sm font-bold text-white flex items-center gap-2">
+                    <i data-lucide="trending-up" class="w-4 h-4 text-amber-500"></i> Top 15 Criptomoedas
+                </h2>
+                <span class="text-xs text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping inline-block mr-1"></span>LIVE
+                </span>
+            </div>
+            <div id="crypto-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2">
+                <p class="text-xs text-slate-500 col-span-full text-center py-4">Carregando...</p>
+            </div>
+        </section>
 
         <nav class="fixed bottom-0 left-0 right-0 bg-black/95 backdrop-blur-md border-t border-slate-900 z-50">
             <div class="max-w-2xl mx-auto grid grid-cols-2 gap-1 p-2">
-                <button onclick="mostrarTab('carteira')" id="tab-carteira" class="flex flex-col items-center gap-1 py-2 nav-active">
+                <button class="flex flex-col items-center gap-1 py-2 nav-active">
                     <i data-lucide="wallet" class="w-5 h-5"></i>
                     <span class="text-xs font-bold">Carteira</span>
                     <div class="w-8 h-0.5 bg-cyan-500 rounded-full"></div>
                 </button>
-                <button onclick="mostrarTab('perfil')" id="tab-perfil" class="flex flex-col items-center gap-1 py-2 text-slate-600">
-                    <i data-lucide="bitcoin" class="w-5 h-5"></i>
-                    <span class="text-xs font-medium">Cripto</span>
+                <button class="flex flex-col items-center gap-1 py-2 text-slate-600" onclick="resetarPerfil()">
+                    <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+                    <span class="text-xs font-medium">Resetar Perfil</span>
                 </button>
             </div>
         </nav>
     </div>
 
     <script>
+        // CARTEIRA COM METADADOS DE RISCO PARA FILTRAR PELO SUITABILITY
         const carteiraCompleta = [
-            { nome: 'CPTS11 - CAPITÂNIA SECURITIES II', subtipo: 'CPTS11', categoria: 'FII', preco: 8.42, aplicacaoMinima: 8.42, nivelMin: 0, peso: 35, ondeEncontrar: 'XP, BTG, Rico, Clear, Inter, NuInvest', precoMaximo: 8.90, dy: 13.26 },
-            { nome: 'ITSA4 - ITAÚSA', subtipo: 'ITSA4', categoria: 'Ação', preco: 9.82, aplicacaoMinima: 9.82, nivelMin: 0, peso: 35, ondeEncontrar: 'XP, BTG, Rico, Clear, Inter, NuInvest, Itaú', precoMaximo: 11.00, dy: 7.8 },
-            { nome: 'PSEC11 - PÁTRIA SECURITIES', subtipo: 'PSEC11', categoria: 'FII', preco: 9.75, aplicacaoMinima: 9.75, nivelMin: 500, peso: 10, ondeEncontrar: 'XP, BTG, Rico, Clear', precoMaximo: 81.00, dy: 13.23 },
-            { nome: 'BBSE3 - BB SEGURIDADE', subtipo: 'BBSE3', categoria: 'Ação', preco: 33.85, aplicacaoMinima: 33.85, nivelMin: 500, peso: 10, ondeEncontrar: 'XP, BTG, Rico, Clear, Inter, BB, Itaú', precoMaximo: 36.00, dy: 8.5 },
-            { nome: 'SLCE3 - SLC AGRÍCOLA', subtipo: 'SLCE3', categoria: 'Ação', preco: 18.30, aplicacaoMinima: 18.30, nivelMin: 800, peso: 5, ondeEncontrar: 'XP, BTG, Rico, Clear', precoMaximo: 20.00, dy: 4.2 },
-            { nome: 'GOLD11 - GOLD ETF', subtipo: 'Internacional', categoria: 'ETF', preco: 11.95, aplicacaoMinima: 11.95, nivelMin: 500, peso: 5, ondeEncontrar: 'XP, BTG, Rico, Clear, Inter', precoMaximo: null, dy: null },
-            { nome: 'CMIG4 - CEMIG', subtipo: 'CMIG4', categoria: 'Ação', preco: 11.45, aplicacaoMinima: 11.45, nivelMin: 1000, peso: 5, ondeEncontrar: 'XP, BTG, Rico, Clear, Inter', precoMaximo: 13.00, dy: 9.1 },
-            { nome: 'ACE CAPITAL', subtipo: 'Multimercado', categoria: 'Fundo', aplicacaoMinima: 1, nivelMin: 2000, peso: 5, ondeEncontrar: 'Ágora, Banco Inter, BB, BTG, C6, Genial, Itaú, NuInvest, Pi/Toro, Safra e XP', precoMaximo: null, dy: null },
-            { nome: 'VALORA VANGUARD', subtipo: '', categoria: 'Fundo', aplicacaoMinima: 100, nivelMin: 3000, peso: 5, ondeEncontrar: 'BTG, ITAÚ e XP', precoMaximo: null, dy: null },
-            { nome: 'BITCOIN', subtipo: 'Teses alternativas', categoria: 'Cripto', aplicacaoMinima: 50, nivelMin: 5000, peso: 5, ondeEncontrar: 'Mercado Bitcoin, Binance, Foxbit, NovaDAX, B3 via ETF HASH11', precoMaximo: null, dy: null }
+            { nome: 'CPTS11 - CAPITÂNIA SECURITIES II', subtipo: 'CPTS11', categoria: 'FII', preco: 8.42, aplicacaoMinima: 8.42, nivelMin: 0, pesosPerfil: { conservador: 40, moderado: 30, arrojado: 15 }, ondeEncontrar: 'XP, BTG, Rico, Clear, Inter, NuInvest', precoMaximo: 8.90, dy: 13.26 },
+            { nome: 'ITSA4 - ITAÚSA', subtipo: 'ITSA4', categoria: 'Ação', preco: 9.82, aplicacaoMinima: 9.82, nivelMin: 0, pesosPerfil: { conservador: 40, moderado: 25, arrojado: 15 }, ondeEncontrar: 'XP, BTG, Rico, Clear, Inter, NuInvest, Itaú', precoMaximo: 11.00, dy: 7.8 },
+            { nome: 'PSEC11 - PÁTRIA SECURITIES', subtipo: 'PSEC11', categoria: 'FII', preco: 9.75, aplicacaoMinima: 9.75, nivelMin: 300, pesosPerfil: { conservador: 20, moderado: 15, arrojado: 10 }, ondeEncontrar: 'XP, BTG, Rico, Clear', precoMaximo: 11.00, dy: 13.23 },
+            { nome: 'BBSE3 - BB SEGURIDADE', subtipo: 'BBSE3', categoria: 'Ação', preco: 33.85, aplicacaoMinima: 33.85, nivelMin: 500, pesosPerfil: { conservador: 0, moderado: 15, arrojado: 15 }, ondeEncontrar: 'XP, BTG, Rico, Clear, Inter, BB, Itaú', precoMaximo: 36.00, dy: 8.5 },
+            { nome: 'SLCE3 - SLC AGRÍCOLA', subtipo: 'SLCE3', categoria: 'Ação', preco: 18.30, aplicacaoMinima: 18.30, nivelMin: 800, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 10 }, ondeEncontrar: 'XP, BTG, Rico, Clear', precoMaximo: 20.00, dy: 4.2 },
+            { nome: 'GOLD11 - GOLD ETF', subtipo: 'Internacional', categoria: 'ETF', preco: 11.95, aplicacaoMinima: 11.95, nivelMin: 500, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 10 }, ondeEncontrar: 'XP, BTG, Rico, Clear, Inter', precoMaximo: null, dy: null },
+            { nome: 'CMIG4 - CEMIG', subtipo: 'CMIG4', categoria: 'Ação', preco: 11.45, aplicacaoMinima: 11.45, nivelMin: 1000, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 10 }, ondeEncontrar: 'XP, BTG, Rico, Clear, Inter', precoMaximo: 13.00, dy: 9.1 },
+            { nome: 'ACE CAPITAL', subtipo: 'Multimercado', categoria: 'Fundo', aplicacaoMinima: 1, nivelMin: 1500, pesosPerfil: { conservador: 0, moderado: 0, arrojado: 5 }, ondeEncontrar: 'Ágora, Banco Inter, BTG, XP', precoMaximo: null, dy: null },
+            { nome: 'VALORA VANGUARD', subtipo: '', categoria: 'Fundo', aplicacaoMinima: 100, nivelMin: 2500, pesosPerfil: { conservador: 0, moderado: 0, arrojado: 5 }, ondeEncontrar: 'BTG, ITAÚ e XP', precoMaximo: null, dy: null },
+            { nome: 'BITCOIN', subtipo: 'Teses alternativas', categoria: 'Cripto', aplicacaoMinima: 50, nivelMin: 3000, pesosPerfil: { conservador: 0, moderado: 0, arrojado: 5 }, ondeEncontrar: 'Mercado Bitcoin, Binance, B3 via ETF HASH11', precoMaximo: null, dy: null }
         ];
-
-        const alocacoesPerfil = {
-            conservador: [
-                { nome: 'Renda Fixa CDI', cor: '#06b6d4', perc: 60, desc: 'Segurança e liquidez diária' },
-                { nome: 'Tesouro IPCA+', cor: '#0891b2', perc: 25, desc: 'Proteção contra inflação' },
-                { nome: 'Fundos Imobiliários', cor: '#0e7490', perc: 10, desc: 'Renda mensal de aluguéis' },
-                { nome: 'Reserva D+0', cor: '#f59e0b', perc: 5, desc: 'Emergência imediata' }
-            ],
-            moderado: [
-                { nome: 'Renda Fixa CDI', cor: '#06b6d4', perc: 40, desc: 'Base segura da carteira' },
-                { nome: 'Fundos Imobiliários', cor: '#0891b2', perc: 25, desc: 'Renda passiva mensal' },
-                { nome: 'Ações Brasil', cor: '#0e7490', perc: 20, desc: 'Crescimento longo prazo' },
-                { nome: 'Ações EUA', cor: '#155e75', perc: 10, desc: 'Dolarização e tech' },
-                { nome: 'Reserva D+0', cor: '#f59e0b', perc: 5, desc: 'Liquidez imediata' }
-            ],
-            arrojado: [
-                { nome: 'Ações Brasil', cor: '#06b6d4', perc: 35, desc: 'Small caps e dividendos' },
-                { nome: 'Ações EUA', cor: '#0891b2', perc: 25, desc: 'Big techs e S&P500' },
-                { nome: 'Fundos Imobiliários', cor: '#0e7490', perc: 20, desc: 'Tijolo e papel' },
-                { nome: 'Renda Fixa CDI', cor: '#155e75', perc: 15, desc: 'Colchão de segurança' },
-                { nome: 'Reserva D+0', cor: '#f59e0b', perc: 5, desc: 'Oportunidades' }
-            ]
-        };
 
         const topCryptos = [
             { id: 'bitcoin', symbol: 'BTC', name: 'Bitcoin', color: '#f7931a' },
@@ -217,20 +186,146 @@
             { id: 'uniswap', symbol: 'UNI', name: 'Uniswap', color: '#ff007a' }
         ];
 
+        // ESTRUTURA DO QUIZ DE PERFIL
+        const perguntasQuiz = [
+            {
+                texto: "Qual seu objetivo principal com esse dinheiro?",
+                opcoes: [
+                    { texto: "Preservar meu dinheiro sem correr riscos de perdas", pontos: 1 },
+                    { texto: "Gerar renda passiva de forma equilibrada a médio prazo", pontos: 3 },
+                    { texto: "Maximizar meu ganho patrimonial no longo prazo", pontos: 5 }
+                ]
+            },
+            {
+                texto: "Se suas ações caíssem 20% amanhã, o que você faria?",
+                opcoes: [
+                    { texto: "Venderia tudo imediatamente com medo de perder mais", pontos: 1 },
+                    { texto: "Não faria nada e esperaria o mercado se recuperar", pontos: 3 },
+                    { texto: "Aproveitaria para comprar muito mais cotas baratas", pontos: 5 }
+                ]
+            },
+            {
+                texto: "Por quanto tempo pretende deixar esse dinheiro investido?",
+                opcoes: [
+                    { texto: "Menos de 1 ano (Preciso de resgate fácil)", pontos: 1 },
+                    { texto: "De 1 a 3 anos (Projetos de médio prazo)", pontos: 3 },
+                    { texto: "Mais de 5 anos (Foco em aposentadoria e futuro)", pontos: 5 }
+                ]
+            }
+        ];
+
+        let faseQuiz = 0;
+        let pontuacaoTotalQuiz = 0;
+        let perfilInvestidor = null; // 'conservador', 'moderado', 'arrojado'
         let filtroAtual = 'todos';
         let liquidezSelecionada = 'porquinho';
-        let perfilSelecionado = 'moderado';
         let carteiraGlobal = [];
-        let chartInstance = null;
+        let chartInstancia = null;
 
-        window.formatarMoeda = formatarMoeda;
-        window.setPerfil = setPerfil;
-        window.selecionarLiquidez = selecionarLiquidez;
-        window.filtrarCategoria = filtrarCategoria;
-        window.toggleCard = toggleCard;
-        window.enviarWhatsApp = enviarWhatsApp;
-        window.mostrarTab = mostrarTab;
+        // INICIALIZADOR DO QUIZ
+        function renderizarQuiz() {
+            if (faseQuiz < perguntasQuiz.length) {
+                const perguntaAtual = perguntasQuiz[faseQuiz];
+                document.getElementById('progresso-quiz').innerText = `Pergunta ${faseQuiz + 1} de ${perguntasQuiz.length}`;
+                document.getElementById('texto-pergunta').innerText = perguntaAtual.texto;
+                
+                let opcoesHTML = '';
+                perguntaAtual.opcoes.forEach((opcao, idx) => {
+                    opcoesHTML += `
+                        <button onclick="computarResposta(${opcao.pontos})" class="w-full text-left bg-slate-900 border border-slate-800 hover:border-cyan-500 hover:bg-cyan-500/5 p-2.5 rounded-lg text-xs font-medium text-slate-300 transition-all duration-200">
+                            ${opcao.texto}
+                        </button>
+                    `;
+                });
+                document.getElementById('opcoes-quiz').innerHTML = opcoesHTML;
+            } else {
+                // Fim do quiz: processar o perfil
+                definirPerfilFinal();
+            }
+        }
 
+        function computarResposta(pontos) {
+            pontuacaoTotalQuiz += pontos;
+            faseQuiz++;
+            renderizarQuiz();
+        }
+
+        function definirPerfilFinal() {
+            const badge = document.getElementById('badge-perfil');
+            const containerAporte = document.getElementById('container-aporte');
+            const inputAporte = document.getElementById('input-valor-total');
+            
+            if (pontuacaoTotalQuiz <= 6) {
+                perfilInvestidor = 'conservador';
+                badge.innerText = 'CONSERVADOR';
+                badge.className = "text-xs px-2 py-0.5 rounded font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+            } else if (pontuacaoTotalQuiz <= 11) {
+                perfilInvestidor = 'moderado';
+                badge.innerText = 'MODERADO';
+                badge.className = "text-xs px-2 py-0.5 rounded font-bold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30";
+            } else {
+                perfilInvestidor = 'ARROJADO';
+                perfilInvestidor = 'arrojado';
+                badge.innerText = 'ARROJADO';
+                badge.className = "text-xs px-2 py-0.5 rounded font-bold bg-purple-500/20 text-purple-400 border border-purple-500/30";
+            }
+
+            document.getElementById('quiz-container').innerHTML = `
+                <div class="text-xs text-slate-400 bg-slate-900/60 p-2 rounded border border-slate-800 text-center">
+                    Algoritmo recalibrado com sucesso para perfil <strong class="text-white uppercase">${perfilInvestidor}</strong>. Insira seu aporte abaixo.
+                </div>
+            `;
+            
+            // Ativa o container de aporte
+            containerAporte.classList.remove('opacity-40', 'pointer-events-none');
+            inputAporte.removeAttribute('disabled');
+            inputAporte.placeholder = "0,00";
+            document.getElementById('lista-ativos').innerHTML = '<p class="text-xs text-slate-500 text-center py-8">Digite um valor acima para gerar sua carteira sob medida.</p>';
+        }
+
+        function resetarPerfil() {
+            faseQuiz = 0;
+            pontuacaoTotalQuiz = 0;
+            perfilInvestidor = null;
+            carteiraGlobal = [];
+            
+            const badge = document.getElementById('badge-perfil');
+            badge.innerText = 'Não Definido';
+            badge.className = "text-xs px-2 py-0.5 rounded font-bold bg-slate-900 text-slate-400 border border-slate-800";
+            
+            document.getElementById('secao-suitability').innerHTML = `
+                <div class="flex justify-between items-center">
+                    <label class="text-xs font-bold text-cyan-400 tracking-wider flex items-center gap-1">
+                        <i data-lucide="shield-check" class="w-4 h-4"></i> DEFINA SEU PERFIL DE INVESTIDOR
+                    </label>
+                    <span id="badge-perfil" class="text-xs px-2 py-0.5 rounded font-bold bg-slate-900 text-slate-400 border border-slate-800">Não Definido</span>
+                </div>
+                <div id="quiz-container" class="space-y-3">
+                    <p class="text-xs text-slate-400">Responda rápido para calibrar seu algoritmo de alocação:</p>
+                    <div id="pergunta-fase" class="bg-slate-900 p-3 rounded-lg border border-slate-800/60">
+                        <span class="text-[10px] uppercase tracking-widest text-slate-500 font-bold block mb-1" id="progresso-quiz">Pergunta 1 de 3</span>
+                        <p class="text-xs font-semibold text-white mb-3" id="texto-pergunta">Qual o seu objetivo principal ao investir seu dinheiro?</p>
+                        <div id="opcoes-quiz" class="space-y-2"></div>
+                    </div>
+                </div>
+            `;
+            
+            const containerAporte = document.getElementById('container-aporte');
+            containerAporte.classList.add('opacity-40', 'pointer-events-none');
+            const inputAporte = document.getElementById('input-valor-total');
+            inputAporte.value = '';
+            inputAporte.placeholder = "Defina seu perfil primeiro";
+            
+            document.getElementById('valor-aporte-display').innerText = 'R$ 0,00';
+            document.getElementById('aviso-liquidez').classList.add('hidden');
+            document.getElementById('secao-grafico').classList.add('hidden');
+            document.getElementById('lista-ativos').innerHTML = '<p class="text-xs text-slate-500 text-center py-8">Defina seu perfil de investidor para liberar os investimentos.</p>';
+            
+            lucide.createIcons();
+            renderizarQuiz();
+        }
+
+        // FORMATADOR DE MOEDA BRASILEIRO
         function formatarMoeda(input) {
             let valor = input.value.replace(/\D/g, '');
             if (valor === '') {
@@ -251,24 +346,16 @@
             return parseFloat(input.replace(/\./g, '').replace(',', '.')) || 0;
         }
 
-        function setPerfil(tipo, idx) {
-            perfilSelecionado = tipo;
-            document.querySelectorAll('.perfil-btn').forEach((btn, i) => {
-                btn.classList.toggle('active', i === idx);
-            });
-            gerarCarteira();
-        }
-
         function selecionarLiquidez(tipo) {
             liquidezSelecionada = tipo;
             const btnPorquinho = document.getElementById('btn-porquinho');
-            const btnNubank = document.getElementById('btn-nubank');
+            const btnNu = document.getElementById('btn-nubank');
 
             if (tipo === 'porquinho') {
                 btnPorquinho.className = "toggle-liquid px-3 py-2 rounded-lg text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center justify-center gap-1.5";
-                btnNubank.className = "toggle-liquid px-3 py-2 rounded-lg text-xs font-bold bg-slate-900 text-slate-500 border border-slate-800 flex items-center justify-center gap-1.5";
+                btnNu.className = "toggle-liquid px-3 py-2 rounded-lg text-xs font-bold bg-slate-900 text-slate-500 border border-slate-800 flex items-center justify-center gap-1.5";
             } else {
-                btnNubank.className = "toggle-liquid px-3 py-2 rounded-lg text-xs font-bold bg-purple-500/20 text-purple-400 border border-purple-500/40 flex items-center justify-center gap-1.5";
+                btnNu.className = "toggle-liquid px-3 py-2 rounded-lg text-xs font-bold bg-purple-500/20 text-purple-400 border border-purple-500/40 flex items-center justify-center gap-1.5";
                 btnPorquinho.className = "toggle-liquid px-3 py-2 rounded-lg text-xs font-bold bg-slate-900 text-slate-500 border border-slate-800 flex items-center justify-center gap-1.5";
             }
             gerarCarteira();
@@ -289,62 +376,63 @@
             const card = document.getElementById(`expand-${id}`);
             const icon = document.getElementById(`icon-${id}`);
             card.classList.toggle('active');
-            icon.style.transform = card.classList.contains('active')? 'rotate(180deg)' : 'rotate(0deg)';
+            icon.style.transform = card.classList.contains('active') ? 'rotate(180deg)' : 'rotate(0deg)';
         }
 
+        // RESERVA DE LIQUIDEZ COM AJUSTE DE PERFIL
         function calcularLiquidezDinamica(valorTotal) {
             if (valorTotal <= 0) return 0;
+            let fatorPerfil = 1.0;
+            if (perfilInvestidor === 'conservador') fatorPerfil = 1.3; // Mais caixa seguro
+            if (perfilInvestidor === 'arrojado') fatorPerfil = 0.8;    // Menos caixa, mais risco
+
             if (valorTotal <= 200) return Math.floor(valorTotal * 0.40);
-            if (valorTotal <= 1000) return Math.floor(valorTotal * 0.30);
-            if (valorTotal <= 5000) return Math.floor(valorTotal * 0.25);
-            if (valorTotal <= 10000) return 2500;
-            return Math.floor(valorTotal * 0.20);
+            if (valorTotal <= 1000) return Math.floor(valorTotal * 0.30 * fatorPerfil);
+            if (valorTotal <= 5000) return Math.floor(valorTotal * 0.25 * fatorPerfil);
+            return Math.floor(valorTotal * 0.20 * fatorPerfil);
         }
 
+        // ENGINE MATEMÁTICA DE ALOCAÇÃO INTELIGENTE
         function gerarCarteira() {
             const valorTotal = obterValorNumerico();
             const aviso = document.getElementById('aviso-liquidez');
-            const resultadoSection = document.getElementById('resultado-carteira');
+            const secaoGrafico = document.getElementById('secao-grafico');
 
             if (valorTotal <= 0) {
                 carteiraGlobal = [];
                 document.getElementById('lista-ativos').innerHTML = '<p class="text-xs text-slate-500 text-center py-8">Digite um valor acima para gerar sua carteira</p>';
                 document.getElementById('valor-aporte-display').innerText = 'R$ 0,00';
                 aviso.classList.add('hidden');
-                resultadoSection.style.display = 'none';
-                if (chartInstance) chartInstance.destroy();
+                secaoGrafico.classList.add('hidden');
                 return;
             }
 
+            secaoGrafico.classList.remove('hidden');
             document.getElementById('valor-aporte-display').innerText = valorTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-            resultadoSection.style.display = 'block';
 
             const valorLiquidez = calcularLiquidezDinamica(valorTotal);
             let valorInvestir = valorTotal - valorLiquidez;
-            const nomeLiquidez = liquidezSelecionada === 'porquinho'? 'Porquinho Inter' : 'Caixinha Nubank';
-            const corLiquidez = liquidezSelecionada === 'porquinho'? 'amber' : 'purple';
+            const nomeLiquidez = liquidezSelecionada === 'porquinho' ? 'Porquinho Inter' : 'Caixinha Nubank';
+            const corLiquidez = liquidezSelecionada === 'porquinho' ? 'amber' : 'purple';
 
-            atualizarGraficoPerfil(valorTotal, valorLiquidez);
+            let maxAtivos = valorTotal <= 300 ? 2 : (valorTotal < 1200 ? 4 : 10);
 
-            let maxAtivos;
-            if (valorTotal <= 200) maxAtivos = 2;
-            else if (valorTotal < 1000) maxAtivos = 4;
-            else if (valorTotal < 5000) maxAtivos = 7;
-            else maxAtivos = 12;
-
+            // Filtra ativos conforme perfil e aporte
             let ativosElegiveis = carteiraCompleta.filter(ativo => {
                 if (ativo.nivelMin > valorTotal) return false;
-                return ativo.aplicacaoMinima <= valorInvestir;
-            }).filter(a => a.peso > 0);
+                const pesoDefinido = ativo.pesosPerfil[perfilInvestidor] || 0;
+                return pesoDefinido > 0 && ativo.aplicacaoMinima <= valorInvestir;
+            });
 
             let carteiraCalculada = [];
             let valorRestante = valorInvestir;
             let ativosParaAlocar = ativosElegiveis.slice(0, maxAtivos);
-            let somaPesos = ativosParaAlocar.reduce((acc, a) => acc + (a.peso || 1), 0);
+            let somaPesos = ativosParaAlocar.reduce((acc, a) => acc + a.pesosPerfil[perfilInvestidor], 0);
 
             for (let i = 0; i < ativosParaAlocar.length && valorRestante >= 1; i++) {
                 const ativo = ativosParaAlocar[i];
-                let valorAlvo = (valorInvestir * (ativo.peso || 1)) / somaPesos;
+                let pesoReal = ativo.pesosPerfil[perfilInvestidor];
+                let valorAlvo = (valorInvestir * pesoReal) / somaPesos;
                 if (valorAlvo < ativo.aplicacaoMinima) valorAlvo = ativo.aplicacaoMinima;
 
                 let quantidade = Math.floor(valorAlvo / ativo.aplicacaoMinima);
@@ -357,7 +445,7 @@
 
                 if (quantidade > 0) {
                     carteiraCalculada.push({
-                 ...ativo,
+                        ...ativo,
                         quantidade: quantidade,
                         valorAlocado: valorAlocado
                     });
@@ -365,6 +453,7 @@
                 }
             }
 
+            // Sobras
             if (valorRestante > 0 && carteiraCalculada.length > 0) {
                 for (let i = 0; i < carteiraCalculada.length; i++) {
                     let cota = carteiraCalculada[i].aplicacaoMinima;
@@ -378,46 +467,116 @@
             }
 
             carteiraGlobal = carteiraCalculada;
-
             let realInvestido = valorInvestir - valorRestante;
-            aviso.innerHTML = `<i data-lucide="${liquidezSelecionada === 'porquinho'? 'piggy-bank' : 'wallet'}" class="w-3 h-3 inline"></i> Reserva: ${valorLiquidez.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} em ${nomeLiquidez} | Investido: ${realInvestido.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} | Sobra: ${valorRestante.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
+
+            aviso.innerHTML = `<i data-lucide="${liquidezSelecionada === 'porquinho' ? 'piggy-bank' : 'wallet'}" class="w-3 h-3 inline"></i> Reserva D+0: ${valorLiquidez.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} | Mercado: ${realInvestido.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} | Sobra: ${valorRestante.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
             aviso.className = `text-xs text-${corLiquidez}-400 bg-${corLiquidez}-500/10 p-2 rounded border border-${corLiquidez}-500/20 mt-2`;
             aviso.classList.remove('hidden');
 
             renderizarLista();
-            lucide.createIcons();
+            renderizarBarraComposicao(valorLiquidez, realInvestido);
+            atualizarGraficoLinha(valorTotal);
         }
 
-        function atualizarGraficoPerfil(valorTotal, valorLiquidez) {
-            const aloc = alocacoesPerfil[perfilSelecionado];
-            const valorInvestir = valorTotal - valorLiquidez;
-            let listaHTML = '';
-            aloc.forEach(item => {
-                let valorItem = item.nome === 'Reserva D+0'? valorLiquidez : valorInvestir * (item.perc / 100);
-                listaHTML += `<div class="flex items-center justify-between p-2 bg-slate-900 rounded-lg"><div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full" style="background: ${item.cor}"></div><div><div class="text-white font-bold">${item.nome}</div><div class="text-slate-500 text-xs">${item.desc}</div></div></div><div class="text-right"><div class="text-cyan-400 font-bold">${item.perc}%</div><div class="text-slate-400">R$ ${valorItem.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</div></div></div>`;
+        // DESENHA A BARRA DE PROPORÇÃO COMPACTA E MODERNA
+        function renderizarBarraComposicao(caixa, investido) {
+            const total = caixa + investido;
+            if(total === 0) return;
+            const barra = document.getElementById('barra-composicao');
+            barra.innerHTML = '';
+
+            const pctCaixa = (caixa / total) * 100;
+            const classesAtivos = {};
+            
+            carteiraGlobal.forEach(a => {
+                classesAtivos[a.categoria] = (classesAtivos[a.categoria] || 0) + a.valorAlocado;
             });
-            document.getElementById('lista-alocacao').innerHTML = listaHTML;
 
-            const aporteMensal = 500;
-            const taxa = 0.12;
-            const meses = 60;
-            const taxaMes = Math.pow(1 + taxa, 1/12) - 1;
-            const vf = valorTotal * Math.pow(1 + taxaMes, meses) + aporteMensal * ((Math.pow(1 + taxaMes, meses) - 1) / taxaMes);
-            document.getElementById('projecao-valor').innerText = 'R$ ' + vf.toLocaleString('pt-BR', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            // Segmento Caixa
+            let html = `<div style="width: ${pctCaixa}%" class="bg-amber-500 h-full transition-all" title="Liquidez Caixa"></div>`;
+            
+            // Cores estilizadas por categoria de investimento
+            const cores = { 'FII': 'bg-cyan-500', 'Ação': 'bg-blue-600', 'ETF': 'bg-emerald-500', 'Fundo': 'bg-indigo-500', 'Cripto': 'bg-purple-600' };
 
-            const ctx = document.getElementById('chartAlocacao');
-            if (!ctx) return;
-            if (chartInstance) chartInstance.destroy();
-            chartInstance = new Chart(ctx, {
-                type: 'doughnut',
-                data: { labels: aloc.map(a => a.nome), datasets: [{ data: aloc.map(a => a.perc), backgroundColor: aloc.map(a => a.cor), borderWidth: 0 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            for (let cat in classesAtivos) {
+                let pct = (classesAtivos[cat] / total) * 100;
+                let cor = cores[cat] || 'bg-slate-400';
+                html += `<div style="width: ${pct}%" class="${cor} h-full transition-all" title="${cat}"></div>`;
+            }
+            barra.innerHTML = html;
+        }
+
+        // ATUALIZA O GRÁFICO DE LINHA (PROJEÇÃO)
+        function atualizarGraficoLinha(aporteInicial) {
+            const ctx = document.getElementById('graficoEvolucao').getContext('2d');
+            
+            // Taxas anuais simuladas conservadoras baseadas no perfil escolhido
+            let taxaRendimentoAnual = 0.105; // Moderado 10.5%
+            if (perfilInvestidor === 'conservador') taxaRendimentoAnual = 0.095;
+            if (perfilInvestidor === 'arrojado') taxaRendimentoAnual = 0.135;
+
+            const taxaPoupanca = 0.06;
+
+            let dadosCarteira = [aporteInicial];
+            let dadosPoupanca = [aporteInicial];
+
+            // Gera projeção composta para 5 anos
+            for (let i = 1; i <= 5; i++) {
+                dadosCarteira.push(dadosCarteira[i-1] * (1 + taxaRendimentoAnual));
+                dadosPoupanca.push(dadosPoupanca[i-1] * (1 + taxaPoupanca));
+            }
+
+            if (chartInstancia) {
+                chartInstancia.destroy();
+            }
+
+            chartInstancia = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Hoje', 'Ano 1', 'Ano 2', 'Ano 3', 'Ano 4', 'Ano 5'],
+                    datasets: [
+                        {
+                            label: 'Matias Inteligente',
+                            data: dadosCarteira,
+                            borderColor: '#06b6d4',
+                            backgroundColor: 'rgba(6, 182, 212, 0.05)',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: 'Poupança Antiga',
+                            data: dadosPoupanca,
+                            borderColor: '#475569',
+                            borderWidth: 1.5,
+                            borderDash: [4, 4],
+                            tension: 0.1,
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 10 } } },
+                        y: { 
+                            grid: { color: '#0f172a' }, 
+                            ticks: { 
+                                color: '#64748b', 
+                                font: { size: 9 },
+                                callback: function(v) { return 'R$ ' + Math.round(v); }
+                            } 
+                        }
+                    }
+                }
             });
         }
 
         function renderizarLista() {
             let carteiraVisualizada = carteiraGlobal.filter(ativo => {
-                if (filtroAtual!== 'todos' && ativo.categoria!== filtroAtual) return false;
+                if (filtroAtual !== 'todos' && ativo.categoria !== filtroAtual) return false;
                 return true;
             });
 
@@ -441,7 +600,7 @@
                                 <div class="space-y-2">
                                     <div class="flex justify-between items-center">
                                         <span class="text-xs text-slate-500">Quantidade</span>
-                                        <span class="text-sm font-bold text-white">${ativo.quantidade} ${ativo.categoria === 'Fundo'? 'cota' : 'cotas'}</span>
+                                        <span class="text-sm font-bold text-white">${ativo.quantidade} ${ativo.categoria === 'Fundo' ? 'cota' : 'cotas'}</span>
                                     </div>
                                     <div class="flex justify-between items-center">
                                         <span class="text-xs text-slate-500">Valor a ser investido</span>
@@ -455,8 +614,8 @@
                                         <span class="text-xs text-slate-500">Preço por cota</span>
                                         <span class="text-sm font-semibold text-slate-300">${ativo.aplicacaoMinima.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span>
                                     </div>
-                                    ${ativo.dy? `<div class="flex justify-between items-center"><span class="text-xs text-slate-500">Dividend Yield 12m</span><span class="text-sm font-semibold text-emerald-400">${ativo.dy.toFixed(2)}%</span></div>` : ''}
-                                    ${ativo.precoMaximo? `<div class="flex justify-between items-center"><span class="text-xs text-slate-500">Preço máximo de compra</span><span class="text-sm font-semibold text-slate-300">${ativo.precoMaximo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span></div>` : ''}
+                                    ${ativo.dy ? `<div class="flex justify-between items-center"><span class="text-xs text-slate-500">Dividend Yield 12m</span><span class="text-sm font-semibold text-emerald-400">${ativo.dy.toFixed(2)}%</span></div>` : ''}
+                                    ${ativo.precoMaximo ? `<div class="flex justify-between items-center"><span class="text-xs text-slate-500">Preço máximo de compra</span><span class="text-sm font-semibold text-slate-300">${ativo.precoMaximo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</span></div>` : ''}
                                     <div class="flex justify-between items-start pt-2 border-t border-slate-800">
                                         <span class="text-xs text-slate-500">Onde encontrar</span>
                                         <span class="text-xs font-semibold text-slate-300 text-right max-w-[60%]">${ativo.ondeEncontrar}</span>
@@ -472,7 +631,62 @@
             lucide.createIcons();
         }
 
-        function enviarWhatsApp() {
-            const valor = document.getElementById('input-valor-total').value || '0,00';
-            const perfil = perfilSelecionado.charAt(0).toUpperCase() + perfilSelecionado.slice(1);
-            const msg = `Olá Bernardo! 
+        async function buscarPrecosCripto() {
+            try {
+                const ids = topCryptos.map(c => c.id).join(',');
+                const resposta = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`);
+                if (!resposta.ok) throw new Error('API falhou');
+                const dados = await resposta.json();
+
+                let cryptoHTML = '';
+                topCryptos.forEach(crypto => {
+                    const preco = dados[crypto.id]?.usd || 0;
+                    const variacao = dados[crypto.id]?.usd_24h_change || 0;
+                    const formatado = variacao.toFixed(2) + '%';
+                    const classeVariacao = variacao >= 0
+                        ? "text-xs font-bold text-emerald-400 flex items-center gap-0.5 bg-emerald-500/10 p-1 px-2 rounded-md border border-emerald-500/20 w-fit"
+                        : "text-xs font-bold text-red-400 flex items-center gap-0.5 bg-red-500/10 p-1 px-2 rounded-md border border-red-500/20 w-fit";
+                    const icone = variacao >= 0 ? 'trending-up' : 'trending-down';
+                    const sinal = variacao >= 0 ? '+' : '';
+
+                    cryptoHTML += `
+                        <div class="bg-gradient-to-b from-[#060e22] to-[#02050d] p-3 rounded-xl border border-blue-950/60 relative overflow-hidden group hover:border-cyan-500/30 transition-all duration-300">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <h3 class="text-xs font-bold text-white font-logo tracking-wider">${crypto.name}</h3>
+                                    <span class="text-xs text-slate-500 font-mono tracking-widest">${crypto.symbol}</span>
+                                </div>
+                                <div class="w-6 h-6 rounded-full flex items-center justify-center" style="background-color: ${crypto.color}20; border: 1px solid ${crypto.color}40; color: ${crypto.color}">
+                                    <i data-lucide="activity" class="w-3 h-3"></i>
+                                </div>
+                            </div>
+                            <div class="space-y-1">
+                                <div class="text-sm font-black font-logo tracking-wide text-white">$${preco.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</div>
+                                <div class="${classeVariacao}">
+                                    <i data-lucide="${icone}" class="w-3 h-3"></i> ${sinal}${formatado}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                document.getElementById('crypto-grid').innerHTML = cryptoHTML;
+                lucide.createIcons();
+            } catch (erro) {
+                document.getElementById('crypto-grid').innerHTML = '<p class="text-xs text-amber-400 col-span-full text-center py-4">API limite atingido. Hospede online para ver os preços.</p>';
+            }
+        }
+
+        document.getElementById('input-valor-total').addEventListener('input', function() {
+            formatarMoeda(this);
+        });
+
+        window.addEventListener('DOMContentLoaded', function() {
+            lucide.createIcons();
+            renderizarQuiz();
+            buscarPrecosCripto();
+            setInterval(buscarPrecosCripto, 40000);
+        });
+    </script>
+</body>
+</html>
