@@ -428,7 +428,7 @@
             // Ações Nacionais
             { nome: 'IBIUNA EQUITIES RESP LIMITADA FIF CIC (CNPJ: 13.401.715/0001-06)', categoria: 'Ações', descricao: 'Fundo focado em selecionar ações altamente resilientes e com potencial de destravamento corporativo.', aplicacaoMinima: 1000.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 10 }, ondeEncontrar: 'C6 Bank, Inter, Genial, Toro e XP Investimentos' },
             { nome: 'FORPUS AÇÕES FIC FIA (CNPJ: 21.917.184/0001-29)', categoria: 'Ações', descricao: 'Gestão focada em teses direcionais agressivas de alto potencial na Bolsa brasileira.', aplicacaoMinima: 1000.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 15 }, ondeEncontrar: 'BTG Pactual, C6 Bank, Daycoval, Genial, Guide, Inter, NuInvest e XP Investimentos' },
-            { nome: 'REAL INVESTOR FI AÇÕES BDR NÍVEL I (CNPJ: 10.500.884/0001-05)', categoria: 'Ações', descricao: 'Value investing puro focado em grandes assimetrias de lucros no Brasil e no exterior.', aplicacaoMinima: 5000.00, pesosPerfil: { conservador: 0, moderado: 0, arrojado: 15 }, ondeEncontrar: 'BTG Pactual, Daycoval, Genial, Guide, Inter, Itaú, NuInvest, Rico e XP Investimentos' },
+            { nome: 'REAL INVESTOR FI AÇÕES BDR NÍ LEVEL I (CNPJ: 10.500.884/0001-05)', categoria: 'Ações', descricao: 'Value investing puro focado em grandes assimetrias de lucros no Brasil e no exterior.', aplicacaoMinima: 5000.00, pesosPerfil: { conservador: 0, moderado: 0, arrojado: 15 }, ondeEncontrar: 'BTG Pactual, Daycoval, Genial, Guide, Inter, Itaú, NuInvest, Rico e XP Investimentos' },
             { nome: 'BBSE3 | BB SEGURIDADE', categoria: 'Ações', descricao: 'Ações focadas em altíssima geração de caixa operacional no mercado de seguros e forte distribuição histórica de dividendos.', aplicacaoMinima: 34.00, pesosPerfil: { conservador: 0, moderado: 10, arrojado: 10 }, ondeEncontrar: 'XP Investimentos, BTG Pactual, Rico, Inter, NuInvest e Ágora' },
             { nome: 'ABCB4 | BANCO ABC', categoria: 'Ações', descricao: 'Instituição bancária focada no setor corporativo (Mid-Corporate) e pagamento consistente de dividendos.', aplicacaoMinima: 20.00, pesosPerfil: { conservador: 0, moderado: 10, arrojado: 10 }, ondeEncontrar: 'XP Investimentos, BTG Pactual, Rico, Inter, NuInvest e Ágora' },
             { nome: 'SLCE3 | SLC AGRÍCOLA', categoria: 'Ações', descricao: 'Líder nacional na produção de commodities agrícolas com gigantesco patrimônio de terras cultiváveis.', aplicacaoMinima: 19.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 10 }, ondeEncontrar: 'XP Investimentos, BTG Pactual, Rico, Inter, NuInvest e Ágora' },
@@ -439,7 +439,7 @@
             { nome: 'WRLD11 (Mundo Todo via Vanguard VT)', categoria: 'Global', descricao: 'Investimento automatizado em mais de 9.000 ações ao redor do planeta através de uma cota na B3.', aplicacaoMinima: 10.00, pesosPerfil: { conservador: 0, moderado: 10, arrojado: 15 }, ondeEncontrar: 'XP Investimentos, BTG Pactual, Rico, Inter, NuInvest e Ágora' },
             { nome: 'MS GLOBAL OPPORTUNITIES', categoria: 'Global', descricao: 'Acesso às teses de alto crescimento global geridas pela Morgan Stanley.', aplicacaoMinima: 100.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 10 }, ondeEncontrar: 'Plataformas de investimento integradas e XP Investimentos' },
             { nome: 'ALUG11 (Mercado Imobiliário Global VNQ)', categoria: 'Global', descricao: 'Fundo focado no mercado de Real Estate internacional de alta renda.', aplicacaoMinima: 110.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 5 }, ondeEncontrar: 'XP Investimentos, BTG Pactual, Rico, Inter, NuInvest e Ágora' },
-            { nome: 'USDB11 (Renda Fixa Americana BND)', categoria: 'Global', descricao: 'Exposição à segurança dos títulos públicos e corporativos de renda fixa nos Estados Unidos.', aplicacaoMinima: 10.00, pesosPerfil: { conservative: 0, moderado: 10, arrojado: 5 }, ondeEncontrar: 'XP Investimentos, BTG Pactual, Rico, Inter, NuInvest e Ágora' },
+            { nome: 'USDB11 (Renda Fixa Americana BND)', categoria: 'Global', descricao: 'Exposição à segurança dos títulos públicos e corporativos de renda fixa nos Estados Unidos.', aplicacaoMinima: 10.00, pesosPerfil: { conservador: 0, moderado: 10, arrojado: 5 }, ondeEncontrar: 'XP Investimentos, BTG Pactual, Rico, Inter, NuInvest e Ágora' },
             { nome: 'BNDX11 (Renda Fixa Global ex-EUA)', categoria: 'Global', descricao: 'Indexador focado em títulos de renda fixa internacional de países desenvolvidos fora do eixo americano.', aplicacaoMinima: 10.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 5 }, ondeEncontrar: 'XP Investimentos, BTG Pactual, Rico, Inter, NuInvest e Ágora' }
         ];
 
@@ -598,13 +598,12 @@
 
             const distribuicaoAlvo = pesosKidsEstrategia[objetivoKidsSelecionado];
             
-            // FILTRAGEM DINÂMICA BASEADA NO ORÇAMENTO DO CLIENTE:
-            // Exibe menos ativos para valores menores (R$100) e libera mais ativos para valores altos (R$1000+)
+            // 1. Filtra rigorosamente os ativos cujo preço mínimo cabe dentro do orçamento digitado
             let ativosElegiveisKids = carteiraCompleta.filter(ativo => {
                 return distribuicaoAlvo[ativo.categoria] > 0 && valorTotal >= ativo.aplicacaoMinima;
             });
 
-            // Limita a quantidade de investimentos de acordo com o orçamento disponível
+            // 2. Controla o número máximo de ativos exibidos para evitar pulverização artificial em valores baixos
             let ativosParaAlocarCount = 2;
             if (valorTotal > 200) ativosParaAlocarCount = 4;
             if (valorTotal > 800) ativosParaAlocarCount = 6;
@@ -613,13 +612,27 @@
             ativosElegiveisKids.sort((a, b) => a.aplicacaoMinima - b.aplicacaoMinima);
             let ativosFiltradosKids = ativosElegiveisKids.slice(0, ativosParaAlocarCount);
 
+            // 3. Descobre a soma total das fatias teóricas das classes válidas para rebalancear a proporção para 100%
+            let somaPesosTeoricos = 0;
+            ativosFiltradosKids.forEach(ativo => {
+                somaPesosTeoricos += distribuicaoAlvo[ativo.categoria];
+            });
+
             let htmlHTML = '';
-            
-            ativosFiltradosKids.forEach((ativo) => {
-                let countNaMesmaCategoria = ativosFiltradosKids.filter(a => a.categoria === ativo.categoria).length;
-                let pesoDaClasse = distribuicaoAlvo[ativo.categoria] / 100;
-                let pesoIndividualDoAtivo = pesoDaClasse / countNaMesmaCategoria;
-                let valorAlocado = valorTotal * pesoIndividualDoAtivo;
+            let totalAlocadoValidacao = 0;
+
+            ativosFiltradosKids.forEach((ativo, index) => {
+                // Divide o percentual real da classe igualmente entre os ativos ativos dela
+                let porcentagemRealAtivo = distribuicaoAlvo[ativo.categoria] / somaPesosTeoricos;
+                let valorAlocado = valorTotal * porcentagemRealAtivo;
+
+                // Força o último ativo listado a preencher centavos restantes do arredondamento para cravar o valor cheio
+                if (index === ativosFiltradosKids.length - 1) {
+                    valorAlocado = valorTotal - totalAlocadoValidacao;
+                    porcentagemRealAtivo = valorAlocado / valorTotal;
+                }
+                
+                totalAlocadoValidacao += valorAlocado;
 
                 if (valorAlocado > 0) {
                     htmlHTML += `
@@ -632,7 +645,7 @@
                                     </span>
                                 </div>
                                 <div class="text-right">
-                                    <div class="text-xs font-black text-purple-400 font-logo">${(pesoIndividualDoAtivo * 100).toFixed(0)}%</div>
+                                    <div class="text-xs font-black text-purple-400 font-logo">${(porcentagemRealAtivo * 100).toFixed(0)}%</div>
                                     <div class="text-xs text-slate-300 font-bold mt-0.5">${valorAlocado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
                                 </div>
                             </div>
@@ -1077,8 +1090,8 @@
             let html = '';
             carteiraGlobal.forEach(at => {
                 if (at.porcentagemReal > 0) {
-                    let cor = classeCores[at.categoria] || 'bg-slate-400';
-                    html += `<div style="width: ${at.porcentagemReal}%" class="${cor} h-full transition-all" title="${at.categoria}: ${at.porcentagemReal.toFixed(1)}%"></div>`;
+                    let py_cor = classeCores[at.categoria] || 'bg-slate-400';
+                    html += `<div style="width: ${at.porcentagemReal}%" class="${py_cor} h-full transition-all" title="${at.categoria}: ${at.porcentagemReal.toFixed(1)}%"></div>`;
                 }
             });
             barra.innerHTML = html;
