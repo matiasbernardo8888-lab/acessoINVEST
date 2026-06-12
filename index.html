@@ -67,7 +67,7 @@
                 </div>
 
                 <div id="container-aporte" class="bg-slate-950 p-3 rounded-xl border border-slate-900 space-y-3 opacity-40 pointer-events-none transition-all duration-300">
-                    <label class="text-xs font-medium text-slate-400">SIMULAR APORTE COM SEU PERFIL</label>
+                    <label class="text-xs font-medium text-slate-400">SIMULAR APORTE WITH SEU PERFIL</label>
                     <div class="relative">
                         <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600 font-bold text-sm">R$</span>
                         <input type="text" id="input-valor-total" placeholder="Defina seu perfil primeiro" class="w-full bg-slate-900 border border-slate-800 rounded-lg pl-10 pr-4 py-2.5 text-white font-bold font-logo focus:outline-none focus:border-cyan-500 transition">
@@ -184,17 +184,17 @@
 
             <div id="kids-suitability" class="bg-slate-950 p-4 rounded-xl border border-slate-900 space-y-3">
                 <label class="text-xs font-bold text-purple-400 tracking-wider flex items-center gap-1 uppercase">
-                    <i data-lucide="zap" class="w-4 h-4 text-purple-500"></i> Escolha a sua Estratégia de Dominação na Rico:
+                    <i data-lucide="zap" class="w-4 h-4 text-purple-500"></i> Escolha o plano perfeito para o seu futuro na Rico:
                 </label>
                 <div class="grid grid-cols-1 gap-2" id="kids-options-container">
                     <button onclick="definirObjetivoKids('faculdade')" id="btn-kids-faculdade" class="w-full text-left bg-slate-900 border border-slate-800 hover:border-purple-500 p-3 rounded-lg text-xs font-medium text-slate-300 transition">
-                        📈 Alocação Multiplicadora na Bolsa (Ações + Dividendos)
+                        🎓 <strong>Plano Faculdade:</strong> Juntar dinheiro para os estudos e faculdade (Ações e Dividendos)
                     </button>
                     <button onclick="definirObjetivoKids('intercambio')" id="btn-kids-intercambio" class="w-full text-left bg-slate-900 border border-slate-800 hover:border-purple-500 p-3 rounded-lg text-xs font-medium text-slate-300 transition">
-                        🌍 Passaporte Global (ETFs de Tecnologia e Dólar via Rico)
+                        🌍 <strong>Plano Viagem & Intercâmbio:</strong> Investir para viajar o mundo ou comprar tecnologia (Dólar e Tecnologia)
                     </button>
                     <button onclick="definirObjetivoKids('independencia')" id="btn-kids-independencia" class="w-full text-left bg-slate-900 border border-slate-800 hover:border-purple-500 p-3 rounded-lg text-xs font-medium text-slate-300 transition">
-                        🥷 Consistência Blindada (Renda Fixa Premium + Proteção IPCA)
+                        🥷 <strong>Plano Dinheiro Livre:</strong> Ver o dinheiro render com máxima proteção e segurança (Renda Fixa Premium)
                     </button>
                 </div>
             </div>
@@ -439,11 +439,10 @@
             { nome: 'WRLD11 (Mundo Todo via Vanguard VT)', categoria: 'Global', descricao: 'Investimento automatizado em mais de 9.000 ações ao redor do planeta através de uma cota na B3.', aplicacaoMinima: 10.00, pesosPerfil: { conservador: 0, moderado: 10, arrojado: 15 }, ondeEncontrar: 'XP Investimentos, BTG Pactual, Rico, Inter, NuInvest e Ágora' },
             { nome: 'MS GLOBAL OPPORTUNITIES', categoria: 'Global', descricao: 'Acesso às teses de alto crescimento global geridas pela Morgan Stanley.', aplicacaoMinima: 100.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 10 }, ondeEncontrar: 'Plataformas de investimento integradas e XP Investimentos' },
             { nome: 'ALUG11 (Mercado Imobiliário Global VNQ)', categoria: 'Global', descricao: 'Fundo focado no mercado de Real Estate internacional de alta renda.', aplicacaoMinima: 110.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 5 }, ondeEncontrar: 'XP Investimentos, BTG Pactual, Rico, Inter, NuInvest e Ágora' },
-            { nome: 'USDB11 (Renda Fixa Americana BND)', categoria: 'Global', descricao: 'Exposição à segurança dos títulos públicos e corporativos de renda fixa nos Estados Unidos.', aplicacaoMinima: 10.00, pesosPerfil: { conservador: 0, moderado: 10, arrojado: 5 }, ondeEncontrar: 'XP Investimentos, BTG Pactual, Rico, Inter, NuInvest e Ágora' },
+            { nome: 'USDB11 (Renda Fixa Americana BND)', categoria: 'Global', descricao: 'Exposição à segurança dos títulos públicos e corporativos de renda fixa nos Estados Unidos.', aplicacaoMinima: 10.00, pesosPerfil: { conservative: 0, moderado: 10, arrojado: 5 }, ondeEncontrar: 'XP Investimentos, BTG Pactual, Rico, Inter, NuInvest e Ágora' },
             { nome: 'BNDX11 (Renda Fixa Global ex-EUA)', categoria: 'Global', descricao: 'Indexador focado em títulos de renda fixa internacional de países desenvolvidos fora do eixo americano.', aplicacaoMinima: 10.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 5 }, ondeEncontrar: 'XP Investimentos, BTG Pactual, Rico, Inter, NuInvest e Ágora' }
         ];
 
-        // Mapeamento estratégico para associar os investimentos normais aos pesos da aba Kids
         const pesosKidsEstrategia = {
             faculdade: { 'Renda Fixa': 20, 'Multimercado': 10, 'Ações': 50, 'Global': 20 },
             intercambio: { 'Renda Fixa': 10, 'Multimercado': 10, 'Ações': 20, 'Global': 60 },
@@ -491,7 +490,7 @@
             }
         ];
 
-        let faseQuiz = -1; // Começa em -1 para injetar a pergunta de maioridade primeiro
+        let faseQuiz = -1; 
         let pontuacaoTotalQuiz = 0;
         let perfilInvestidor = null;
         let objetivoKidsSelecionado = null;
@@ -597,23 +596,32 @@
                 return;
             }
 
-            // Puxa dinamicamente a distribuição de categorias baseada no objetivo estratégico selecionado
             const distribuicaoAlvo = pesosKidsEstrategia[objetivoKidsSelecionado];
             
-            // Filtra os mesmos ativos da carteira principal que possuem fit operacional
-            let ativosFiltradosKids = carteiraCompleta.filter(ativo => distribuicaoAlvo[ativo.categoria] > 0);
-            ativosFiltradosKids.sort((a, b) => a.aplicacaoMinima - b.aplicacaoMinima);
+            // FILTRAGEM DINÂMICA BASEADA NO ORÇAMENTO DO CLIENTE:
+            // Exibe menos ativos para valores menores (R$100) e libera mais ativos para valores altos (R$1000+)
+            let ativosElegiveisKids = carteiraCompleta.filter(ativo => {
+                return distribuicaoAlvo[ativo.categoria] > 0 && valorTotal >= ativo.aplicacaoMinima;
+            });
+
+            // Limita a quantidade de investimentos de acordo com o orçamento disponível
+            let ativosParaAlocarCount = 2;
+            if (valorTotal > 200) ativosParaAlocarCount = 4;
+            if (valorTotal > 800) ativosParaAlocarCount = 6;
+            if (valorTotal > 2500) ativosParaAlocarCount = ativosElegiveisKids.length;
+
+            ativosElegiveisKids.sort((a, b) => a.aplicacaoMinima - b.aplicacaoMinima);
+            let ativosFiltradosKids = ativosElegiveisKids.slice(0, ativosParaAlocarCount);
 
             let htmlHTML = '';
             
-            // Agrupa e calcula pesos divididos por ativo dentro de sua classe correspondente
             ativosFiltradosKids.forEach((ativo) => {
                 let countNaMesmaCategoria = ativosFiltradosKids.filter(a => a.categoria === ativo.categoria).length;
                 let pesoDaClasse = distribuicaoAlvo[ativo.categoria] / 100;
                 let pesoIndividualDoAtivo = pesoDaClasse / countNaMesmaCategoria;
                 let valorAlocado = valorTotal * pesoIndividualDoAtivo;
 
-                if (valorAlocado > 0 && valorTotal >= ativo.aplicacaoMinima) {
+                if (valorAlocado > 0) {
                     htmlHTML += `
                         <div class="bg-slate-950 rounded-xl border border-slate-900 p-4 transition hover:border-purple-900/40">
                             <div class="flex justify-between items-start mb-2">
@@ -636,7 +644,7 @@
             });
 
             if(htmlHTML === '') {
-                htmlHTML = '<p class="text-xs text-slate-500 text-center py-8">O valor inserido é muito baixo para o lote mínimo dos ativos da carteira. Tente um valor maior.</p>';
+                htmlHTML = '<p class="text-xs text-slate-500 text-center py-8">O valor inserido é muito baixo para comprar o lote mínimo dos investimentos recomendados. Experimente começar com pelo menos R$ 30,00 ou R$ 50,00.</p>';
             }
 
             document.getElementById('lista-ativos-kids').innerHTML = htmlHTML;
@@ -765,7 +773,6 @@
                 localStorage.setItem('matias_fase_quiz', faseQuiz);
                 renderizarQuiz();
             } else {
-                // Se for menor de idade, redireciona o design para o aviso customizado da Rico
                 document.getElementById('quiz-container').innerHTML = `
                     <div class="bg-gradient-to-br from-purple-950/40 via-slate-950 to-black p-4 rounded-xl border-2 border-purple-500/50 space-y-3">
                         <div class="flex items-center gap-1.5 text-purple-400 font-bold text-xs uppercase font-logo">
@@ -864,7 +871,7 @@
 
             document.getElementById('container-aporte-kids').classList.add('opacity-40', 'pointer-events-none');
             document.getElementById('input-valor-kids').value = '';
-            document.getElementById('input-valor-kids').placeholder = "Escolha um objective acima";
+            document.getElementById('input-valor-kids').placeholder = "Escolha um objetivo acima";
             document.getElementById('lista-ativos-kids').innerHTML = '';
             ['faculdade', 'intercambio', 'independencia'].forEach(obj => {
                 document.getElementById(`btn-kids-${obj}`).className = "w-full text-left bg-slate-900 border border-slate-800 p-3 rounded-lg text-xs font-medium text-slate-300 transition";
@@ -874,6 +881,7 @@
             document.getElementById('aviso-liquidez').classList.add('hidden');
             document.getElementById('secao-grafico').classList.add('hidden');
             document.getElementById('lista-ativos').innerHTML = '<p class="text-xs text-slate-500 text-center py-8">Defina seu perfil de investidor para liberar os investimentos.</p>';
+            
             document.getElementById('user-nome').value = '';
             document.getElementById('user-phone').value = '';
             document.getElementById('user-email').value = '';
@@ -1264,7 +1272,7 @@
                     gerarCarteira();
                 }
             } else {
-                faseQuiz = -1; // Garante a inicialização da maioridade
+                faseQuiz = -1; 
                 renderizarQuiz();
             }
 
