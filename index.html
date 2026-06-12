@@ -59,8 +59,8 @@
                     <div id="quiz-container" class="space-y-3">
                         <p class="text-xs text-slate-400">Responda rápido para calibrar seu algoritmo de alocação:</p>
                         <div id="pergunta-fase" class="bg-slate-900 p-3 rounded-lg border border-slate-800/60">
-                            <span class="text-[10px] uppercase tracking-widest text-slate-500 font-bold block mb-1" id="progresso-quiz">Pergunta 1 de 4</span>
-                            <p class="text-xs font-semibold text-white mb-3" id="texto-pergunta">Qual o seu objetivo principal ao investir seu dinheiro?</p>
+                            <span class="text-[10px] uppercase tracking-widest text-slate-500 font-bold block mb-1" id="progresso-quiz">Verificação Inicial</span>
+                            <p class="text-xs font-semibold text-white mb-3" id="texto-pergunta">Antes de iniciar, você é maior de idade?</p>
                             <div id="opcoes-quiz" class="space-y-2"></div>
                         </div>
                     </div>
@@ -174,17 +174,17 @@
                     <span class="bg-purple-500 text-black text-xs font-black px-2 py-0.5 rounded-md font-logo animate-pulse">PLUS</span>
                     <h2 class="text-lg font-black uppercase tracking-wider font-logo text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">Matias Kids & Teen</h2>
                 </div>
-                <h3 class="text-sm font-extrabold text-white leading-snug">QUEM DISSE QUE MENOR DE IDADE SÓ PODE COLOCOAR DINHEIRO EM POUPANÇA OU CDB DE BANCO?</h3>
+                <h3 class="text-sm font-extrabold text-white leading-snug">QUEM DISSE QUE MENOR DE IDADE SÓ PODE COLOCAR DINHEIRO EM POUPANÇA OU CDB DE BANCO?</h3>
                 <p class="text-xs text-slate-300 leading-relaxed">
                     Enquanto a maioria dos bancos tradicionais limitam menores apenas à renda fixa básica, o jogo mudou. **Você tem total permissão para esmagar o mercado e investir diretamente na Bolsa de Valores!** </p>
                 <div class="bg-purple-950/40 p-3 rounded-lg border border-purple-500/30 text-xs text-purple-200">
-                    💥 <strong>A REGRA DO JOGO:</strong> Menores de idade podem abrir uma conta 100% gratuita na <strong>Corretora Rico</strong>. Lá dentro, o acesso à Bolsa de Valores é liberado para você investir em Ações Reais, Fundos Imobiliários e construir patrimônio agressivo desde cedo. Não espere fazer 18 anos para fique rico!
+                    💥 <strong>A REGRA DO JOGO:</strong> Menores de idade podem abrir uma conta 100% gratuita na <strong>Corretora Rico</strong>. Lá dentro, o acesso à Bolsa de Valores é liberado para você investir em Ações Reais, Fundos Imobiliários e construir patrimônio agressivo desde cedo. Não espere fazer 18 anos para ficar rico!
                 </div>
             </div>
 
             <div id="kids-suitability" class="bg-slate-950 p-4 rounded-xl border border-slate-900 space-y-3">
                 <label class="text-xs font-bold text-purple-400 tracking-wider flex items-center gap-1 uppercase">
-                    <i data-lucide="zap" class="w-4 h-4 text-purple-500"></i> Escolha a sua Estratégia de Dominação:
+                    <i data-lucide="zap" class="w-4 h-4 text-purple-500"></i> Escolha a sua Estratégia de Dominação na Rico:
                 </label>
                 <div class="grid grid-cols-1 gap-2" id="kids-options-container">
                     <button onclick="definirObjetivoKids('faculdade')" id="btn-kids-faculdade" class="w-full text-left bg-slate-900 border border-slate-800 hover:border-purple-500 p-3 rounded-lg text-xs font-medium text-slate-300 transition">
@@ -443,12 +443,12 @@
             { nome: 'BNDX11 (Renda Fixa Global ex-EUA)', categoria: 'Global', descricao: 'Indexador focado em títulos de renda fixa internacional de países desenvolvidos fora do eixo americano.', aplicacaoMinima: 10.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 5 }, ondeEncontrar: 'XP Investimentos, BTG Pactual, Rico, Inter, NuInvest e Ágora' }
         ];
 
-        const ativosKids = [
-            { nome: 'BOVA11 / IVVB11 (Mercado Global)', categoria: 'Ações & Mercado Global', descricao: 'Exposição direta às maiores empresas do Brasil e dos EUA. Estratégia de crescimento agressivo de longo prazo permitida para menores na Rico.', ondeEncontrar: 'Home Broker da Rico Corretora, Banco Inter ou XP Investimentos', pesos: { faculdade: 50, intercambio: 20, independencia: 5 } },
-            { nome: 'FIIs de Grandes Shoppings e Galpões', categoria: 'Fundos Imobiliários', descricao: 'Investimento em imóveis físicos de alto padrão que pingam aluguel na conta todo mês com isenção fiscal completa.', ondeEncontrar: 'Home Broker da Rico Corretora, Banco Inter ou XP Investimentos', pesos: { faculdade: 20, intercambio: 40, independencia: 15 } },
-            { nome: 'CDB 100% CDI com Liquidez Diária', categoria: 'Reserva Prática', descricao: 'O colchão de liquidez para imprevistos e oportunidades rápidas de compra no mercado.', ondeEncontrar: 'Conta de Menor (Rico Corretora, Banco Inter ou Nubank)', pesos: { faculdade: 10, intercambio: 20, independencia: 60 } },
-            { nome: 'Tesouro IPCA+ (Proteção Real)', categoria: 'Renda Fixa Premium', descricao: 'Título público ultra-seguro que garante rentabilidade real sempre acima da inflação do país.', ondeEncontrar: 'Área do Tesouro Direto na Rico Corretora, Banco Inter ou XP Investimentos', pesos: { faculdade: 20, intercambio: 20, independencia: 20 } }
-        ];
+        // Mapeamento estratégico para associar os investimentos normais aos pesos da aba Kids
+        const pesosKidsEstrategia = {
+            faculdade: { 'Renda Fixa': 20, 'Multimercado': 10, 'Ações': 50, 'Global': 20 },
+            intercambio: { 'Renda Fixa': 10, 'Multimercado': 10, 'Ações': 20, 'Global': 60 },
+            independencia: { 'Renda Fixa': 50, 'Multimercado': 20, 'Ações': 15, 'Global': 15 }
+        };
 
         const topCryptos = [
             { id: 'bitcoin', symbol: 'BTC', name: 'Bitcoin', color: '#f7931a' },
@@ -491,7 +491,7 @@
             }
         ];
 
-        let faseQuiz = 0;
+        let faseQuiz = -1; // Começa em -1 para injetar a pergunta de maioridade primeiro
         let pontuacaoTotalQuiz = 0;
         let perfilInvestidor = null;
         let objetivoKidsSelecionado = null;
@@ -597,14 +597,23 @@
                 return;
             }
 
-            let somaPesos = ativosKids.reduce((acc, ativo) => acc + ativo.pesos[objetivoKidsSelecionado], 0);
+            // Puxa dinamicamente a distribuição de categorias baseada no objetivo estratégico selecionado
+            const distribuicaoAlvo = pesosKidsEstrategia[objetivoKidsSelecionado];
+            
+            // Filtra os mesmos ativos da carteira principal que possuem fit operacional
+            let ativosFiltradosKids = carteiraCompleta.filter(ativo => distribuicaoAlvo[ativo.categoria] > 0);
+            ativosFiltradosKids.sort((a, b) => a.aplicacaoMinima - b.aplicacaoMinima);
+
             let htmlHTML = '';
+            
+            // Agrupa e calcula pesos divididos por ativo dentro de sua classe correspondente
+            ativosFiltradosKids.forEach((ativo) => {
+                let countNaMesmaCategoria = ativosFiltradosKids.filter(a => a.categoria === ativo.categoria).length;
+                let pesoDaClasse = distribuicaoAlvo[ativo.categoria] / 100;
+                let pesoIndividualDoAtivo = pesoDaClasse / countNaMesmaCategoria;
+                let valorAlocado = valorTotal * pesoIndividualDoAtivo;
 
-            ativosKids.forEach((ativo) => {
-                let pesoReal = ativo.pesos[objetivoKidsSelecionado] / somaPesos;
-                let valorAlocado = valorTotal * pesoReal;
-
-                if (valorAlocado > 0) {
+                if (valorAlocado > 0 && valorTotal >= ativo.aplicacaoMinima) {
                     htmlHTML += `
                         <div class="bg-slate-950 rounded-xl border border-slate-900 p-4 transition hover:border-purple-900/40">
                             <div class="flex justify-between items-start mb-2">
@@ -615,16 +624,21 @@
                                     </span>
                                 </div>
                                 <div class="text-right">
-                                    <div class="text-xs font-black text-purple-400 font-logo">${(pesoReal * 100).toFixed(0)}%</div>
+                                    <div class="text-xs font-black text-purple-400 font-logo">${(pesoIndividualDoAtivo * 100).toFixed(0)}%</div>
                                     <div class="text-xs text-slate-300 font-bold mt-0.5">${valorAlocado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
                                 </div>
                             </div>
                             <p class="text-[11px] text-slate-400 leading-relaxed mt-2 border-t border-slate-900 pt-2">${ativo.descricao}</p>
-                            <div class="text-[10px] text-slate-500 mt-1">📍 Execução obrigatória em: <span class="text-purple-400 font-bold">${ativo.ondeEncontrar}</span></div>
+                            <div class="text-[10px] text-slate-500 mt-1">📍 Execução obrigatória via Conta Menor: <span class="text-purple-400 font-bold">Corretora Rico</span></div>
                         </div>
                     `;
                 }
             });
+
+            if(htmlHTML === '') {
+                htmlHTML = '<p class="text-xs text-slate-500 text-center py-8">O valor inserido é muito baixo para o lote mínimo dos ativos da carteira. Tente um valor maior.</p>';
+            }
+
             document.getElementById('lista-ativos-kids').innerHTML = htmlHTML;
         }
 
@@ -640,7 +654,7 @@
             localStorage.setItem('matias_email', email);
             
             atualizarGamificacao();
-            alert('Cadastro do Perfil updated!');
+            alert('Cadastro do Perfil atualizado!');
         }
 
         function salvarMeta() {
@@ -712,6 +726,20 @@
         });
 
         function renderizarQuiz() {
+            if (faseQuiz === -1) {
+                document.getElementById('progresso-quiz').innerText = "Verificação Inicial";
+                document.getElementById('texto-pergunta').innerText = "Antes de mapear seus algoritmos, confirme a sua faixa etária:";
+                document.getElementById('opcoes-quiz').innerHTML = `
+                    <button onclick="verificarMaioridade(true)" class="w-full text-left bg-slate-900 border border-slate-800 hover:border-cyan-500 hover:bg-cyan-500/5 p-2.5 rounded-lg text-xs font-bold text-slate-200 transition-all">
+                        👍 Sim, sou maior de idade (18+)
+                    </button>
+                    <button onclick="verificarMaioridade(false)" class="w-full text-left bg-slate-900 border border-slate-800 hover:border-purple-500 hover:bg-purple-500/5 p-2.5 rounded-lg text-xs font-bold text-slate-200 transition-all">
+                        👎 Não, sou menor de idade (-18)
+                    </button>
+                `;
+                return;
+            }
+
             if (faseQuiz < perguntasQuiz.length) {
                 const perguntaAtual = perguntasQuiz[faseQuiz];
                 document.getElementById('progresso-quiz').innerText = `Pergunta ${faseQuiz + 1} de ${perguntasQuiz.length}`;
@@ -728,6 +756,33 @@
                 document.getElementById('opcoes-quiz').innerHTML = opcoesHTML;
             } else {
                 definirPerfilFinal();
+            }
+        }
+
+        function verificarMaioridade(ehMaior) {
+            if (ehMaior) {
+                faseQuiz = 0;
+                localStorage.setItem('matias_fase_quiz', faseQuiz);
+                renderizarQuiz();
+            } else {
+                // Se for menor de idade, redireciona o design para o aviso customizado da Rico
+                document.getElementById('quiz-container').innerHTML = `
+                    <div class="bg-gradient-to-br from-purple-950/40 via-slate-950 to-black p-4 rounded-xl border-2 border-purple-500/50 space-y-3">
+                        <div class="flex items-center gap-1.5 text-purple-400 font-bold text-xs uppercase font-logo">
+                            <i data-lucide="alert-triangle" class="w-4 h-4 text-purple-400"></i> Alerta de Restrição Operacional
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Atenção: Por você ser <strong>menor de idade</strong>, você <span class="text-purple-400 font-bold">não consegue</span> investir na bolsa de valores diretamente através dos bancos tradicionais comuns.
+                        </p>
+                        <div class="bg-purple-500/10 p-2.5 rounded border border-purple-500/20 text-[11px] text-purple-200 leading-normal">
+                            🚀 <strong>O que fazer?</strong> É necessário que você abra uma conta digital para menores na <strong>Corretora Rico</strong>. Lá você terá acesso completo, seguro e 100% gratuito para aplicar seu dinheiro na Bolsa!
+                        </div>
+                        <button onclick="alternarAbas('menor')" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-logo font-black text-[11px] py-2 rounded-lg tracking-wider uppercase transition hover:opacity-90">
+                            Ir para Aba Matias Kids ➔
+                        </button>
+                    </div>
+                `;
+                lucide.createIcons();
             }
         }
 
@@ -773,7 +828,7 @@
         }
 
         function resetarPerfil() {
-            faseQuiz = 0;
+            faseQuiz = -1;
             pontuacaoTotalQuiz = 0;
             perfilInvestidor = null;
             objetivoKidsSelecionado = null;
@@ -794,8 +849,8 @@
                 <div id="quiz-container" class="space-y-3">
                     <p class="text-xs text-slate-400">Responda rápido para calibrar seu algoritmo de alocação:</p>
                     <div id="pergunta-fase" class="bg-slate-900 p-3 rounded-lg border border-slate-800/60">
-                        <span class="text-[10px] uppercase tracking-widest text-slate-500 font-bold block mb-1" id="progresso-quiz">Pergunta 1 de 4</span>
-                        <p class="text-xs font-semibold text-white mb-3" id="texto-pergunta">Qual o seu objetivo principal ao investir seu dinheiro?</p>
+                        <span class="text-[10px] uppercase tracking-widest text-slate-500 font-bold block mb-1" id="progresso-quiz">Verificação Inicial</span>
+                        <p class="text-xs font-semibold text-white mb-3" id="texto-pergunta">Antes de iniciar, você é maior de idade?</p>
                         <div id="opcoes-quiz" class="space-y-2"></div>
                     </div>
                 </div>
@@ -809,7 +864,7 @@
 
             document.getElementById('container-aporte-kids').classList.add('opacity-40', 'pointer-events-none');
             document.getElementById('input-valor-kids').value = '';
-            document.getElementById('input-valor-kids').placeholder = "Escolha um objetivo acima";
+            document.getElementById('input-valor-kids').placeholder = "Escolha um objective acima";
             document.getElementById('lista-ativos-kids').innerHTML = '';
             ['faculdade', 'intercambio', 'independencia'].forEach(obj => {
                 document.getElementById(`btn-kids-${obj}`).className = "w-full text-left bg-slate-900 border border-slate-800 p-3 rounded-lg text-xs font-medium text-slate-300 transition";
@@ -819,7 +874,6 @@
             document.getElementById('aviso-liquidez').classList.add('hidden');
             document.getElementById('secao-grafico').classList.add('hidden');
             document.getElementById('lista-ativos').innerHTML = '<p class="text-xs text-slate-500 text-center py-8">Defina seu perfil de investidor para liberar os investimentos.</p>';
-            
             document.getElementById('user-nome').value = '';
             document.getElementById('user-phone').value = '';
             document.getElementById('user-email').value = '';
@@ -1210,8 +1264,7 @@
                     gerarCarteira();
                 }
             } else {
-                faseQuiz = 0;
-                pontuacaoTotalQuiz = 0;
+                faseQuiz = -1; // Garante a inicialização da maioridade
                 renderizarQuiz();
             }
 
