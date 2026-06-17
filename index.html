@@ -51,7 +51,7 @@
                 <div id="secao-suitability" class="bg-slate-950 p-4 rounded-xl border border-slate-900 space-y-3">
                     <div class="flex justify-between items-center">
                         <label class="text-xs font-bold text-cyan-400 tracking-wider flex items-center gap-1">
-                            <i data-lucide="shield-check" class="w-4 h-4"></i> SIMULAR PERFIL DE TOLERÂNCIA PESSAL
+                            <i data-lucide="shield-check" class="w-4 h-4"></i> SIMULAR PERFIL DE TOLERÂNCIA PESSOAL
                         </label>
                         <span id="badge-perfil" class="text-xs px-2 py-0.5 rounded font-bold bg-slate-900 text-slate-400 border border-slate-800">Não Definido</span>
                     </div>
@@ -114,28 +114,21 @@
 
             <section id="secao-grafico" class="p-4 hidden">
                 <div class="bg-slate-950 p-4 rounded-xl border border-slate-900 space-y-4">
-                    <div class="grid grid-cols-4 border-b border-slate-900 pb-3 text-center">
+                    <div class="flex justify-between items-center border-b border-slate-900 pb-3">
                         <div>
-                            <div class="text-[10px] text-slate-500 font-bold uppercase">Meu Retorno Histórico</div>
-                            <div class="text-sm font-black text-cyan-400 font-logo" id="dashboard-rend-carteira">+48,31%</div>
+                            <div class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Meu Histórico de Patrimônio</div>
+                            <div class="text-lg font-black text-cyan-400 font-logo animate-pulse" id="dashboard-rend-carteira">Evolução Pessoal</div>
                         </div>
-                        <div>
-                            <div class="text-[10px] text-slate-500 font-bold uppercase">CDI Ref</div>
-                            <div class="text-sm font-semibold text-slate-400 font-logo">+53,83%</div>
-                        </div>
-                        <div>
-                            <div class="text-[10px] text-slate-500 font-bold uppercase">Ibovespa</div>
-                            <div class="text-sm font-semibold text-slate-400 font-logo">+58,55%</div>
-                        </div>
-                        <div>
-                            <div class="text-[10px] text-slate-500 font-bold uppercase">IFIX</div>
-                            <div class="text-sm font-semibold text-slate-400 font-logo">+31,42%</div>
+                        <div class="flex gap-1 bg-slate-900 p-1 rounded-lg border border-slate-800">
+                            <button onclick="atualizarPeriodoGrafico('1A', this)" class="px-2 py-1 text-[10px] font-bold rounded bg-cyan-500 text-black transition">1A</button>
+                            <button onclick="atualizarPeriodoGrafico('2A', this)" class="px-2 py-1 text-[10px] font-bold rounded text-slate-400 hover:text-white transition">2A</button>
+                            <button onclick="atualizarPeriodoGrafico('MAX', this)" class="px-2 py-1 text-[10px] font-bold rounded text-slate-400 hover:text-white transition">MAX</button>
                         </div>
                     </div>
 
                     <div>
-                        <h2 class="text-xs font-bold text-white flex items-center gap-1.5 tracking-wider uppercase mb-2">
-                            <i data-lucide="line-chart" class="w-4 h-4 text-cyan-400"></i> Histórico de Desempenho do Meu Portfólio
+                        <h2 class="text-xs font-bold text-white flex items-center gap-1.5 tracking-wider uppercase mb-3">
+                            <i data-lucide="line-chart" class="w-4 h-4 text-cyan-400"></i> Histórico de Crescimento Real da Minha Conta
                         </h2>
                         <div class="w-full h-44">
                             <canvas id="graficoEvolucao"></canvas>
@@ -171,37 +164,37 @@
         <div id="aba-menor-idade" class="hidden p-4 space-y-4">
             <div class="bg-gradient-to-br from-purple-950/50 via-slate-950 to-black p-5 rounded-2xl border-2 border-purple-500/40 space-y-3 shadow-xl shadow-purple-950/20">
                 <div class="flex items-center gap-2 text-purple-400">
-                    <span class="bg-purple-500 text-black text-xs font-black px-2 py-0.5 rounded-md font-logo">EDU</span>
-                    <h2 class="text-lg font-black uppercase tracking-wider font-logo text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">Espaço Matias Kids & Teen</h2>
+                    <span class="bg-purple-500 text-black text-xs font-black px-2 py-0.5 rounded-md font-logo">HISTÓRICO</span>
+                    <h2 class="text-lg font-black uppercase tracking-wider font-logo text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">Minha Jornada Desde Cedo</h2>
                 </div>
-                <h3 class="text-sm font-extrabold text-white leading-snug">ESTUDO DE ALOCAÇÃO DE LONGO PRAZO PARA MENORES DE IDADE</h3>
+                <h3 class="text-sm font-extrabold text-white leading-snug">COMO EU FAZIA MINHAS ALOCAÇÕES QUANDO ERA MENOR DE IDADE</h3>
                 <p class="text-xs text-slate-300 leading-relaxed">
-                    Este espaço foi desenhado de forma 100% didática para ilustrar como menores de idade podem ter exposição prática à Bolsa de Valores de forma totalmente legal através de seus responsáveis legas. 
+                    Este espaço reconstrói de forma puramente educacional e pessoal como foi a minha experiência e a lógica matemática de divisão de aportes que adotei na minha própria juventude, utilizando os mecanismos legais vigentes por meio de responsáveis.
                 </p>
                 <div class="bg-purple-950/40 p-3 rounded-lg border border-purple-500/30 text-xs text-purple-200">
-                    💡 <strong>COMO FUNCIONA NA PRÁTICA:</strong> O mercado permite que menores abram contas gratuitas em plataformas como a <strong>Corretora Rico</strong>. Abaixo, você simula matematicamente como eu dividiria valores focado no desenvolvimento de patrimônio jovem, usando pesos da minha própria filosofia de estudos.
+                    💡 <strong>MINHA MEMÓRIA DE APRENDIZADO:</strong> Quando eu era menor, utilizava contas simplificadas abertas por meus tutores (como na <strong>Corretora Rico</strong>). Abaixo, você confere a simulação matemática exata da estratégia que funcionou para o meu desenvolvimento financeiro precoce.
                 </div>
             </div>
 
             <div id="kids-suitability" class="bg-slate-950 p-4 rounded-xl border border-slate-900 space-y-3">
                 <label class="text-xs font-bold text-purple-400 tracking-wider flex items-center gap-1 uppercase">
-                    <i data-lucide="zap" class="w-4 h-4 text-purple-500"></i> Selecione um modelo simulado de estudo:
+                    <i data-lucide="zap" class="w-4 h-4 text-purple-500"></i> Escolha uma das minhas teses juvenis de estudo:
                 </label>
                 <div class="grid grid-cols-1 gap-2" id="kids-options-container">
                     <button onclick="definirObjetivoKids('faculdade')" id="btn-kids-faculdade" class="w-full text-left bg-slate-900 border border-slate-800 hover:border-purple-500 p-3 rounded-lg text-xs font-medium text-slate-300 transition">
-                        🎓 <strong>Simulação Futuro Acadêmico:</strong> Foco em ativos geradores de fluxo de caixa histórico (Ações e Dividendos)
+                        🎓 <strong>Meu Foco em Acumulação de Longo Prazo:</strong> Divisão focada em ativos geradores de fluxo de caixa baseados nos meus estudos de época.
                     </button>
                     <button onclick="definirObjetivoKids('intercambio')" id="btn-kids-intercambio" class="w-full text-left bg-slate-900 border border-slate-800 hover:border-purple-500 p-3 rounded-lg text-xs font-medium text-slate-300 transition">
-                        🌍 <strong>Simulação Viagem & Internacionalização:</strong> Foco em ativos com proteção cambial (Dólar e Tecnologia Global)
+                        🌍 <strong>Minhas Simulações com Proteção Cambial:</strong> Alocação que utilizei visando ativos dolarizados e exposição tecnológica global.
                     </button>
                     <button onclick="definirObjetivoKids('independencia')" id="btn-kids-independencia" class="w-full text-left bg-slate-900 border border-slate-800 hover:border-purple-500 p-3 rounded-lg text-xs font-medium text-slate-300 transition">
-                        🛡️ <strong>Simulação Proteção Patrimonial Jovem:</strong> Foco em alta previsibilidade inicial (Renda Fixa e Crédito Estruturado)
+                        🛡️ <strong>Minha Estratégia de Previsibilidade Inicial:</strong> Divisão matemática conservadora que usei para proteger o capital inicial acumulado.
                     </button>
                 </div>
             </div>
 
             <div id="container-aporte-kids" class="bg-slate-950 p-4 rounded-xl border border-slate-900 space-y-3 opacity-40 pointer-events-none transition-all">
-                <label class="text-xs font-medium text-slate-400 uppercase">VALOR PARA MODELAGEM MATEMÁTICA SIMULADA</label>
+                <label class="text-xs font-medium text-slate-400 uppercase">VALOR PARA MODELAGEM MATEMÁTICA HISTÓRICA</label>
                 <div class="relative">
                     <span class="absolute left-3 top-1/2 -translate-y-1/2 text-purple-500 font-bold text-sm">R$</span>
                     <input type="text" id="input-valor-kids" oninput="formatarMoeda(this, 'kids')" placeholder="Escolha um modelo acima" class="w-full bg-slate-900 border border-slate-800 rounded-lg pl-10 pr-4 py-2.5 text-white font-bold font-logo focus:outline-none focus:border-purple-500 transition">
@@ -362,15 +355,15 @@
         </div>
 
         <footer class="p-4 text-center border-t border-slate-900 bg-black text-[9px] text-slate-600 space-y-1">
-            <p><strong>AVISO DE TRANSPARÊNCIA REGULATÓRIA:</strong> O ambiente Matias Invest é um diário virtual pessoal de compartilhamento de metodologias e simulação matemática de ativos do proprietário deste site.</p>
-            <p>Este sistema não constitui, sob hipótese alguma, análise de valores mobiliários, consultoria financeira regulada, intermediação de ativos, oferta pública ou recomendação explícita de compra/venda de ativos financeiros. Não possuímos vínculo operacional com corretoras ou registro de casa de análise (CNPI/CNPJ corporativo financeiro). Os resultados históricos simulados não são garantias de rentabilidades futuras.</p>
+            <p><strong>AVISO DE TRANSPARÊNCIA REGULATÓRIA:</strong> O ambiente Matias Invest é um diário virtual pessoal de compartilhamento de metodologias e simulação matemática de ativos do proprietário deste site de acordo com suas próprias experiências históricas.</p>
+            <p>Este sistema não constitui, sob hipótese alguma, análise de valores mobiliários, consultoria financeira regulada pela CVM, intermediação de ativos, oferta pública ou recomendação explícita de compra/venda de ativos financeiros. Não possuímos vínculo operacional com corretoras ou registro de casa de análise (CNPI/CNPJ corporativo financeiro). Os dados aqui apresentados servem exclusivamente para simulação acadêmica e ilustrativa.</p>
         </footer>
 
         <nav class="fixed bottom-0 left-0 right-0 bg-black/95 backdrop-blur-md border-t border-slate-900 z-50">
             <div class="max-w-2xl mx-auto grid grid-cols-5 gap-0.5 p-2 text-center">
                 <button id="nav-btn-menor" class="flex flex-col items-center gap-0.5 py-1" onclick="alternarAbas('menor')">
-                    <span class="text-[10px] bg-slate-900 text-slate-400 font-black px-1.5 py-0.5 rounded border border-slate-800 font-logo transition-colors" id="icon-menor-tag">-18</span>
-                    <span class="text-[9px] font-bold text-slate-500">Matias Kids</span>
+                    <span class="text-[10px] bg-slate-900 text-slate-400 font-black px-1.5 py-0.5 rounded border border-slate-800 font-logo transition-colors" id="icon-menor-tag">Histórico</span>
+                    <span class="text-[9px] font-bold text-slate-500">Meu Começo</span>
                 </button>
                 
                 <button id="nav-btn-carteira" class="flex flex-col items-center gap-1 py-1 nav-active" onclick="alternarAbas('carteira')">
@@ -382,7 +375,6 @@
                     <i data-lucide="graduation-cap" class="w-4 h-4"></i>
                     <span class="text-[9px] font-medium text-slate-500">Educação</span>
                 </button>
-
                 <button id="nav-btn-perfil" class="flex flex-col items-center gap-1 py-1 text-slate-600" onclick="alternarAbas('perfil')">
                     <i data-lucide="user" class="w-4 h-4"></i>
                     <span class="text-[9px] font-medium text-slate-500">Configuração</span>
@@ -414,7 +406,7 @@
             { nome: 'BTHF11 | BTG PACTUAL HF', categoria: 'Ações', descricao: 'Portfólio híbrido estruturado sob coordenação do banco BTG Pactual.', aplicacaoMinima: 10.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 5 }, ondeEncontrar: 'XP Investimentos, BTG Pactual, Rico, Inter e Ágora' },
             { nome: 'WRLD11 (Mundo Todo via Vanguard VT)', categoria: 'Global', descricao: 'Ativo indexado que reflete mais de 9.000 ações ao redor do planeta via B3.', aplicacaoMinima: 10.00, pesosPerfil: { conservador: 0, moderado: 10, arrojado: 15 }, ondeEncontrar: 'XP Investimentos, BTG Pactual, Rico, Inter e Ágora' },
             { nome: 'MS GLOBAL OPPORTUNITIES', categoria: 'Global', descricao: 'Exposição de estudo a ativos de alto crescimento geridos pela Morgan Stanley.', aplicacaoMinima: 100.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 10 }, ondeEncontrar: 'Plataformas integradas e XP Investimentos' },
-            { nome: 'ALUG11 (Mercado Imobiliário Global VNQ)', categoria: 'Global', descricao: 'Ativo de rastreamento do mercado imobiliário internacional de alta renda (Real Estate).', aplicacaoMinima: 110.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 5 }, ondeEncontrar: 'XP Investimentos, BTG Pactual, Rico, Inter e Ágora' },
+            { nome: 'ALUG11 (Mercado Imobiliário Global VNQ)', categoria: 'Global', descricao: 'Ativo de tracking do mercado imobiliário internacional de alta renda (Real Estate).', aplicacaoMinima: 110.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 5 }, ondeEncontrar: 'XP Investimentos, BTG Pactual, Rico, Inter e Ágora' },
             { nome: 'USDB11 (Renda Fixa Americana BND)', categoria: 'Global', descricao: 'Rastreamento de títulos públicos de renda fixa emitidos pelo tesouro americano.', aplicacaoMinima: 10.00, pesosPerfil: { conservador: 0, moderado: 10, arrojado: 5 }, ondeEncontrar: 'XP Investimentos, BTG Pactual, Rico, Inter e Ágora' },
             { nome: 'BNDX11 (Renda Fixa Global ex-EUA)', categoria: 'Global', descricao: 'Indexador focado em renda fixa internacional fora do eixo geográfico dos EUA.', aplicacaoMinima: 10.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 5 }, ondeEncontrar: 'XP Investimentos, BTG Pactual, Rico, Inter e Ágora' }
         ];
@@ -458,6 +450,13 @@
         let liquidezSelecionada = 'porquinho';
         let chartInstancia = null;
         let abaAtualAtiva = 'carteira';
+
+        // Dados dinâmicos para simular o gráfico interativo baseado no aporte do usuário
+        const dadosGraficoPeriodos = {
+            '1A': [5, 12, 19, 26, 38, 48.3],
+            '2A': [10, 22, 31, 45, 62, 85.5],
+            'MAX': [15, 35, 58, 82, 110, 145.2]
+        };
 
         function alternarAbas(aba) {
             abaAtualAtiva = aba;
@@ -589,7 +588,7 @@
                                 <div>
                                     <h3 class="text-xs font-bold text-white uppercase tracking-wide">${ativo.nome}</h3>
                                     <span class="inline-block text-[9px] uppercase font-black tracking-wider px-2 py-0.5 mt-1 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">
-                                        ${ativo.categoria} (Modelo Didático)
+                                        ${ativo.categoria} (Histórico do Matias)
                                     </span>
                                 </div>
                                 <div class="text-right">
@@ -679,7 +678,7 @@
         function renderizarQuiz() {
             if (faseQuiz === -1) {
                 document.getElementById('progresso-quiz').innerText = "Verificação Inicial";
-                document.getElementById('texto-pergunta').innerText = "Antes de calibrar os algoritmos de visualização matemática, confirme a faixa etária:";
+                document.getElementById('texto-pergunta').innerText = "Antes de calibrar os algoritmos de visualização matemática, confirme a sua faixa etária:";
                 document.getElementById('opcoes-quiz').innerHTML = `
                     <button onclick="verificarMaioridade(true)" class="w-full text-left bg-slate-900 border border-slate-800 hover:border-cyan-500 hover:bg-cyan-500/5 p-2.5 rounded-lg text-xs font-bold text-slate-200 transition-all">
                         👍 Sim, sou maior de idade (18+)
@@ -717,13 +716,13 @@
                 document.getElementById('quiz-container').innerHTML = `
                     <div class="bg-gradient-to-br from-purple-950/40 via-slate-950 to-black p-4 rounded-xl border-2 border-purple-500/50 space-y-3">
                         <div class="flex items-center gap-1.5 text-purple-400 font-bold text-xs uppercase font-logo">
-                            <i data-lucide="alert-triangle" class="w-4 h-4 text-purple-400"></i> Espaço Menores de Idade
+                            <i data-lucide="alert-triangle" class="w-4 h-4 text-purple-400"></i> Histórico de Investimento Jovem
                         </div>
                         <p class="text-xs text-slate-300 leading-relaxed">
-                            A estrutura de conta para menores exige tutor responsável corporativo e ferramentas específicas como a <strong>Corretora Rico</strong> para custódia independente.
+                            Acesse a retrospectiva da minha carteira quando eu tinha menos de 18 anos e veja como foi estruturada minha base patrimonial de forma legal.
                         </p>
                         <button onclick="alternarAbas('menor')" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-logo font-black text-[11px] py-2 rounded-lg tracking-wider uppercase transition">
-                            Ir para o Painel de Estudo Jovem ➔
+                            Ver Painel Histórico do Matias ➔
                         </button>
                     </div>
                 `;
@@ -819,7 +818,7 @@
                     ? `🟢 <strong>Simulação de Liquidez:</strong> Do montante simulado, eu alocaria uma parcela inicial protetiva no <strong>Porquinho do Banco Inter</strong> para saques imediatos.`
                     : `🟢 <strong>Simulação de Liquidez:</strong> Do montante simulado, eu manteria uma parcela de segurança diária alocada na <strong>Caixinha NuConta RDB</strong>.`;
                 document.getElementById('secao-grafico').classList.remove('hidden');
-                inicializarGrafico();
+                inicializarGrafico('1A'); // Inicializa com o período padrão
             } else {
                 avisoLiq.classList.add('hidden');
                 document.getElementById('secao-grafico').classList.add('hidden');
@@ -892,28 +891,66 @@
             }
         }
 
-        function inicializarGrafico() {
-            const ctx = document.getElementById('graficoEvolucao').getContext('2m');
+        function atualizarPeriodoGrafico(periodo, btn) {
+            // Atualiza os botões de controle visual do período
+            const botoes = btn.parentNode.querySelectorAll('button');
+            botoes.forEach(b => {
+                b.className = "px-2 py-1 text-[10px] font-bold rounded text-slate-400 hover:text-white transition";
+            });
+            btn.className = "px-2 py-1 text-[10px] font-bold rounded bg-cyan-500 text-black transition";
+            
+            inicializarGrafico(periodo);
+        }
+
+        function inicializarGrafico(periodo = '1A') {
+            const ctx = document.getElementById('graficoEvolucao').getContext('2d');
             if (chartInstancia) chartInstancia.destroy();
+
+            const baseAporte = obterValorNumerico();
+            // Multiplicadores educacionais para fazer o gráfico interagir proporcionalmente com o valor que o usuário digita
+            const dadosMultiplicados = dadosGraficoPeriodos[periodo].map(multiplicador => {
+                return baseAporte + (baseAporte * (multiplicador / 100));
+            });
+
             chartInstancia = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+                    labels: ['Mês 1', 'Mês 2', 'Mês 3', 'Mês 4', 'Mês 5', 'Mês 6'],
                     datasets: [{
-                        label: 'Meu Portfólio Simulado',
-                        data: [0, 8, 15, 24, 36, 48.31],
+                        label: 'Simulação do Meu Portfólio',
+                        data: dadosMultiplicados,
                         borderColor: '#06b6d4',
-                        backgroundColor: 'rgba(6, 182, 212, 0.05)',
+                        backgroundColor: 'rgba(6, 182, 212, 0.03)',
                         borderWidth: 2,
                         fill: true,
-                        tension: 0.3
+                        tension: 0.3,
+                        pointBackgroundColor: '#06b6d4'
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { y: { display: false }, x: { grid: { display: false }, ticks: { color: '#475569', font: { size: 9 } } } }
+                    plugins: { 
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ' Valor Proporcional: ' + context.raw.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                                }
+                            }
+                        }
+                    },
+                    scales: { 
+                        y: { 
+                            display: true,
+                            grid: { color: '#1e293b' },
+                            ticks: { color: '#475569', font: { size: 9 } }
+                        }, 
+                        x: { 
+                            grid: { display: false }, 
+                            ticks: { color: '#475569', font: { size: 9 } } 
+                        } 
+                    }
                 }
             });
         }
@@ -945,6 +982,11 @@
             } catch (err) {
                 document.getElementById('crypto-grid').innerHTML = '<p class="text-[10px] text-slate-600 col-span-full text-center">Falha ao sincronizar dados externos públicos.</p>';
             }
+        }
+
+        function resetarPerfil() {
+            localStorage.clear();
+            window.location.reload();
         }
 
         window.addEventListener('DOMContentLoaded', () => {
