@@ -356,35 +356,67 @@
             </div>
         </div>
 
+        <!-- ABA DÚVIDAS -->
+        <div id="aba-duvidas" class="hidden p-4 space-y-4">
+            <div class="bg-gradient-to-r from-cyan-950/40 via-slate-950 to-slate-950 p-5 rounded-xl border border-cyan-500/20 space-y-2">
+                <div class="flex items-center gap-2 text-cyan-400">
+                    <i data-lucide="message-circle-question" class="w-6 h-6"></i>
+                    <h2 class="text-base font-black uppercase tracking-wider font-logo">Central de Dúvidas</h2>
+                </div>
+                <p class="text-xs text-slate-400 leading-relaxed">Toque em uma pergunta abaixo para ver a resposta detalhada.</p>
+            </div>
+            <div class="relative">
+                <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"></i>
+                <input type="text" id="busca-duvida" oninput="filtrarDuvidas(this.value)" placeholder="Buscar dúvida..." class="w-full bg-slate-950 border border-slate-800 rounded-lg pl-9 pr-4 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-500 transition">
+            </div>
+            <div id="lista-duvidas" class="space-y-2"></div>
+            <div id="resposta-duvida" class="hidden bg-slate-950 border border-cyan-500/30 rounded-xl p-4 space-y-3">
+                <div class="flex justify-between items-start gap-2">
+                    <h3 id="resposta-titulo" class="text-xs font-black text-cyan-400 uppercase tracking-wide leading-snug"></h3>
+                    <button onclick="fecharResposta()" class="text-slate-600 hover:text-white shrink-0"><i data-lucide="x" class="w-4 h-4"></i></button>
+                </div>
+                <div id="resposta-texto" class="text-xs text-slate-300 leading-relaxed space-y-2"></div>
+            </div>
+            <a href="https://wa.me/5533991925305?text=Ol%C3%A1%2C%20tenho%20uma%20d%C3%BAvida%20sobre%20o%20Matias%20Invest" target="_blank"
+               class="flex items-center justify-center gap-2 w-full bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/40 text-emerald-400 font-bold text-xs py-3 rounded-xl transition">
+                <i data-lucide="message-circle" class="w-4 h-4"></i> Não encontrei minha dúvida — falar no WhatsApp
+            </a>
+        </div>
+
         <footer class="p-4 text-center border-t border-slate-900 bg-black text-[9px] text-slate-600 space-y-1">
             <p><strong>AVISO DE TRANSPARÊNCIA REGULATÓRIA:</strong> O ambiente Matias Invest é um diário virtual pessoal de compartilhamento de metodologias e simulação matemática de ativos do proprietário deste site de acordo com suas próprias experiências históricas.</p>
             <p>Este sistema não constitui, sob hipótese alguma, análise de valores mobiliários, consultoria financeira regulada pela CVM, intermediação de ativos, oferta pública ou recomendação explícita de compra/venda de ativos financeiros. Não possuímos vínculo operacional com corretoras ou registro de casa de análise (CNPI/CNPJ corporativo financeiro). Os dados aqui apresentados servem exclusivamente para simulação acadêmica e ilustrativa.</p>
         </footer>
 
         <nav class="fixed bottom-0 left-0 right-0 bg-black/95 backdrop-blur-md border-t border-slate-900 z-50">
-            <div class="max-w-2xl mx-auto grid grid-cols-5 gap-0.5 p-2 text-center">
+            <div class="max-w-2xl mx-auto grid grid-cols-6 gap-0.5 p-2 text-center">
                 <button id="nav-btn-menor" class="flex flex-col items-center gap-0.5 py-1" onclick="alternarAbas('menor')">
-                    <span class="text-[10px] bg-slate-900 text-slate-400 font-black px-1.5 py-0.5 rounded border border-slate-800 font-logo transition-colors" id="icon-menor-tag">Histórico</span>
-                    <span class="text-[9px] font-bold text-slate-500">Meu Começo</span>
+                    <span class="text-[9px] bg-slate-900 text-slate-400 font-black px-1 py-0.5 rounded border border-slate-800 font-logo transition-colors" id="icon-menor-tag">HIST</span>
+                    <span class="text-[8px] font-bold text-slate-500">Começo</span>
                 </button>
                 
                 <button id="nav-btn-carteira" class="flex flex-col items-center gap-1 py-1 nav-active" onclick="alternarAbas('carteira')">
                     <i data-lucide="pie-chart" class="w-4 h-4"></i>
-                    <span class="text-[9px] font-bold">Minha Carteira</span>
+                    <span class="text-[8px] font-bold">Carteira</span>
+                </button>
+
+                <button id="nav-btn-duvidas" class="flex flex-col items-center gap-1 py-1 text-slate-600" onclick="alternarAbas('duvidas')">
+                    <i data-lucide="message-circle-question" class="w-4 h-4"></i>
+                    <span class="text-[8px] font-medium text-slate-500">Dúvidas</span>
                 </button>
 
                 <button id="nav-btn-conhecimento" class="flex flex-col items-center gap-1 py-1 text-slate-600" onclick="alternarAbas('conhecimento')">
                     <i data-lucide="graduation-cap" class="w-4 h-4"></i>
-                    <span class="text-[9px] font-medium text-slate-500">Educação</span>
+                    <span class="text-[8px] font-medium text-slate-500">Educação</span>
                 </button>
                 <button id="nav-btn-perfil" class="flex flex-col items-center gap-1 py-1 text-slate-600" onclick="alternarAbas('perfil')">
                     <i data-lucide="user" class="w-4 h-4"></i>
-                    <span class="text-[9px] font-medium text-slate-500">Configuração</span>
+                    <span class="text-[8px] font-medium text-slate-500">Config</span>
                 </button>
                 
                 <button class="flex flex-col items-center gap-1 py-1 text-slate-600 hover:text-red-400 transition" onclick="resetarPerfil()">
                     <i data-lucide="refresh-cw" class="w-4 h-4"></i>
-                    <span class="text-[9px] font-medium text-slate-500">Limpar</span>
+                    <span class="text-[8px] font-medium text-slate-500">Limpar</span>
                 </button>
             </div>
         </nav>
@@ -486,6 +518,235 @@
             'MAX': [15, 35, 58, 82, 110, 145.2]
         };
 
+        // ─────────────────────────────────────────────────────────────
+        // BANCO DE DÚVIDAS
+        // ─────────────────────────────────────────────────────────────
+        const bancoDePerguntas = [
+            {
+                categoria: '📍 Onde Encontrar os Investimentos',
+                perguntas: [
+                    {
+                        pergunta: 'Onde encontro o Fundos Passivos IMA-B?',
+                        resposta: `O <strong>Fundos Passivos ao IMA-B</strong> são fundos que acompanham o índice IMA-B, formado por títulos públicos atrelados à inflação (Tesouro IPCA+).<br><br>
+                        📌 <strong>Onde encontrar:</strong><br>
+                        • <strong>XP Investimentos</strong> — busque por "IMA-B" na aba Fundos<br>
+                        • <strong>BTG Pactual</strong> — aba Fundos → Renda Fixa → IMA-B<br>
+                        • <strong>Rico</strong> — Fundos → Indexados<br>
+                        • <strong>Inter Invest</strong> — aba Fundos<br>
+                        • <strong>NuInvest</strong> e <strong>Ágora</strong> também disponibilizam<br><br>
+                        💡 <strong>Dica:</strong> Na plataforma, filtre por "Renda Fixa Indexada" ou "IMA-B" e procure fundos com taxa de administração abaixo de 0,30% ao ano.`
+                    },
+                    {
+                        pergunta: 'Onde encontro o WRLD11?',
+                        resposta: `O <strong>WRLD11</strong> é um BDR (Brazilian Depositary Receipt) que replica o ETF Vanguard Total World Stock (VT), dando exposição a mais de 9.000 ações do mundo inteiro.<br><br>
+                        📌 <strong>Onde encontrar:</strong><br>
+                        • É negociado na <strong>B3</strong> (Bolsa brasileira) como uma ação normal<br>
+                        • Disponível em qualquer corretora: <strong>XP, BTG, Rico, Inter, NuInvest, Ágora, Clear</strong><br><br>
+                        💡 <strong>Como comprar:</strong> Acesse o Home Broker da sua corretora, busque o código <strong>WRLD11</strong> e compre como se fosse uma ação. O valor mínimo é de uma cota (cerca de R$ 10 a R$ 15).`
+                    },
+                    {
+                        pergunta: 'Onde encontro o BBSE3?',
+                        resposta: `<strong>BBSE3</strong> é a ação da <strong>BB Seguridade</strong>, empresa do grupo Banco do Brasil focada em seguros, previdência e capitalização.<br><br>
+                        📌 <strong>Onde encontrar:</strong><br>
+                        • Negociada na <strong>B3</strong> — disponível em qualquer corretora<br>
+                        • <strong>XP, BTG Pactual, Rico, Inter, NuInvest, Ágora, Clear</strong><br><br>
+                        💡 <strong>Como comprar:</strong> No Home Broker, busque <strong>BBSE3</strong>. É possível comprar a partir de 1 ação (em torno de R$ 30 a R$ 40).`
+                    },
+                    {
+                        pergunta: 'Onde encontro o SLCE3?',
+                        resposta: `<strong>SLCE3</strong> é a ação da <strong>SLC Agrícola</strong>, uma das maiores produtoras de grãos do Brasil (soja, milho, algodão).<br><br>
+                        📌 <strong>Onde encontrar:</strong><br>
+                        • Negociada na <strong>B3</strong> — qualquer corretora<br>
+                        • <strong>XP, BTG, Rico, Inter, NuInvest, Ágora, Clear</strong><br><br>
+                        💡 <strong>Como comprar:</strong> Busque <strong>SLCE3</strong> no Home Broker. Valor por volta de R$ 15 a R$ 25 por ação.`
+                    },
+                    {
+                        pergunta: 'Onde encontro o USDB11 e BNDX11?',
+                        resposta: `<strong>USDB11</strong> replica o ETF BND (Vanguard Total Bond Market) — renda fixa americana.<br>
+                        <strong>BNDX11</strong> replica o ETF BNDX — renda fixa global fora dos EUA.<br><br>
+                        📌 <strong>Onde encontrar:</strong><br>
+                        • Ambos são BDRs negociados na <strong>B3</strong><br>
+                        • Disponíveis em <strong>XP, BTG, Rico, Inter, NuInvest, Ágora</strong><br><br>
+                        💡 <strong>Como comprar:</strong> Busque os códigos <strong>USDB11</strong> ou <strong>BNDX11</strong> no Home Broker. Valor mínimo: 1 cota (~R$ 10).`
+                    },
+                    {
+                        pergunta: 'Onde encontro o IFRA11?',
+                        resposta: `<strong>IFRA11</strong> é um FIDC (Fundo de Investimento em Direitos Creditórios) de infraestrutura do Itaú.<br><br>
+                        📌 <strong>Onde encontrar:</strong><br>
+                        • Disponível no <strong>Itaú</strong> e em corretoras parceiras<br>
+                        • Consulte também em <strong>XP Investimentos</strong><br><br>
+                        💡 <strong>Dica:</strong> Por ser um FIDC, pode ter algumas restrições de acesso dependendo da plataforma. Verifique se é necessário ser investidor qualificado.`
+                    },
+                    {
+                        pergunta: 'Onde encontro o Dahlia Total Return?',
+                        resposta: `O <strong>Dahlia Total Return</strong> é um fundo multimercado da gestora Dahlia Capital.<br><br>
+                        📌 <strong>Onde encontrar:</strong><br>
+                        • <strong>Ágora, BTG Pactual, C6 Bank, Inter e XP Investimentos</strong><br><br>
+                        💡 <strong>Como investir:</strong> Acesse a plataforma escolhida → aba Fundos → busque "Dahlia Total Return". Aporte mínimo geralmente de R$ 500.`
+                    },
+                    {
+                        pergunta: 'Onde encontro o Absolute Vertex?',
+                        resposta: `O <strong>Absolute Vertex</strong> é um fundo multimercado da Absolute Investimentos, focado em estratégias macro.<br><br>
+                        📌 <strong>Onde encontrar:</strong><br>
+                        • <strong>Ágora, C6 Bank, BTG Pactual, Rico e XP Investimentos</strong><br><br>
+                        💡 <strong>Como investir:</strong> Plataforma → Fundos → busque "Absolute Vertex". Aporte mínimo em torno de R$ 500.`
+                    },
+                    {
+                        pergunta: 'Onde encontro o ALUG11?',
+                        resposta: `<strong>ALUG11</strong> replica o ETF VNQ da Vanguard — expõe ao mercado imobiliário americano (REITs).<br><br>
+                        📌 <strong>Onde encontrar:</strong><br>
+                        • BDR negociado na <strong>B3</strong> — disponível em qualquer corretora<br>
+                        • <strong>XP, BTG, Rico, Inter, NuInvest, Ágora</strong><br><br>
+                        💡 Busque <strong>ALUG11</strong> no Home Broker. Cota em torno de R$ 100 a R$ 130.`
+                    },
+                ]
+            },
+            {
+                categoria: '❓ Como Funciona o Site',
+                perguntas: [
+                    {
+                        pergunta: 'Como funciona a simulação de carteira?',
+                        resposta: `A simulação mostra <strong>como o Matias distribui seus próprios investimentos</strong> de forma proporcional ao valor que você digitar.<br><br>
+                        📌 <strong>Passo a passo:</strong><br>
+                        1. Responda as perguntas de perfil (conservador, moderado ou arrojado)<br>
+                        2. Digite um valor no campo "Simular Proporção"<br>
+                        3. O site calcula automaticamente quanto iria para cada ativo<br><br>
+                        ⚠️ <strong>Importante:</strong> Isso é apenas uma simulação educacional baseada na carteira pessoal do Matias — não é recomendação de investimento.`
+                    },
+                    {
+                        pergunta: 'O que significa perfil conservador, moderado e arrojado?',
+                        resposta: `<strong>Conservador:</strong> Foco em segurança. A maior parte vai para Renda Fixa (IMA-B, Valora, etc). Menor risco, retorno mais previsível.<br><br>
+                        <strong>Moderado:</strong> Equilíbrio entre segurança e crescimento. Divide entre Renda Fixa, Multimercados, algumas ações e ativos globais.<br><br>
+                        <strong>Arrojado:</strong> Aceita mais volatilidade em busca de maior retorno. Maior exposição a ações brasileiras, globais e multimercados.`
+                    },
+                    {
+                        pergunta: 'O que é a aba "Meu Começo"?',
+                        resposta: `A aba <strong>"Meu Começo"</strong> mostra como o Matias investia quando era <strong>menor de idade</strong>, usando contas abertas por responsáveis legais em corretoras como a <strong>Rico</strong>.<br><br>
+                        É uma simulação histórica educacional com 3 estratégias que ele utilizou na época:<br>
+                        • 🎓 Acumulação de Longo Prazo<br>
+                        • 🌍 Proteção Cambial e Ativos Globais<br>
+                        • 🛡️ Estratégia Conservadora Inicial`
+                    },
+                    {
+                        pergunta: 'O que é o Porquinho Inter e a Caixinha Nubank?',
+                        resposta: `São as reservas de liquidez do Matias — onde ele guarda o "colchão de segurança" para emergências ou oportunidades rápidas.<br><br>
+                        🐷 <strong>Porquinho Inter:</strong> Conta remunerada do Banco Inter. Rende 100% do CDI com liquidez diária.<br><br>
+                        💜 <strong>Caixinha Nubank:</strong> RDB (Recibo de Depósito Bancário) do Nubank. Também rende 100% do CDI com resgate imediato.<br><br>
+                        💡 Ambas são opções seguras e com liquidez total para reserva de emergência.`
+                    },
+                    {
+                        pergunta: 'O gráfico de evolução é real?',
+                        resposta: `O gráfico mostra uma <strong>simulação educacional proporcional</strong> ao valor que você digitar — não representa resultados reais do Matias nem promessa de rendimento futuro.<br><br>
+                        Ele serve para ilustrar como um portfólio diversificado pode se comportar ao longo do tempo com aportes regulares.<br><br>
+                        ⚠️ Rentabilidade passada não garante rentabilidade futura.`
+                    },
+                ]
+            },
+            {
+                categoria: '💡 Conceitos Financeiros',
+                perguntas: [
+                    {
+                        pergunta: 'O que é IMA-B?',
+                        resposta: `O <strong>IMA-B</strong> (Índice de Mercado ANBIMA - Série B) é um índice que representa uma carteira de <strong>Títulos Públicos atrelados ao IPCA</strong> (inflação).<br><br>
+                        Na prática: fundos passivos ao IMA-B compram esses títulos e entregam a variação da inflação + juros reais.<br><br>
+                        💡 É uma boa escolha para quem quer <strong>proteger o dinheiro da inflação</strong> no longo prazo.`
+                    },
+                    {
+                        pergunta: 'O que é um ETF?',
+                        resposta: `<strong>ETF</strong> (Exchange Traded Fund) é um fundo negociado em bolsa como se fosse uma ação.<br><br>
+                        Ele replica um índice — por exemplo:<br>
+                        • <strong>WRLD11</strong> replica o VT (9.000+ ações do mundo)<br>
+                        • <strong>USDB11</strong> replica o BND (títulos americanos)<br><br>
+                        💡 Vantagem: diversificação enorme com uma única compra, e taxas geralmente baixas.`
+                    },
+                    {
+                        pergunta: 'O que é um BDR?',
+                        resposta: `<strong>BDR</strong> (Brazilian Depositary Receipt) é um ativo negociado na B3 que representa ativos lá de fora.<br><br>
+                        Exemplo: <strong>WRLD11</strong> é um BDR do ETF americano VT. Você compra em reais na B3, mas o dinheiro está exposto ao ativo internacional.<br><br>
+                        💡 Ótimo para ter exposição ao exterior sem precisar abrir conta fora do Brasil.`
+                    },
+                    {
+                        pergunta: 'O que é um Fundo Multimercado?',
+                        resposta: `Um <strong>Fundo Multimercado</strong> pode investir em diferentes classes de ativos ao mesmo tempo: ações, câmbio, juros, commodities, etc.<br><br>
+                        Exemplos na carteira do Matias:<br>
+                        • <strong>Dahlia Total Return</strong> — estratégia macro global<br>
+                        • <strong>Absolute Vertex</strong> — arbitragem de juros e câmbio<br>
+                        • <strong>Genoa Capital Radar</strong> — quantitativo<br><br>
+                        💡 São geridos ativamente por gestores profissionais.`
+                    },
+                    {
+                        pergunta: 'O que é CDI?',
+                        resposta: `O <strong>CDI</strong> (Certificado de Depósito Interbancário) é a taxa de referência de investimentos de renda fixa no Brasil.<br><br>
+                        Quando um investimento rende "100% do CDI", significa que acompanha essa taxa de referência de perto.<br><br>
+                        💡 O CDI fica geralmente próximo da taxa Selic (taxa básica de juros do Brasil).`
+                    },
+                ]
+            }
+        ];
+
+        function renderizarDuvidas(filtro = '') {
+            const lista = document.getElementById('lista-duvidas');
+            let html = '';
+            const termo = filtro.toLowerCase();
+
+            bancoDePerguntas.forEach(grupo => {
+                const perguntasFiltradas = grupo.perguntas.filter(p =>
+                    !termo || p.pergunta.toLowerCase().includes(termo) || p.resposta.toLowerCase().includes(termo)
+                );
+                if (perguntasFiltradas.length === 0) return;
+
+                html += `<div class="mb-1">
+                    <p class="text-[10px] font-black text-slate-500 uppercase tracking-wider mb-1.5 px-1">${grupo.categoria}</p>
+                    <div class="space-y-1.5">`;
+
+                perguntasFiltradas.forEach((p, i) => {
+                    const id = encodeURIComponent(p.pergunta);
+                    html += `
+                        <button onclick="mostrarResposta('${id}')"
+                            class="w-full text-left bg-slate-950 border border-slate-800 hover:border-cyan-500/50 hover:bg-cyan-950/10 p-3 rounded-xl text-xs font-semibold text-slate-200 transition flex items-center justify-between gap-2">
+                            <span>${p.pergunta}</span>
+                            <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-500 shrink-0"></i>
+                        </button>`;
+                });
+
+                html += `</div></div>`;
+            });
+
+            if (!html) {
+                html = '<p class="text-xs text-slate-500 text-center py-6">Nenhuma dúvida encontrada. Tente outra palavra.</p>';
+            }
+
+            lista.innerHTML = html;
+            lucide.createIcons();
+        }
+
+        function filtrarDuvidas(valor) {
+            renderizarDuvidas(valor);
+            fecharResposta();
+        }
+
+        function mostrarResposta(idEncoded) {
+            const perguntaTexto = decodeURIComponent(idEncoded);
+            let encontrado = null;
+            bancoDePerguntas.forEach(g => {
+                g.perguntas.forEach(p => {
+                    if (p.pergunta === perguntaTexto) encontrado = p;
+                });
+            });
+            if (!encontrado) return;
+
+            document.getElementById('resposta-titulo').innerText = encontrado.pergunta;
+            document.getElementById('resposta-texto').innerHTML = encontrado.resposta;
+            const el = document.getElementById('resposta-duvida');
+            el.classList.remove('hidden');
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            lucide.createIcons();
+        }
+
+        function fecharResposta() {
+            document.getElementById('resposta-duvida').classList.add('hidden');
+        }
+
         function alternarAbas(aba) {
             abaAtualAtiva = aba;
             localStorage.setItem('matias_aba_ativa', aba);
@@ -494,23 +755,27 @@
             const btnPerfil       = document.getElementById('nav-btn-perfil');
             const btnMenor        = document.getElementById('nav-btn-menor');
             const btnConhecimento = document.getElementById('nav-btn-conhecimento');
+            const btnDuvidas      = document.getElementById('nav-btn-duvidas');
             const tagMenor        = document.getElementById('icon-menor-tag');
 
             const divInvestimentos = document.getElementById('aba-conteudo-investimentos');
             const divPerfil        = document.getElementById('aba-painel-perfil');
             const divMenor         = document.getElementById('aba-menor-idade');
             const divConhecimento  = document.getElementById('aba-conhecimento');
+            const divDuvidas       = document.getElementById('aba-duvidas');
 
             btnCarteira.className     = "flex flex-col items-center gap-1 py-1 text-slate-600";
             btnPerfil.className       = "flex flex-col items-center gap-1 py-1 text-slate-600";
             btnMenor.className        = "flex flex-col items-center gap-0.5 py-1 text-slate-600";
             btnConhecimento.className = "flex flex-col items-center gap-1 py-1 text-slate-600";
-            tagMenor.className        = "text-[10px] bg-slate-900 text-slate-400 font-black px-1.5 py-0.5 rounded border border-slate-800 font-logo";
+            btnDuvidas.className      = "flex flex-col items-center gap-1 py-1 text-slate-600";
+            tagMenor.className        = "text-[9px] bg-slate-900 text-slate-400 font-black px-1 py-0.5 rounded border border-slate-800 font-logo";
 
             divInvestimentos.classList.add('hidden');
             divPerfil.classList.add('hidden');
             divMenor.classList.add('hidden');
             divConhecimento.classList.add('hidden');
+            divDuvidas.classList.add('hidden');
 
             if (aba === 'carteira') {
                 divInvestimentos.classList.remove('hidden');
@@ -523,12 +788,17 @@
             } else if (aba === 'menor') {
                 divMenor.classList.remove('hidden');
                 btnMenor.className = "flex flex-col items-center gap-0.5 py-1 text-purple-400";
-                tagMenor.className = "text-[10px] bg-purple-500/20 text-purple-400 font-black px-1.5 py-0.5 rounded border border-purple-500/40 font-logo";
+                tagMenor.className = "text-[9px] bg-purple-500/20 text-purple-400 font-black px-1 py-0.5 rounded border border-purple-500/40 font-logo";
                 recalcularExibicaoTotal();
             } else if (aba === 'conhecimento') {
                 divConhecimento.classList.remove('hidden');
                 btnConhecimento.className = "flex flex-col items-center gap-1 py-1 nav-active";
                 recalcularExibicaoTotal();
+            } else if (aba === 'duvidas') {
+                divDuvidas.classList.remove('hidden');
+                btnDuvidas.className = "flex flex-col items-center gap-1 py-1 nav-active";
+                renderizarDuvidas();
+                document.getElementById('valor-aporte-display').innerText = "DÚVIDAS";
             }
         }
 
