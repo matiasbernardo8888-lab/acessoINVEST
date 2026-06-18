@@ -171,7 +171,7 @@
                 </div>
                 <h3 class="text-sm font-extrabold text-white leading-snug">COMO EU FAZIA MINHAS ALOCAÇÕES QUANDO ERA MENOR DE IDADE</h3>
                 <p class="text-xs text-slate-300 leading-relaxed">
-                    Este espaço reconstrói de forma puramente educacional e pessoal como foi a minha experiência e a lógica matemática de divisão de aportes que adotei na minha própria juventude, utilizando os mechanisms legais vigentes por meio de responsáveis.
+                    Este espaço reconstrói de forma puramente educacional e pessoal como foi a minha experiência e a lógica matemática de divisão de aportes que adotei na minha própria juventude, utilizando os mecanismos legais vigentes por meio de responsáveis.
                 </p>
                 <div class="bg-purple-950/40 p-3 rounded-lg border border-purple-500/30 text-xs text-purple-200">
                     💡 <strong>MINHA MEMÓRIA DE APRENDIZADO:</strong> Quando eu era menor, utilizava contas simplificadas abertas por meus tutores (como na <strong>Corretora Rico</strong>). Abaixo, você confere a simulação matemática exata da estratégia que funcionou para o meu desenvolvimento financeiro precoce.
@@ -253,7 +253,7 @@
                         Precisa de Ajuda para Aprender a Organizar Suas Planilhas e Entender o Mercado?
                     </h3>
                     <p class="text-xs text-slate-400 max-w-md mx-auto leading-relaxed">
-                        Em nossos encontros individuais, eu vou te ensinar a ler gráficos, utilizar simuladores de alocação e montar rotinas financeiras eficientes baseadas no meu próprio modelo de organization pessoal.
+                        Em nossos encontros individuais, eu vou te ensinar a ler gráficos, utilizar simuladores de alocação e montar rotinas financeiras eficientes baseadas no meu próprio modelo de organização pessoal.
                     </p>
                     <div class="bg-black/60 py-3 px-4 rounded-xl inline-block border border-slate-800">
                         <span class="text-[10px] text-slate-500 block uppercase font-bold tracking-wider">Acesso ao Meu Tempo Particular</span>
@@ -356,6 +356,7 @@
             </div>
         </div>
 
+        <!-- ABA DÚVIDAS -->
         <div id="aba-duvidas" class="hidden p-4 space-y-4">
             <div class="bg-gradient-to-r from-cyan-950/40 via-slate-950 to-slate-950 p-5 rounded-xl border border-cyan-500/20 space-y-2">
                 <div class="flex items-center gap-2 text-cyan-400">
@@ -676,7 +677,7 @@
                     {
                         pergunta: 'O que é CDI?',
                         resposta: `O <strong>CDI</strong> (Certificado de Depósito Interbancário) é a taxa de referência de investimentos de renda fixa no Brasil.<br><br>
-                        Quando um investment rende "100% do CDI", significa que acompanha essa taxa de referência de perto.<br><br>
+                        Quando um investimento rende "100% do CDI", significa que acompanha essa taxa de referência de perto.<br><br>
                         💡 O CDI fica geralmente próximo da taxa Selic (taxa básica de juros do Brasil).`
                     },
                 ]
@@ -814,7 +815,7 @@
         }
 
         function definirObjetivoKids(objetivo) {
-            objetivoKidsSelecionado = objective;
+            objetivoKidsSelecionado = objetivo;
             localStorage.setItem('matias_kids_objetivo', objetivo);
 
             ['faculdade', 'intercambio', 'independencia'].forEach(obj => {
@@ -849,12 +850,15 @@
             const distribuicaoAlvo = pesosKidsEstrategia[objetivoKidsSelecionado];
             const maxAtivos = calcularQuantidadeAtivos(valorTotal);
 
+            // Filtra ativos elegíveis (valor mínimo atingível e com peso > 0)
             let ativosElegiveis = carteiraCompleta.filter(a =>
                 distribuicaoAlvo[a.categoria] > 0 && valorTotal >= a.aplicacaoMinima
             );
 
+            // Ordena pelo menor mínimo primeiro (mais acessíveis primeiro)
             ativosElegiveis.sort((a, b) => a.aplicacaoMinima - b.aplicacaoMinima);
 
+            // Garante diversificação de categorias disponíveis antes de cortar
             const ativosSelecionados = selecionarComDiversificacao(ativosElegiveis, maxAtivos, distribuicaoAlvo);
 
             if (ativosSelecionados.length === 0) {
@@ -903,6 +907,7 @@
             document.getElementById('lista-ativos-kids').innerHTML = htmlHTML;
         }
 
+        // Seleciona ativos garantindo representação de categorias diferentes
         function selecionarComDiversificacao(lista, maxAtivos, pesosCat) {
             if (lista.length <= maxAtivos) return lista;
 
@@ -910,6 +915,7 @@
             const selecionados = [];
             const usados = new Set();
 
+            // 1ª passagem: pega 1 ativo de cada categoria disponível
             for (const cat of categorias) {
                 if (selecionados.length >= maxAtivos) break;
                 const candidato = lista.find(a => a.categoria === cat && !usados.has(a.nome));
@@ -919,6 +925,7 @@
                 }
             }
 
+            // 2ª passagem: completa até maxAtivos com os restantes (maior peso primeiro)
             const restantes = lista
                 .filter(a => !usados.has(a.nome))
                 .sort((a, b) => (pesosCat[b.categoria] || 0) - (pesosCat[a.categoria] || 0));
@@ -1126,9 +1133,6 @@
             return parseFloat(input.replace(/\./g, '').replace(',', '.')) || 0;
         }
 
-        // ─────────────────────────────────────────────────────────────
-        // LÓGICA CORRIGIDA PARA CORRESPONDER AO APORTE DIGITADO
-        // ─────────────────────────────────────────────────────────────
         function gerarCarteira() {
             const valorTotal = obterValorNumerico();
             localStorage.setItem('matias_valor_cru', document.getElementById('input-valor-total').value);
@@ -1158,24 +1162,24 @@
                 return;
             }
 
-            // CRÍTICO: Filtra excluindo ativos onde a aplicação mínima é maior do que o valor digitado
+            // Filtra por categoria e mínimo de aporte
             let ativosFiltrados = carteiraCompleta.filter(a =>
                 a.pesosPerfil[perfilInvestidor] > 0 && valorTotal >= a.aplicacaoMinima
             );
-            
             if (filtroAtual !== 'todos') {
                 ativosFiltrados = ativosFiltrados.filter(a => a.categoria === filtroAtual);
             }
 
-            // Limita dinamicamente a quantidade de ativos exibidos com base no valor
+            // Aplica limite de quantidade proporcional ao valor
             const maxAtivos = filtroAtual === 'todos' ? calcularQuantidadeAtivos(valorTotal) : ativosFiltrados.length;
-            
+            const pesos     = Object.fromEntries(Object.entries({ 'Renda Fixa': 1, 'Multimercado': 1, 'Ações': 1, 'Global': 1 }));
             ativosFiltrados = selecionarComDiversificacao(ativosFiltrados, maxAtivos, 
+                // usa pesosPerfil do ativo como proxy de importância para ordenação
                 Object.fromEntries(ativosFiltrados.map(a => [a.categoria, a.pesosPerfil[perfilInvestidor]]))
             );
 
             if (ativosFiltrados.length === 0) {
-                document.getElementById('lista-ativos').innerHTML = `<p class="text-xs text-slate-500 text-center py-8">Nenhum ativo da carteira permite investimento inicial com R$ ${valorTotal.toFixed(2)}. Tente filtros mais flexíveis ou ativos com menores mínimos de aporte.</p>`;
+                document.getElementById('lista-ativos').innerHTML = '<p class="text-xs text-slate-500 text-center py-8">Nenhum ativo da minha carteira atende ao filtro e aporte mínimo simultâneo.</p>';
                 atualizarBarraComposicao();
                 return;
             }
@@ -1191,6 +1195,7 @@
                     : valorTotal * pct;
                 acumulado += valorAlocado;
 
+                // Badge do ticker com link de busca
                 const tickerBadge = ativo.ticker
                     ? `<a href="https://www.google.com/search?q=${ativo.ticker}+acao+B3" target="_blank"
                           title="Pesquisar ${ativo.ticker} na B3"
@@ -1199,6 +1204,7 @@
                        </a>`
                     : '';
 
+                // Nome curto para exibição principal
                 const nomeExibicao = ativo.ticker
                     ? (ativo.nome.includes('—') ? ativo.nome.split('—')[1].trim() : ativo.nome)
                     : ativo.nome;
