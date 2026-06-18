@@ -183,29 +183,8 @@
 </head>
 <body style="background:#000 !important;" class="bg-black text-slate-100 min-h-screen pb-28">
 
-    <!-- ───────────────────────────────────────────────────────────── -->
-    <!-- SCANNER BIOMÉTRICO DE ENTRADA -->
-    <!-- ───────────────────────────────────────────────────────────── -->
-    <div id="biometric-scanner" class="fixed inset-0 z-[9999] bg-black flex flex-col items-center justify-center overflow-hidden">
-        <div class="scanner-grid"></div>
-        <div class="relative w-48 h-48 sm:w-60 sm:h-60 flex items-center justify-center">
-            <div class="scanner-ring scanner-ring-outer"></div>
-            <div class="scanner-ring scanner-ring-inner"></div>
-            <div class="scanner-core"></div>
-            <div class="scanner-line"></div>
-            <div class="scanner-corner tl"></div>
-            <div class="scanner-corner tr"></div>
-            <div class="scanner-corner bl"></div>
-            <div class="scanner-corner br"></div>
-            <i data-lucide="fingerprint" class="w-12 h-12 sm:w-14 sm:h-14 text-cyan-300 relative z-10"></i>
-        </div>
-        <div class="mt-8 text-center px-6">
-            <p id="scanner-status" class="font-logo text-cyan-400 text-xs sm:text-sm font-bold tracking-[0.3em] uppercase">DIGITALIZANDO<span class="scanner-dots"></span></p>
-            <div class="w-44 h-0.5 bg-slate-900 mt-4 mx-auto overflow-hidden rounded-full">
-                <div id="scanner-progress" class="h-full bg-cyan-400"></div>
-            </div>
-        </div>
-    </div>
+    
+    
 
     <div class="max-w-2xl mx-auto">
         <header class="sticky top-0 z-50 bg-black/95 backdrop-blur-md border-b border-slate-900 p-4">
@@ -1718,5 +1697,34 @@
             atualizarGamificacao();
         });
     </script>
+<script>
+// Scanner biométrico - aparece 3s e some sozinho
+document.addEventListener('DOMContentLoaded', function() {
+    const scanner = document.getElementById('biometric-scanner');
+    const progressBar = document.querySelector('.scanner-progress-bar');
+    
+    if (scanner && progressBar) {
+        // Reseta a barra
+        progressBar.style.width = '0%';
+        
+        // Mostra o scanner
+        scanner.style.display = 'flex';
+        
+        // Anima a barra preenchendo em 3 segundos
+        setTimeout(() => {
+            progressBar.style.width = '100%';
+        }, 100);
+        
+        // Esconde o scanner depois de 3.2s com fade
+        setTimeout(() => {
+            scanner.style.opacity = '0';
+            setTimeout(() => {
+                scanner.style.display = 'none';
+                scanner.style.opacity = '1';
+            }, 500);
+        }, 3200);
+    }
+});
+</script>
 </body>
 </html>
