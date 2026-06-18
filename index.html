@@ -1,17 +1,19 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" style="background:#000;">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Matias Invest | Diário Gráfico de Carteira Pessoal</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght=700;900&family=Plus+Jakarta+Sans:wght=400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
+        html { background: #000 !important; }
+        * { box-sizing: border-box; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: #000; }
         .font-logo { font-family: 'Orbitron', sans-serif; }
         input[type=number]::-webkit-inner-spin-button,
@@ -32,7 +34,7 @@
         }
     </style>
 </head>
-<body class="bg-black text-slate-100 min-h-screen pb-28">
+<body style="background:#000 !important;" class="bg-black text-slate-100 min-h-screen pb-28">
     <div class="max-w-2xl mx-auto">
         <header class="sticky top-0 z-50 bg-black/95 backdrop-blur-md border-b border-slate-900 p-4">
             <div class="flex justify-between items-center">
@@ -389,38 +391,65 @@
     </div>
 
     <script>
+        // ─────────────────────────────────────────────────────────────
+        // CARTEIRA COMPLETA — ticker separado para exibição clara
+        // ─────────────────────────────────────────────────────────────
         const carteiraCompleta = [
-            { nome: 'VALORA VANGUARD', categoria: 'Renda Fixa', descricao: 'Ativo de crédito privado focado em prêmios estruturais de mercado corporativo.', aplicacaoMinima: 100.00, pesosPerfil: { conservador: 25, moderado: 15, arrojado: 5 }, ondeEncontrar: 'BTG Pactual, Itaú e XP Investimentos' },
-            { nome: 'SOLIS CAPITAL ANTARES PIONEIRO', categoria: 'Renda Fixa', descricao: 'Direitos creditórios com modelo estruturado focado em previsibilidade de prêmio.', aplicacaoMinima: 500.00, pesosPerfil: { conservador: 20, moderado: 10, arrojado: 5 }, ondeEncontrar: 'BTG Pactual e XP Investimentos' },
-            { nome: 'IFRA11 (ITAÚ FICFIDC DE INFRAESTRUTURA)', categoria: 'Renda Fixa', descricao: 'Ativo de infraestrutura focado em crédito e liquidez corporativa controlada.', aplicacaoMinima: 80.00, pesosPerfil: { conservador: 15, moderado: 10, arrojado: 5 }, ondeEncontrar: 'Disponível no catálogo Itaú e Corretoras parceiras' },
-            { nome: 'FUNDOS PASSIVOS AO IMA-B', categoria: 'Renda Fixa', descricao: 'Estratégia indexada à variação da inflação real de longo prazo.', aplicacaoMinima: 100.00, pesosPerfil: { conservador: 25, moderado: 10, arrojado: 5 }, ondeEncontrar: 'XP Investimentos, BTG Pactual, Rico, Inter, NuInvest e Ágora' },
-            { nome: 'DAHLIA TOTAL RETURN', categoria: 'Multimercado', descricao: 'Estratégia multimercado dinâmica contendo ações e ativos macro globais.', aplicacaoMinima: 500.00, pesosPerfil: { conservador: 0, moderado: 15, arrojado: 10 }, ondeEncontrar: 'Ágora, BTG Pactual, C6 Bank, Inter e XP' },
-            { nome: 'ABSOLUTE VERTEX', categoria: 'Multimercado', descricao: 'Fundo focado em distorções táticas macroeconômicas de juros e moedas.', aplicacaoMinima: 500.00, pesosPerfil: { conservador: 0, moderado: 10, arrojado: 10 }, ondeEncontrar: 'Ágora, C6 Bank, BTG Pactual, Rico e XP Investimentos' },
-            { nome: 'GENOA CAPITAL RADAR', categoria: 'Multimercado', descricao: 'Fundo focado em arbitragem quantitativa de juros, câmbio e índices.', aplicacaoMinima: 500.00, pesosPerfil: { conservador: 0, moderado: 10, arrojado: 5 }, ondeEncontrar: 'Ágora, Inter, BTG Pactual, Genial e XP' },
-            { nome: 'IBIUNA EQUITIES RESP LIMITADA FIF CIC', categoria: 'Ações', descricao: 'Seleção corporativa de ativos de alta resiliência e geração de valor operacional.', aplicacaoMinima: 1000.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 10 }, ondeEncontrar: 'C6 Bank, Inter, Genial, Toro e XP Investimentos' },
-            { nome: 'FORPUS AÇÕES FIC FIA', categoria: 'Ações', descricao: 'Teses direcionais com foco em forte potencial de crescimento em bolsa.', aplicacaoMinima: 1000.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 15 }, ondeEncontrar: 'BTG Pactual, C6 Bank, Inter e XP Investimentos' },
-            { nome: 'REAL INVESTOR FI AÇÕES BDR LEVEL I', categoria: 'Ações', descricao: 'Value investing puro voltado ao estudo de assimetrias de lucros corporativos.', aplicacaoMinima: 5000.00, pesosPerfil: { conservador: 0, moderado: 0, arrojado: 15 }, ondeEncontrar: 'BTG Pactual, Genial, Itaú, Rico e XP Investimentos' },
-            { nome: 'BBSE3 | BB SEGURIDADE', categoria: 'Ações', descricao: 'Ativo focado em forte geração de caixa operacional no mercado de seguros.', aplicacaoMinima: 34.00, pesosPerfil: { conservador: 0, moderado: 10, arrojado: 10 }, ondeEncontrar: 'XP Investimentos, BTG Pactual, Rico, Inter e Ágora' },
-            { nome: 'SLCE3 | SLC AGRÍCOLA', categoria: 'Ações', descricao: 'Empresa produtora de commodities agrícolas com patrimônio de terras cultiváveis.', aplicacaoMinima: 19.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 10 }, ondeEncontrar: 'XP Investimentos, BTG Pactual, Rico, Inter e Ágora' },
-            { nome: 'GMAT3 | GRUPO MATEUS', categoria: 'Ações', descricao: 'Varejo alimentar de grande escala em plena expansão regional no Norte/Nordeste.', aplicacaoMinima: 8.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 5 }, ondeEncontrar: 'XP Investimentos, BTG Pactual, Rico, Inter e Ágora' },
-            { nome: 'BTHF11 | BTG PACTUAL HF', categoria: 'Ações', descricao: 'Portfólio híbrido estruturado sob coordenação do banco BTG Pactual.', aplicacaoMinima: 10.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 5 }, ondeEncontrar: 'XP Investimentos, BTG Pactual, Rico, Inter e Ágora' },
-            { nome: 'WRLD11 (Mundo Todo via Vanguard VT)', categoria: 'Global', descricao: 'Ativo indexado que reflete mais de 9.000 ações ao redor do planeta via B3.', aplicacaoMinima: 10.00, pesosPerfil: { conservador: 0, moderado: 10, arrojado: 15 }, ondeEncontrar: 'XP Investimentos, BTG Pactual, Rico, Inter e Ágora' },
-            { nome: 'MS GLOBAL OPPORTUNITIES', categoria: 'Global', descricao: 'Exposição de estudo a ativos de alto crescimento geridos pela Morgan Stanley.', aplicacaoMinima: 100.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 10 }, ondeEncontrar: 'Plataformas integradas e XP Investimentos' },
-            { nome: 'ALUG11 (Mercado Imobiliário Global VNQ)', categoria: 'Global', descricao: 'Ativo de tracking do mercado imobiliário internacional de alta renda (Real Estate).', aplicacaoMinima: 110.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 5 }, ondeEncontrar: 'XP Investimentos, BTG Pactual, Rico, Inter e Ágora' },
-            { nome: 'USDB11 (Renda Fixa Americana BND)', categoria: 'Global', descricao: 'Rastreamento de títulos públicos de renda fixa emitidos pelo tesouro americano.', aplicacaoMinima: 10.00, pesosPerfil: { conservador: 0, moderado: 10, arrojado: 5 }, ondeEncontrar: 'XP Investimentos, BTG Pactual, Rico, Inter e Ágora' },
-            { nome: 'BNDX11 (Renda Fixa Global ex-EUA)', categoria: 'Global', descricao: 'Indexador focado em renda fixa internacional fora do eixo geográfico dos EUA.', aplicacaoMinima: 10.00, pesosPerfil: { conservador: 0, moderado: 5, arrojado: 5 }, ondeEncontrar: 'XP Investimentos, BTG Pactual, Rico, Inter e Ágora' }
+            { ticker: null,      nome: 'VALORA VANGUARD',                         categoria: 'Renda Fixa',   descricao: 'Ativo de crédito privado focado em prêmios estruturais de mercado corporativo.',              aplicacaoMinima: 100,  pesosPerfil: { conservador: 25, moderado: 15, arrojado: 5  }, ondeEncontrar: 'BTG Pactual, Itaú e XP Investimentos' },
+            { ticker: null,      nome: 'SOLIS CAPITAL ANTARES PIONEIRO',           categoria: 'Renda Fixa',   descricao: 'Direitos creditórios com modelo estruturado focado em previsibilidade de prêmio.',             aplicacaoMinima: 500,  pesosPerfil: { conservador: 20, moderado: 10, arrojado: 5  }, ondeEncontrar: 'BTG Pactual e XP Investimentos' },
+            { ticker: 'IFRA11',  nome: 'IFRA11 — Itaú FICFIDC de Infraestrutura', categoria: 'Renda Fixa',   descricao: 'Ativo de infraestrutura focado em crédito e liquidez corporativa controlada.',                  aplicacaoMinima: 80,   pesosPerfil: { conservador: 15, moderado: 10, arrojado: 5  }, ondeEncontrar: 'Itaú e corretoras parceiras' },
+            { ticker: null,      nome: 'FUNDOS PASSIVOS AO IMA-B',                 categoria: 'Renda Fixa',   descricao: 'Estratégia indexada à variação da inflação real de longo prazo.',                             aplicacaoMinima: 100,  pesosPerfil: { conservador: 25, moderado: 10, arrojado: 5  }, ondeEncontrar: 'XP, BTG Pactual, Rico, Inter, NuInvest e Ágora' },
+            { ticker: null,      nome: 'DAHLIA TOTAL RETURN',                      categoria: 'Multimercado', descricao: 'Estratégia multimercado dinâmica contendo ações e ativos macro globais.',                     aplicacaoMinima: 500,  pesosPerfil: { conservador: 0,  moderado: 15, arrojado: 10 }, ondeEncontrar: 'Ágora, BTG Pactual, C6 Bank, Inter e XP' },
+            { ticker: null,      nome: 'ABSOLUTE VERTEX',                          categoria: 'Multimercado', descricao: 'Fundo focado em distorções táticas macroeconômicas de juros e moedas.',                      aplicacaoMinima: 500,  pesosPerfil: { conservador: 0,  moderado: 10, arrojado: 10 }, ondeEncontrar: 'Ágora, C6 Bank, BTG Pactual, Rico e XP' },
+            { ticker: null,      nome: 'GENOA CAPITAL RADAR',                      categoria: 'Multimercado', descricao: 'Fundo focado em arbitragem quantitativa de juros, câmbio e índices.',                        aplicacaoMinima: 500,  pesosPerfil: { conservador: 0,  moderado: 10, arrojado: 5  }, ondeEncontrar: 'Ágora, Inter, BTG Pactual, Genial e XP' },
+            { ticker: null,      nome: 'IBIUNA EQUITIES',                          categoria: 'Ações',        descricao: 'Seleção corporativa de ativos de alta resiliência e geração de valor operacional.',           aplicacaoMinima: 1000, pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 10 }, ondeEncontrar: 'C6 Bank, Inter, Genial, Toro e XP' },
+            { ticker: null,      nome: 'FORPUS AÇÕES FIC FIA',                     categoria: 'Ações',        descricao: 'Teses direcionais com foco em forte potencial de crescimento em bolsa.',                      aplicacaoMinima: 1000, pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 15 }, ondeEncontrar: 'BTG Pactual, C6 Bank, Inter e XP' },
+            { ticker: null,      nome: 'REAL INVESTOR FI AÇÕES BDR LEVEL I',       categoria: 'Ações',        descricao: 'Value investing puro voltado ao estudo de assimetrias de lucros corporativos.',               aplicacaoMinima: 5000, pesosPerfil: { conservador: 0,  moderado: 0,  arrojado: 15 }, ondeEncontrar: 'BTG Pactual, Genial, Itaú, Rico e XP' },
+            { ticker: 'BBSE3',   nome: 'BBSE3 — BB Seguridade',                    categoria: 'Ações',        descricao: 'Ação focada em forte geração de caixa operacional no mercado de seguros.',                   aplicacaoMinima: 34,   pesosPerfil: { conservador: 0,  moderado: 10, arrojado: 10 }, ondeEncontrar: 'XP, BTG Pactual, Rico, Inter e Ágora' },
+            { ticker: 'SLCE3',   nome: 'SLCE3 — SLC Agrícola',                     categoria: 'Ações',        descricao: 'Empresa produtora de commodities agrícolas com patrimônio de terras cultiváveis.',            aplicacaoMinima: 19,   pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 10 }, ondeEncontrar: 'XP, BTG Pactual, Rico, Inter e Ágora' },
+            { ticker: 'GMAT3',   nome: 'GMAT3 — Grupo Mateus',                     categoria: 'Ações',        descricao: 'Varejo alimentar de grande escala em expansão regional no Norte/Nordeste.',                  aplicacaoMinima: 8,    pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 5  }, ondeEncontrar: 'XP, BTG Pactual, Rico, Inter e Ágora' },
+            { ticker: 'BTHF11',  nome: 'BTHF11 — BTG Pactual HF',                  categoria: 'Ações',        descricao: 'Portfólio híbrido estruturado sob coordenação do banco BTG Pactual.',                       aplicacaoMinima: 10,   pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 5  }, ondeEncontrar: 'XP, BTG Pactual, Rico, Inter e Ágora' },
+            { ticker: 'WRLD11',  nome: 'WRLD11 — Mundo Todo (Vanguard VT)',         categoria: 'Global',       descricao: 'Ativo indexado que reflete mais de 9.000 ações ao redor do planeta via B3.',                 aplicacaoMinima: 10,   pesosPerfil: { conservador: 0,  moderado: 10, arrojado: 15 }, ondeEncontrar: 'XP, BTG Pactual, Rico, Inter e Ágora' },
+            { ticker: null,      nome: 'MS GLOBAL OPPORTUNITIES',                  categoria: 'Global',       descricao: 'Exposição de estudo a ativos de alto crescimento geridos pela Morgan Stanley.',              aplicacaoMinima: 100,  pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 10 }, ondeEncontrar: 'Plataformas integradas e XP' },
+            { ticker: 'ALUG11',  nome: 'ALUG11 — Mercado Imobiliário Global (VNQ)', categoria: 'Global',       descricao: 'Ativo de tracking do mercado imobiliário internacional de alta renda (Real Estate).',       aplicacaoMinima: 110,  pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 5  }, ondeEncontrar: 'XP, BTG Pactual, Rico, Inter e Ágora' },
+            { ticker: 'USDB11',  nome: 'USDB11 — Renda Fixa Americana (BND)',       categoria: 'Global',       descricao: 'Rastreamento de títulos públicos de renda fixa emitidos pelo tesouro americano.',            aplicacaoMinima: 10,   pesosPerfil: { conservador: 0,  moderado: 10, arrojado: 5  }, ondeEncontrar: 'XP, BTG Pactual, Rico, Inter e Ágora' },
+            { ticker: 'BNDX11',  nome: 'BNDX11 — Renda Fixa Global ex-EUA',        categoria: 'Global',       descricao: 'Indexador focado em renda fixa internacional fora do eixo geográfico dos EUA.',             aplicacaoMinima: 10,   pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 5  }, ondeEncontrar: 'XP, BTG Pactual, Rico, Inter e Ágora' }
         ];
 
+        // ─────────────────────────────────────────────────────────────
+        // LIMITES DE QUANTIDADE DE ATIVOS POR FAIXA DE VALOR
+        // Regra: quantidade sobe gradualmente, nunca passa de 8
+        // ─────────────────────────────────────────────────────────────
+        function calcularQuantidadeAtivos(valor) {
+            if (valor < 200)   return 2;  // R$0–199    → 2 ativos
+            if (valor < 500)   return 3;  // R$200–499  → 3 ativos
+            if (valor < 1000)  return 4;  // R$500–999  → 4 ativos
+            if (valor < 2000)  return 5;  // R$1k–1999  → 5 ativos
+            if (valor < 5000)  return 6;  // R$2k–4999  → 6 ativos
+            if (valor < 15000) return 7;  // R$5k–14999 → 7 ativos
+            return 8;                     // R$15k+     → 8 ativos (máximo)
+        }
+
+        // ─────────────────────────────────────────────────────────────
+        // BADGE DE TICKER — exibe o código do ativo quando existe
+        // ─────────────────────────────────────────────────────────────
+        function badgeTicker(ativo, corClasse) {
+            if (!ativo.ticker) return '';
+            return `<span class="inline-block text-[9px] font-black tracking-widest px-2 py-0.5 rounded ${corClasse} font-logo ml-1">
+                        ${ativo.ticker}
+                    </span>`;
+        }
+
         const pesosKidsEstrategia = {
-            faculdade: { 'Renda Fixa': 20, 'Multimercado': 10, 'Ações': 50, 'Global': 20 },
-            intercambio: { 'Renda Fixa': 10, 'Multimercado': 10, 'Ações': 20, 'Global': 60 },
-            independencia: { 'Renda Fixa': 50, 'Multimercado': 20, 'Ações': 15, 'Global': 15 }
+            faculdade:    { 'Renda Fixa': 20, 'Multimercado': 10, 'Ações': 50, 'Global': 20 },
+            intercambio:  { 'Renda Fixa': 10, 'Multimercado': 10, 'Ações': 20, 'Global': 60 },
+            independencia:{ 'Renda Fixa': 50, 'Multimercado': 20, 'Ações': 15, 'Global': 15 }
         };
 
         const topCryptos = [
-            { id: 'bitcoin', symbol: 'BTC', name: 'Bitcoin', color: '#f7931a' },
+            { id: 'bitcoin',  symbol: 'BTC', name: 'Bitcoin',  color: '#f7931a' },
             { id: 'ethereum', symbol: 'ETH', name: 'Ethereum', color: '#627eea' },
-            { id: 'solana', symbol: 'SOL', name: 'Solana', color: '#9945ff' }
+            { id: 'solana',   symbol: 'SOL', name: 'Solana',   color: '#9945ff' }
         ];
 
         const perguntasQuiz = [
@@ -442,7 +471,7 @@
             }
         ];
 
-        let faseQuiz = -1; 
+        let faseQuiz = -1;
         let pontuacaoTotalQuiz = 0;
         let perfilInvestidor = null;
         let objetivoKidsSelecionado = null;
@@ -451,10 +480,9 @@
         let chartInstancia = null;
         let abaAtualAtiva = 'carteira';
 
-        // Dados dinâmicos para simular o gráfico interativo baseado no aporte do usuário
         const dadosGraficoPeriodos = {
-            '1A': [5, 12, 19, 26, 38, 48.3],
-            '2A': [10, 22, 31, 45, 62, 85.5],
+            '1A':  [5, 12, 19, 26, 38, 48.3],
+            '2A':  [10, 22, 31, 45, 62, 85.5],
             'MAX': [15, 35, 58, 82, 110, 145.2]
         };
 
@@ -462,22 +490,22 @@
             abaAtualAtiva = aba;
             localStorage.setItem('matias_aba_ativa', aba);
 
-            const btnCarteira = document.getElementById('nav-btn-carteira');
-            const btnPerfil = document.getElementById('nav-btn-perfil');
-            const btnMenor = document.getElementById('nav-btn-menor');
+            const btnCarteira     = document.getElementById('nav-btn-carteira');
+            const btnPerfil       = document.getElementById('nav-btn-perfil');
+            const btnMenor        = document.getElementById('nav-btn-menor');
             const btnConhecimento = document.getElementById('nav-btn-conhecimento');
-            const tagMenor = document.getElementById('icon-menor-tag');
+            const tagMenor        = document.getElementById('icon-menor-tag');
 
             const divInvestimentos = document.getElementById('aba-conteudo-investimentos');
-            const divPerfil = document.getElementById('aba-painel-perfil');
-            const divMenor = document.getElementById('aba-menor-idade');
-            const divConhecimento = document.getElementById('aba-conhecimento');
+            const divPerfil        = document.getElementById('aba-painel-perfil');
+            const divMenor         = document.getElementById('aba-menor-idade');
+            const divConhecimento  = document.getElementById('aba-conhecimento');
 
-            btnCarteira.className = "flex flex-col items-center gap-1 py-1 text-slate-600";
-            btnPerfil.className = "flex flex-col items-center gap-1 py-1 text-slate-600";
-            btnMenor.className = "flex flex-col items-center gap-0.5 py-1 text-slate-600";
+            btnCarteira.className     = "flex flex-col items-center gap-1 py-1 text-slate-600";
+            btnPerfil.className       = "flex flex-col items-center gap-1 py-1 text-slate-600";
+            btnMenor.className        = "flex flex-col items-center gap-0.5 py-1 text-slate-600";
             btnConhecimento.className = "flex flex-col items-center gap-1 py-1 text-slate-600";
-            tagMenor.className = "text-[10px] bg-slate-900 text-slate-400 font-black px-1.5 py-0.5 rounded border border-slate-800 font-logo";
+            tagMenor.className        = "text-[10px] bg-slate-900 text-slate-400 font-black px-1.5 py-0.5 rounded border border-slate-800 font-logo";
 
             divInvestimentos.classList.add('hidden');
             divPerfil.classList.add('hidden');
@@ -522,18 +550,14 @@
 
             ['faculdade', 'intercambio', 'independencia'].forEach(obj => {
                 const btn = document.getElementById(`btn-kids-${obj}`);
-                if (obj === objetivo) {
-                    btn.className = "w-full text-left bg-purple-500/10 border border-purple-500 p-3 rounded-lg text-xs font-bold text-purple-300 transition";
-                } else {
-                    btn.className = "w-full text-left bg-slate-900 border border-slate-800 p-3 rounded-lg text-xs font-medium text-slate-300 transition";
-                }
+                btn.className = obj === objetivo
+                    ? "w-full text-left bg-purple-500/10 border border-purple-500 p-3 rounded-lg text-xs font-bold text-purple-300 transition"
+                    : "w-full text-left bg-slate-900 border border-slate-800 p-3 rounded-lg text-xs font-medium text-slate-300 transition";
             });
 
             const containerInput = document.getElementById('container-aporte-kids');
-            const inputKids = document.getElementById('input-valor-kids');
             containerInput.classList.remove('opacity-40', 'pointer-events-none');
-            inputKids.placeholder = "0,00";
-
+            document.getElementById('input-valor-kids').placeholder = "0,00";
             gerarCarteiraKids();
         }
 
@@ -554,63 +578,98 @@
             }
 
             const distribuicaoAlvo = pesosKidsEstrategia[objetivoKidsSelecionado];
-            let ativosElegiveisKids = carteiraCompleta.filter(ativo => distribuicaoAlvo[ativo.categoria] > 0 && valorTotal >= ativo.aplicacaoMinima);
+            const maxAtivos = calcularQuantidadeAtivos(valorTotal);
 
-            let ativosParaAlocarCount = 2;
-            if (valorTotal > 200) ativosParaAlocarCount = 4;
-            if (valorTotal > 800) ativosParaAlocarCount = 6;
-            if (valorTotal > 2500) ativosParaAlocarCount = ativosElegiveisKids.length;
+            // Filtra ativos elegíveis (valor mínimo atingível e com peso > 0)
+            let ativosElegiveis = carteiraCompleta.filter(a =>
+                distribuicaoAlvo[a.categoria] > 0 && valorTotal >= a.aplicacaoMinima
+            );
 
-            ativosElegiveisKids.sort((a, b) => a.aplicacaoMinima - b.aplicacaoMinima);
-            let ativosFiltradosKids = ativosElegiveisKids.slice(0, ativosParaAlocarCount);
+            // Ordena pelo menor mínimo primeiro (mais acessíveis primeiro)
+            ativosElegiveis.sort((a, b) => a.aplicacaoMinima - b.aplicacaoMinima);
 
-            let somaPesosTeoricos = 0;
-            ativosFiltradosKids.forEach(ativo => { somaPesosTeoricos += distribuicaoAlvo[ativo.categoria]; });
+            // Garante diversificação de categorias disponíveis antes de cortar
+            const ativosSelecionados = selecionarComDiversificacao(ativosElegiveis, maxAtivos, distribuicaoAlvo);
 
+            if (ativosSelecionados.length === 0) {
+                document.getElementById('lista-ativos-kids').innerHTML = '<p class="text-xs text-slate-500 text-center py-8">Valor inferior ao mínimo histórico dos ativos simulados. Tente valores a partir de R$ 50,00.</p>';
+                return;
+            }
+
+            let somaPesos = ativosSelecionados.reduce((s, a) => s + distribuicaoAlvo[a.categoria], 0);
             let htmlHTML = '';
-            let totalAlocadoValidacao = 0;
+            let acumulado = 0;
 
-            ativosFiltradosKids.forEach((ativo, index) => {
-                let porcentagemRealAtivo = distribuicaoAlvo[ativo.categoria] / somaPesosTeoricos;
-                let valorAlocado = valorTotal * porcentagemRealAtivo;
+            ativosSelecionados.forEach((ativo, idx) => {
+                let pct = ativo.pesosPerfil ? distribuicaoAlvo[ativo.categoria] / somaPesos : 1 / ativosSelecionados.length;
+                let valorAlocado = idx === ativosSelecionados.length - 1
+                    ? valorTotal - acumulado
+                    : valorTotal * pct;
+                acumulado += valorAlocado;
 
-                if (index === ativosFiltradosKids.length - 1) {
-                    valorAlocado = valorTotal - totalAlocadoValidacao;
-                    porcentagemRealAtivo = valorAlocado / valorTotal;
-                }
-                
-                totalAlocadoValidacao += valorAlocado;
+                const tickerBadge = ativo.ticker
+                    ? `<span class="inline-block text-[9px] font-black tracking-widest px-2 py-0.5 rounded bg-purple-900/60 text-purple-300 border border-purple-500/30 font-logo ml-1">${ativo.ticker}</span>`
+                    : '';
 
-                if (valorAlocado > 0) {
-                    htmlHTML += `
-                        <div class="bg-slate-950 rounded-xl border border-slate-900 p-4 transition hover:border-purple-900/40">
-                            <div class="flex justify-between items-start mb-2">
-                                <div>
-                                    <h3 class="text-xs font-bold text-white uppercase tracking-wide">${ativo.nome}</h3>
-                                    <span class="inline-block text-[9px] uppercase font-black tracking-wider px-2 py-0.5 mt-1 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">
-                                        ${ativo.categoria} (Histórico do Matias)
-                                    </span>
+                htmlHTML += `
+                    <div class="bg-slate-950 rounded-xl border border-slate-900 p-4 hover:border-purple-900/40 transition">
+                        <div class="flex justify-between items-start mb-2">
+                            <div class="flex-1 pr-2">
+                                <div class="flex flex-wrap items-center gap-1 mb-1">
+                                    <h3 class="text-xs font-bold text-white uppercase tracking-wide">${ativo.ticker ? ativo.ticker : ativo.nome.split('—')[0].trim()}</h3>
+                                    ${tickerBadge}
                                 </div>
-                                <div class="text-right">
-                                    <div class="text-xs font-black text-purple-400 font-logo">${(porcentagemRealAtivo * 100).toFixed(0)}%</div>
-                                    <div class="text-xs text-slate-300 font-bold mt-0.5">${valorAlocado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
-                                </div>
+                                <p class="text-[10px] text-slate-400 leading-snug">${ativo.nome.includes('—') ? ativo.nome.split('—')[1].trim() : ativo.nome}</p>
+                                <span class="inline-block text-[9px] uppercase font-black tracking-wider px-2 py-0.5 mt-1 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                                    ${ativo.categoria}
+                                </span>
                             </div>
-                            <p class="text-[11px] text-slate-400 leading-relaxed mt-2 border-t border-slate-900 pt-2">${ativo.descricao}</p>
-                            <div class="text-[10px] text-slate-500 mt-1">📍 Canal de Estudo Operacional: <span class="text-purple-400 font-bold">Abertura de Conta de Menor via Responsável na Corretora Rico</span></div>
+                            <div class="text-right shrink-0">
+                                <div class="text-sm font-black text-purple-400 font-logo">${(pct * 100).toFixed(0)}%</div>
+                                <div class="text-xs text-slate-300 font-bold mt-0.5">${valorAlocado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
+                            </div>
                         </div>
-                    `;
-                }
+                        <p class="text-[11px] text-slate-400 leading-relaxed border-t border-slate-900 pt-2">${ativo.descricao}</p>
+                        <div class="text-[10px] text-slate-500 mt-1.5">📍 <span class="text-slate-400">Abertura de Conta de Menor via Responsável na Corretora Rico</span></div>
+                    </div>`;
             });
 
-            if(htmlHTML === '') {
-                htmlHTML = '<p class="text-xs text-slate-500 text-center py-8">O valor inserido é inferior ao lote mínimo histórico dos ativos simulados. Tente usar valores a partir de R$ 50,00.</p>';
-            }
             document.getElementById('lista-ativos-kids').innerHTML = htmlHTML;
         }
 
+        // Seleciona ativos garantindo representação de categorias diferentes
+        function selecionarComDiversificacao(lista, maxAtivos, pesosCat) {
+            if (lista.length <= maxAtivos) return lista;
+
+            const categorias = [...new Set(lista.map(a => a.categoria).filter(c => pesosCat[c] > 0))];
+            const selecionados = [];
+            const usados = new Set();
+
+            // 1ª passagem: pega 1 ativo de cada categoria disponível
+            for (const cat of categorias) {
+                if (selecionados.length >= maxAtivos) break;
+                const candidato = lista.find(a => a.categoria === cat && !usados.has(a.nome));
+                if (candidato) {
+                    selecionados.push(candidato);
+                    usados.add(candidato.nome);
+                }
+            }
+
+            // 2ª passagem: completa até maxAtivos com os restantes (maior peso primeiro)
+            const restantes = lista
+                .filter(a => !usados.has(a.nome))
+                .sort((a, b) => (pesosCat[b.categoria] || 0) - (pesosCat[a.categoria] || 0));
+
+            for (const a of restantes) {
+                if (selecionados.length >= maxAtivos) break;
+                selecionados.push(a);
+            }
+
+            return selecionados;
+        }
+
         function salvarDadosPerfil() {
-            const nome = document.getElementById('user-nome').value;
+            const nome  = document.getElementById('user-nome').value;
             const phone = document.getElementById('user-phone').value;
             const email = document.getElementById('user-email').value;
             if (nome) document.getElementById('perfil-nome-titulo').innerText = nome;
@@ -622,7 +681,7 @@
         }
 
         function salvarMeta() {
-            const tipo = document.getElementById('meta-tipo').value;
+            const tipo  = document.getElementById('meta-tipo').value;
             const valor = parseFloat(document.getElementById('meta-valor').value) || 0;
             if (valor <= 0) { alert('Insira um valor matemático válido.'); return; }
             localStorage.setItem('matias_meta_tipo', tipo);
@@ -631,15 +690,15 @@
         }
 
         function atualizarGamificacao() {
-            let progresso = 20; 
-            const nome = localStorage.getItem('matias_nome') || "";
-            const phone = localStorage.getItem('matias_phone') || "";
-            const email = localStorage.getItem('matias_email') || "";
-            const metaTipo = localStorage.getItem('matias_meta_tipo');
+            let progresso = 20;
+            const nome      = localStorage.getItem('matias_nome') || "";
+            const phone     = localStorage.getItem('matias_phone') || "";
+            const email     = localStorage.getItem('matias_email') || "";
+            const metaTipo  = localStorage.getItem('matias_meta_tipo');
             const metaValor = parseFloat(localStorage.getItem('matias_meta_valor')) || 0;
             const aporteAtual = obterValorNumerico();
 
-            if (nome) document.getElementById('user-nome').value = nome;
+            if (nome)  document.getElementById('user-nome').value  = nome;
             if (phone) document.getElementById('user-phone').value = phone;
             if (email) document.getElementById('user-email').value = email;
             if (nome || phone || email) progresso += 20;
@@ -651,26 +710,27 @@
 
             let tagNivel = "ESTUDANTE";
             if (progresso >= 50) tagNivel = "PRACTITIONER";
-            if (progresso >= 90) tagNivel = "ESTATEGISTA INDEPENDENTE";
+            if (progresso >= 90) tagNivel = "ESTRATEGISTA INDEPENDENTE";
             document.getElementById('perfil-nivel-tag').innerText = tagNivel;
             if (nome) document.getElementById('perfil-nome-titulo').innerText = nome;
 
             const metaContainer = document.getElementById('meta-visualizer');
             if (metaValor > 0) {
                 metaContainer.classList.remove('hidden');
-                document.getElementById('lbl-meta-ativa').innerText = metaTipo;
-                document.getElementById('lbl-meta-alvo').innerText = `Alvo: ${metaValor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
-                document.getElementById('lbl-meta-atual').innerText = `Aporte Simulado: ${aporteAtual.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
-                let pctMeta = (aporteAtual / metaValor) * 100;
-                if (pctMeta > 100) pctMeta = 100;
+                document.getElementById('lbl-meta-ativa').innerText  = metaTipo;
+                document.getElementById('lbl-meta-alvo').innerText   = `Alvo: ${metaValor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
+                document.getElementById('lbl-meta-atual').innerText  = `Aporte Simulado: ${aporteAtual.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}`;
+                let pctMeta = Math.min((aporteAtual / metaValor) * 100, 100);
                 document.getElementById('lbl-meta-porcentagem').innerText = `${pctMeta.toFixed(1)}%`;
                 document.getElementById('barra-meta-ativa').style.width = `${pctMeta}%`;
-                document.getElementById('meta-tipo').value = metaTipo;
+                document.getElementById('meta-tipo').value  = metaTipo;
                 document.getElementById('meta-valor').value = metaValor;
-            } else { metaContainer.classList.add('hidden'); }
+            } else {
+                metaContainer.classList.add('hidden');
+            }
         }
 
-        document.getElementById('user-phone').addEventListener('input', function (e) {
+        document.getElementById('user-phone').addEventListener('input', function(e) {
             let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
             e.target.value = !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '');
         });
@@ -689,22 +749,17 @@
                 `;
                 return;
             }
-
             if (faseQuiz < perguntasQuiz.length) {
-                const perguntaAtual = perguntasQuiz[faseQuiz];
+                const p = perguntasQuiz[faseQuiz];
                 document.getElementById('progresso-quiz').innerText = `Calibragem ${faseQuiz + 1} de ${perguntasQuiz.length}`;
-                document.getElementById('texto-pergunta').innerText = perguntaAtual.texto;
-                
-                let opcoesHTML = '';
-                perguntaAtual.opcoes.forEach((opcao) => {
-                    opcoesHTML += `
-                        <button onclick="computarResposta(${opcao.pontos})" class="w-full text-left bg-slate-900 border border-slate-800 hover:border-cyan-500 hover:bg-cyan-500/5 p-2.5 rounded-lg text-xs font-medium text-slate-300 transition-all">
-                            ${opcao.texto}
-                        </button>
-                    `;
-                });
-                document.getElementById('opcoes-quiz').innerHTML = opcoesHTML;
-            } else { definirPerfilFinal(); }
+                document.getElementById('texto-pergunta').innerText = p.texto;
+                document.getElementById('opcoes-quiz').innerHTML = p.opcoes.map(op => `
+                    <button onclick="computarResposta(${op.pontos})" class="w-full text-left bg-slate-900 border border-slate-800 hover:border-cyan-500 hover:bg-cyan-500/5 p-2.5 rounded-lg text-xs font-medium text-slate-300 transition-all">
+                        ${op.texto}
+                    </button>`).join('');
+            } else {
+                definirPerfilFinal();
+            }
         }
 
         function verificarMaioridade(ehMaior) {
@@ -724,8 +779,7 @@
                         <button onclick="alternarAbas('menor')" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-logo font-black text-[11px] py-2 rounded-lg tracking-wider uppercase transition">
                             Ver Painel Histórico do Matias ➔
                         </button>
-                    </div>
-                `;
+                    </div>`;
                 lucide.createIcons();
             }
         }
@@ -739,30 +793,29 @@
         }
 
         function definirPerfilFinal() {
-            const badge = document.getElementById('badge-perfil');
+            const badge          = document.getElementById('badge-perfil');
             const containerAporte = document.getElementById('container-aporte');
-            const inputAporte = document.getElementById('input-valor-total');
-            
+            const inputAporte    = document.getElementById('input-valor-total');
+
             if (pontuacaoTotalQuiz <= 4) {
                 perfilInvestidor = 'conservador';
-                badge.innerText = 'SIMULAÇÃO DEFENSIVA';
-                badge.className = "text-xs px-2 py-0.5 rounded font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+                badge.innerText  = 'SIMULAÇÃO DEFENSIVA';
+                badge.className  = "text-xs px-2 py-0.5 rounded font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
             } else if (pontuacaoTotalQuiz <= 7) {
                 perfilInvestidor = 'moderado';
-                badge.innerText = 'SIMULAÇÃO EQUILIBRADA';
-                badge.className = "text-xs px-2 py-0.5 rounded font-bold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30";
+                badge.innerText  = 'SIMULAÇÃO EQUILIBRADA';
+                badge.className  = "text-xs px-2 py-0.5 rounded font-bold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30";
             } else {
                 perfilInvestidor = 'arrojado';
-                badge.innerText = 'SIMULAÇÃO DINÂMICA COMPLETA';
-                badge.className = "text-xs px-2 py-0.5 rounded font-bold bg-purple-500/20 text-purple-400 border border-purple-500/30";
+                badge.innerText  = 'SIMULAÇÃO DINÂMICA COMPLETA';
+                badge.className  = "text-xs px-2 py-0.5 rounded font-bold bg-purple-500/20 text-purple-400 border border-purple-500/30";
             }
 
             localStorage.setItem('matias_perfil_definido', perfilInvestidor);
             document.getElementById('quiz-container').innerHTML = `
                 <div class="text-xs text-slate-400 bg-slate-900/60 p-2 rounded border border-slate-800 text-center">
-                    Modelo de Proporções calibrado para visualização do padrão: <strong class="text-white uppercase">${perfilInvestidor}</strong>. Insira um valor numérico abaixo para conferir a divisão matemática proporcional.
-                </div>
-            `;
+                    Modelo calibrado para: <strong class="text-white uppercase">${perfilInvestidor}</strong>. Insira um valor abaixo para ver a divisão proporcional.
+                </div>`;
             containerAporte.classList.remove('opacity-40', 'pointer-events-none');
             inputAporte.removeAttribute('disabled');
             inputAporte.placeholder = "0,00";
@@ -772,8 +825,12 @@
         function selecionarLiquidez(banco) {
             liquidezSelecionada = banco;
             localStorage.setItem('matias_liquidez_sel', banco);
-            document.getElementById('btn-porquinho').className = banco === 'porquinho' ? "toggle-liquid px-3 py-2 rounded-lg text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center justify-center gap-1.5" : "toggle-liquid px-3 py-2 rounded-lg text-xs font-bold bg-slate-900 text-slate-500 border border-slate-800 flex items-center justify-center gap-1.5";
-            document.getElementById('btn-nubank').className = banco === 'nubank' ? "toggle-liquid px-3 py-2 rounded-lg text-xs font-bold bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 flex items-center justify-center gap-1.5" : "toggle-liquid px-3 py-2 rounded-lg text-xs font-bold bg-slate-900 text-slate-500 border border-slate-800 flex items-center justify-center gap-1.5";
+            document.getElementById('btn-porquinho').className = banco === 'porquinho'
+                ? "toggle-liquid px-3 py-2 rounded-lg text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center justify-center gap-1.5"
+                : "toggle-liquid px-3 py-2 rounded-lg text-xs font-bold bg-slate-900 text-slate-500 border border-slate-800 flex items-center justify-center gap-1.5";
+            document.getElementById('btn-nubank').className = banco === 'nubank'
+                ? "toggle-liquid px-3 py-2 rounded-lg text-xs font-bold bg-cyan-500/20 text-cyan-400 border border-cyan-500/40 flex items-center justify-center gap-1.5"
+                : "toggle-liquid px-3 py-2 rounded-lg text-xs font-bold bg-slate-900 text-slate-500 border border-slate-800 flex items-center justify-center gap-1.5";
             gerarCarteira();
         }
 
@@ -790,14 +847,14 @@
             let valor = input.value.replace(/\D/g, '');
             if (valor === '') {
                 input.value = '';
-                if(tipoContexto === 'kids') gerarCarteiraKids(); else gerarCarteira();
+                if (tipoContexto === 'kids') gerarCarteiraKids(); else gerarCarteira();
                 return;
             }
             valor = (parseInt(valor) / 100).toFixed(2);
             valor = valor.replace('.', ',');
             valor = valor.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
             input.value = valor;
-            if(tipoContexto === 'kids') gerarCarteiraKids(); else gerarCarteira();
+            if (tipoContexto === 'kids') gerarCarteiraKids(); else gerarCarteira();
         }
 
         function obterValorNumerico() {
@@ -812,93 +869,119 @@
             recalcularExibicaoTotal();
 
             const avisoLiq = document.getElementById('aviso-liquidez');
-            if (valorTotal > 0) {
-                avisoLiq.classList.remove('hidden');
-                avisoLiq.innerHTML = liquidezSelecionada === 'porquinho' 
-                    ? `🟢 <strong>Simulação de Liquidez:</strong> Do montante simulado, eu alocaria uma parcela inicial protetiva no <strong>Porquinho do Banco Inter</strong> para saques imediatos.`
-                    : `🟢 <strong>Simulação de Liquidez:</strong> Do montante simulado, eu manteria uma parcela de segurança diária alocada na <strong>Caixinha NuConta RDB</strong>.`;
-                document.getElementById('secao-grafico').classList.remove('hidden');
-                inicializarGrafico('1A'); // Inicializa com o período padrão
-            } else {
+            if (valorTotal <= 0) {
                 avisoLiq.classList.add('hidden');
                 document.getElementById('secao-grafico').classList.add('hidden');
                 document.getElementById('lista-ativos').innerHTML = '<p class="text-xs text-slate-500 text-center py-8">Insira um valor numérico válido no campo acima para processar as proporções matemáticas.</p>';
                 return;
             }
 
-            let ativosFiltrados = carteiraCompleta.filter(a => a.pesosPerfil[perfilInvestidor] > 0 && valorTotal >= a.aplicacaoMinima);
+            avisoLiq.classList.remove('hidden');
+            avisoLiq.innerHTML = liquidezSelecionada === 'porquinho'
+                ? `🟢 <strong>Simulação de Liquidez:</strong> Do montante simulado, eu alocaria uma parcela protetiva no <strong>Porquinho do Banco Inter</strong> para saques imediatos.`
+                : `🟢 <strong>Simulação de Liquidez:</strong> Do montante simulado, eu manteria uma parcela de segurança na <strong>Caixinha NuConta RDB</strong>.`;
+            document.getElementById('secao-grafico').classList.remove('hidden');
+            inicializarGrafico('1A');
+
+            if (filtroAtual === 'Liquidez') {
+                document.getElementById('lista-ativos').innerHTML = `
+                    <div class="bg-slate-950 rounded-xl border border-slate-900 p-4">
+                        <h3 class="text-xs font-bold text-white uppercase">${liquidezSelecionada === 'porquinho' ? 'Porquinho Inter' : 'Caixinha Nubank'}</h3>
+                        <p class="text-xs text-slate-400 mt-2">Reserva de oportunidade imediata com liquidez diária instantânea.</p>
+                    </div>`;
+                return;
+            }
+
+            // Filtra por categoria e mínimo de aporte
+            let ativosFiltrados = carteiraCompleta.filter(a =>
+                a.pesosPerfil[perfilInvestidor] > 0 && valorTotal >= a.aplicacaoMinima
+            );
             if (filtroAtual !== 'todos') {
-                if (filtroAtual === 'Liquidez') {
-                    document.getElementById('lista-ativos').innerHTML = `
-                        <div class="bg-slate-950 rounded-xl border border-slate-900 p-4">
-                            <h3 class="text-xs font-bold text-white uppercase">${liquidezSelecionada === 'porquinho' ? 'Porquinho Inter' : 'Caixinha Nubank'}</h3>
-                            <p class="text-xs text-slate-400 mt-2">Ativo focado em reserva de oportunidade imediata com liquidez diária instantânea.</p>
-                        </div>`;
-                    return;
-                }
                 ativosFiltrados = ativosFiltrados.filter(a => a.categoria === filtroAtual);
             }
 
-            let somaPesos = 0;
-            ativosFiltrados.forEach(a => somaPesos += a.pesosPerfil[perfilInvestidor]);
+            // Aplica limite de quantidade proporcional ao valor
+            const maxAtivos = filtroAtual === 'todos' ? calcularQuantidadeAtivos(valorTotal) : ativosFiltrados.length;
+            const pesos     = Object.fromEntries(Object.entries({ 'Renda Fixa': 1, 'Multimercado': 1, 'Ações': 1, 'Global': 1 }));
+            ativosFiltrados = selecionarComDiversificacao(ativosFiltrados, maxAtivos, 
+                // usa pesosPerfil do ativo como proxy de importância para ordenação
+                Object.fromEntries(ativosFiltrados.map(a => [a.categoria, a.pesosPerfil[perfilInvestidor]]))
+            );
 
+            if (ativosFiltrados.length === 0) {
+                document.getElementById('lista-ativos').innerHTML = '<p class="text-xs text-slate-500 text-center py-8">Nenhum ativo da minha carteira atende ao filtro e aporte mínimo simultâneo.</p>';
+                atualizarBarraComposicao();
+                return;
+            }
+
+            let somaPesos = ativosFiltrados.reduce((s, a) => s + a.pesosPerfil[perfilInvestidor], 0) || 1;
             let htmlAtivos = '';
-            let validadorAcumulado = 0;
+            let acumulado  = 0;
 
             ativosFiltrados.forEach((ativo, idx) => {
-                let pctReal = ativo.pesosPerfil[perfilInvestidor] / (somaPesos || 1);
-                let alocacaoDinheiro = valorTotal * pctReal;
-                
-                if (idx === ativosFiltrados.length - 1 && filtroAtual === 'todos') {
-                    alocacaoDinheiro = valorTotal - validadorAcumulado;
-                    pctReal = alocacaoDinheiro / valorTotal;
-                }
-                validadorAcumulado += alocacaoDinheiro;
+                let pct          = ativo.pesosPerfil[perfilInvestidor] / somaPesos;
+                let valorAlocado = idx === ativosFiltrados.length - 1 && filtroAtual === 'todos'
+                    ? valorTotal - acumulado
+                    : valorTotal * pct;
+                acumulado += valorAlocado;
 
-                if (alocacaoDinheiro > 0) {
-                    htmlAtivos += `
-                        <div class="bg-slate-950 rounded-xl border border-slate-900 p-4 hover:border-cyan-900/30 transition">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <h3 class="text-xs font-bold text-white uppercase tracking-wide">${ativo.nome}</h3>
-                                    <span class="inline-block text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 mt-1 rounded bg-slate-900 text-slate-400 border border-slate-800">
-                                        ${ativo.categoria}
-                                    </span>
+                // Badge do ticker com link de busca
+                const tickerBadge = ativo.ticker
+                    ? `<a href="https://www.google.com/search?q=${ativo.ticker}+acao+B3" target="_blank"
+                          title="Pesquisar ${ativo.ticker} na B3"
+                          class="inline-flex items-center gap-0.5 text-[9px] font-black tracking-widest px-2 py-0.5 rounded bg-cyan-900/50 text-cyan-300 border border-cyan-500/30 font-logo hover:bg-cyan-500/20 transition ml-1">
+                          ${ativo.ticker} <svg xmlns='http://www.w3.org/2000/svg' class='w-2.5 h-2.5 inline' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14'/></svg>
+                       </a>`
+                    : '';
+
+                // Nome curto para exibição principal
+                const nomeExibicao = ativo.ticker
+                    ? (ativo.nome.includes('—') ? ativo.nome.split('—')[1].trim() : ativo.nome)
+                    : ativo.nome;
+
+                htmlAtivos += `
+                    <div class="bg-slate-950 rounded-xl border border-slate-900 p-4 hover:border-cyan-900/30 transition">
+                        <div class="flex justify-between items-start">
+                            <div class="flex-1 pr-2">
+                                <div class="flex flex-wrap items-center gap-1 mb-0.5">
+                                    <h3 class="text-xs font-bold text-white uppercase tracking-wide">${ativo.ticker || nomeExibicao}</h3>
+                                    ${tickerBadge}
                                 </div>
-                                <div class="text-right">
-                                    <div class="text-xs font-black text-cyan-400 font-logo">${(pctReal * 100).toFixed(0)}%</div>
-                                    <div class="text-xs text-slate-300 font-bold mt-0.5">${alocacaoDinheiro.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
-                                </div>
+                                <p class="text-[10px] text-slate-400 leading-snug">${nomeExibicao}</p>
+                                <span class="inline-block text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 mt-1 rounded bg-slate-900 text-slate-400 border border-slate-800">
+                                    ${ativo.categoria}
+                                </span>
                             </div>
-                            <p class="text-[11px] text-slate-400 leading-normal mt-2 pt-2 border-t border-slate-900/60">${ativo.descricao}</p>
-                            <div class="text-[10px] text-slate-500 mt-1">📍 Canal de Estudo Pessoal: <span class="text-slate-400">${ativo.ondeEncontrar}</span></div>
-                        </div>`;
-                }
+                            <div class="text-right shrink-0">
+                                <div class="text-sm font-black text-cyan-400 font-logo">${(pct * 100).toFixed(0)}%</div>
+                                <div class="text-xs text-slate-300 font-bold mt-0.5">${valorAlocado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
+                            </div>
+                        </div>
+                        <p class="text-[11px] text-slate-400 leading-normal mt-2 pt-2 border-t border-slate-900/60">${ativo.descricao}</p>
+                        <div class="text-[10px] text-slate-500 mt-1.5">📍 <span class="text-slate-400">${ativo.ondeEncontrar}</span></div>
+                    </div>`;
             });
 
-            document.getElementById('lista-ativos').innerHTML = htmlAtivos || '<p class="text-xs text-slate-500 text-center py-8">Nenhum ativo da minha carteira pessoal atende simultaneamente ao filtro e aporte mínimo simultâneo.</p>';
+            document.getElementById('lista-ativos').innerHTML = htmlAtivos;
             atualizarBarraComposicao();
         }
 
         function atualizarBarraComposicao() {
             const barra = document.getElementById('barra-composicao');
             if (perfilInvestidor === 'conservador') {
-                barra.innerHTML = '<div class="h-full bg-emerald-500" style="width: 85%"></div><div class="h-full bg-cyan-500" style="width: 15%"></div>';
+                barra.innerHTML = '<div class="h-full bg-emerald-500" style="width:85%"></div><div class="h-full bg-cyan-500" style="width:15%"></div>';
             } else if (perfilInvestidor === 'moderado') {
-                barra.innerHTML = '<div class="h-full bg-emerald-500" style="width: 45%"></div><div class="h-full bg-cyan-500" style="width: 35%"></div><div class="h-full bg-purple-500" style="width: 20%"></div>';
+                barra.innerHTML = '<div class="h-full bg-emerald-500" style="width:45%"></div><div class="h-full bg-cyan-500" style="width:35%"></div><div class="h-full bg-purple-500" style="width:20%"></div>';
             } else {
-                barra.innerHTML = '<div class="h-full bg-emerald-500" style="width: 15%"></div><div class="h-full bg-cyan-500" style="width: 25%"></div><div class="h-full bg-purple-500" style="width: 60%"></div>';
+                barra.innerHTML = '<div class="h-full bg-emerald-500" style="width:15%"></div><div class="h-full bg-cyan-500" style="width:25%"></div><div class="h-full bg-purple-500" style="width:60%"></div>';
             }
         }
 
         function atualizarPeriodoGrafico(periodo, btn) {
-            // Atualiza os botões de controle visual do período
-            const botoes = btn.parentNode.querySelectorAll('button');
-            botoes.forEach(b => {
+            btn.parentNode.querySelectorAll('button').forEach(b => {
                 b.className = "px-2 py-1 text-[10px] font-bold rounded text-slate-400 hover:text-white transition";
             });
             btn.className = "px-2 py-1 text-[10px] font-bold rounded bg-cyan-500 text-black transition";
-            
             inicializarGrafico(periodo);
         }
 
@@ -907,20 +990,17 @@
             if (chartInstancia) chartInstancia.destroy();
 
             const baseAporte = obterValorNumerico();
-            // Multiplicadores educacionais para fazer o gráfico interagir proporcionalmente com o valor que o usuário digita
-            const dadosMultiplicados = dadosGraficoPeriodos[periodo].map(multiplicador => {
-                return baseAporte + (baseAporte * (multiplicador / 100));
-            });
+            const dadosMultiplicados = dadosGraficoPeriodos[periodo].map(m => baseAporte + (baseAporte * (m / 100)));
 
             chartInstancia = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ['Mês 1', 'Mês 2', 'Mês 3', 'Mês 4', 'Mês 5', 'Mês 6'],
+                    labels: ['Mês 1','Mês 2','Mês 3','Mês 4','Mês 5','Mês 6'],
                     datasets: [{
                         label: 'Simulação do Meu Portfólio',
                         data: dadosMultiplicados,
                         borderColor: '#06b6d4',
-                        backgroundColor: 'rgba(6, 182, 212, 0.03)',
+                        backgroundColor: 'rgba(6,182,212,0.03)',
                         borderWidth: 2,
                         fill: true,
                         tension: 0.3,
@@ -930,26 +1010,17 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { 
+                    plugins: {
                         legend: { display: false },
                         tooltip: {
                             callbacks: {
-                                label: function(context) {
-                                    return ' Valor Proporcional: ' + context.raw.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-                                }
+                                label: ctx => ' Valor: ' + ctx.raw.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
                             }
                         }
                     },
-                    scales: { 
-                        y: { 
-                            display: true,
-                            grid: { color: '#1e293b' },
-                            ticks: { color: '#475569', font: { size: 9 } }
-                        }, 
-                        x: { 
-                            grid: { display: false }, 
-                            ticks: { color: '#475569', font: { size: 9 } } 
-                        } 
+                    scales: {
+                        y: { display: true, grid: { color: '#1e293b' }, ticks: { color: '#475569', font: { size: 9 } } },
+                        x: { grid: { display: false }, ticks: { color: '#475569', font: { size: 9 } } }
                     }
                 }
             });
@@ -957,19 +1028,19 @@
 
         async function carregarCryptoFeeds() {
             try {
-                const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=brl&include_24hr_change=true');
+                const res   = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=brl&include_24hr_change=true');
                 const dados = await res.json();
                 let html = '';
                 topCryptos.forEach(c => {
                     const info = dados[c.id];
-                    if(info) {
-                        const preco = info.brl.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                    if (info) {
+                        const preco   = info.brl.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
                         const variacao = info.brl_24h_change;
                         html += `
                             <div class="bg-slate-950 p-3 rounded-xl border border-slate-900">
                                 <div class="flex justify-between items-center mb-1">
                                     <span class="text-xs font-bold text-white">${c.name}</span>
-                                    <span class="text-[10px] px-1.5 py-0.2 rounded font-logo text-black" style="background:${c.color}">${c.symbol}</span>
+                                    <span class="text-[10px] px-1.5 rounded font-logo text-black" style="background:${c.color}">${c.symbol}</span>
                                 </div>
                                 <div class="text-xs font-black font-logo text-slate-200">${preco}</div>
                                 <div class="text-[10px] font-bold ${variacao >= 0 ? 'text-emerald-400' : 'text-red-400'} mt-0.5">
@@ -979,7 +1050,7 @@
                     }
                 });
                 document.getElementById('crypto-grid').innerHTML = html;
-            } catch (err) {
+            } catch {
                 document.getElementById('crypto-grid').innerHTML = '<p class="text-[10px] text-slate-600 col-span-full text-center">Falha ao sincronizar dados externos públicos.</p>';
             }
         }
@@ -992,13 +1063,12 @@
         window.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
             carregarCryptoFeeds();
-            
-            // Restaura dados guardados
-            if(localStorage.getItem('matias_perfil_definido')) {
-                perfilInvestidor = localStorage.getItem('matias_perfil_definido');
+
+            if (localStorage.getItem('matias_perfil_definido')) {
+                perfilInvestidor   = localStorage.getItem('matias_perfil_definido');
                 pontuacaoTotalQuiz = parseInt(localStorage.getItem('matias_pontos_quiz')) || 10;
-                faseQuiz = parseInt(localStorage.getItem('matias_fase_quiz')) || 4;
-                if(localStorage.getItem('matias_valor_cru')) {
+                faseQuiz           = parseInt(localStorage.getItem('matias_fase_quiz')) || 4;
+                if (localStorage.getItem('matias_valor_cru')) {
                     document.getElementById('input-valor-total').value = localStorage.getItem('matias_valor_cru');
                 }
                 definirPerfilFinal();
@@ -1006,14 +1076,14 @@
                 renderizarQuiz();
             }
 
-            if(localStorage.getItem('matias_kids_objetivo')) {
-                if(localStorage.getItem('matias_kids_valor_cru')) {
+            if (localStorage.getItem('matias_kids_objetivo')) {
+                if (localStorage.getItem('matias_kids_valor_cru')) {
                     document.getElementById('input-valor-kids').value = localStorage.getItem('matias_kids_valor_cru');
                 }
                 definirObjetivoKids(localStorage.getItem('matias_kids_objetivo'));
             }
 
-            if(localStorage.getItem('matias_aba_ativa')) {
+            if (localStorage.getItem('matias_aba_ativa')) {
                 alternarAbas(localStorage.getItem('matias_aba_ativa'));
             }
             atualizarGamificacao();
