@@ -356,7 +356,6 @@
             </div>
         </div>
 
-        <!-- ABA DÚVIDAS -->
         <div id="aba-duvidas" class="hidden p-4 space-y-4">
             <div class="bg-gradient-to-r from-cyan-950/40 via-slate-950 to-slate-950 p-5 rounded-xl border border-cyan-500/20 space-y-2">
                 <div class="flex items-center gap-2 text-cyan-400">
@@ -423,10 +422,6 @@
     </div>
 
     <script>
-        // ─────────────────────────────────────────────────────────────
-        // CARTEIRA COMPLETA
-        // aplicacaoMinima = valor mínimo REAL para entrar no ativo
-        // ─────────────────────────────────────────────────────────────
         const carteiraCompleta = [
             { ticker: null,      nome: 'VALORA VANGUARD',                         categoria: 'Renda Fixa',   descricao: 'Ativo de crédito privado focado em prêmios estruturais de mercado corporativo.',              aplicacaoMinima: 500,  pesosPerfil: { conservador: 25, moderado: 15, arrojado: 5  }, ondeEncontrar: 'BTG Pactual, Itaú e XP Investimentos' },
             { ticker: null,      nome: 'SOLIS CAPITAL ANTARES PIONEIRO',           categoria: 'Renda Fixa',   descricao: 'Direitos creditórios com modelo estruturado focado em previsibilidade de prêmio.',             aplicacaoMinima: 500,  pesosPerfil: { conservador: 20, moderado: 10, arrojado: 5  }, ondeEncontrar: 'BTG Pactual e XP Investimentos' },
@@ -453,73 +448,7 @@
             { ticker: 'BNDX11',  nome: 'BNDX11 — Renda Fixa Global ex-EUA',        categoria: 'Global',       descricao: 'Indexador focado em renda fixa internacional fora do eixo geográfico dos EUA.',             aplicacaoMinima: 10,   pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 5  }, ondeEncontrar: 'XP, BTG Pactual, Rico, Inter e Ágora' }
         ];
 
-        // ─────────────────────────────────────────────────────────────
-        // PERCENTUAL FIXO DE RESERVA DE EMERGÊNCIA
-        // Sempre separado ANTES de dividir o restante entre os
-        // ativos coadjuvantes (renda fixa, multimercado, ações, global)
-        // ─────────────────────────────────────────────────────────────
         const PERCENTUAL_RESERVA_EMERGENCIA = 0.30;
-
-        // ─────────────────────────────────────────────────────────────
-        // REGRA DE QUANTIDADE DE ATIVOS POR FAIXA DE VALOR
-        // Apenas ativos com aplicacaoMinima <= valorTotal aparecem.
-        // A quantidade máxima cresce com o valor.
-        // IMPORTANTE: esta faixa é aplicada sobre o valor JÁ SEM a
-        // reserva de emergência (ou seja, sobre os 70% restantes que
-        // de fato serão divididos entre os ativos coadjuvantes).
-        // ─────────────────────────────────────────────────────────────
-        function calcularQuantidadeAtivos(valor) {
-            if (valor < 150)   return 1;
-            if (valor < 1000)  return 3;
-            if (valor < 5000)  return 4;
-            if (valor < 10000) return 6;
-            return 7;
-        }
-
-        // ─────────────────────────────────────────────────────────────
-        // FILTRO PRINCIPAL: só ativos cujo mínimo cabe no valor digitado
-        // ─────────────────────────────────────────────────────────────
-        function filtrarPorMinimo(lista, valorTotal) {
-            return lista.filter(a => a.aplicacaoMinima <= valorTotal);
-        }
-
-        // ─────────────────────────────────────────────────────────────
-        // GARANTIA DE MÍNIMOS REAIS NA ALOCAÇÃO PROPORCIONAL
-        // Mesmo que o aporte mínimo de um ativo "caiba" dentro do valor
-        // total digitado, isso não significa que a FATIA proporcional
-        // dele (peso/somaPesos * valorTotal) seja suficiente para
-        // realmente comprá-lo. Esta função remove, um a um, o ativo
-        // cuja fatia ficaria mais distante do próprio mínimo, recalcula
-        // os pesos restantes (que sobem, pois há menos concorrência
-        // pelo valor) e repete até que todas as fatias sejam >= mínimo.
-        // ─────────────────────────────────────────────────────────────
-        function ajustarParaMinimosReais(lista, valorTotal, obterPeso) {
-            let atual = [...lista];
-
-            while (atual.length > 0) {
-                const somaPesos = atual.reduce((s, a) => s + obterPeso(a), 0) || 1;
-
-                let piorIdx = -1;
-                let piorDeficit = 0;
-
-                atual.forEach((a, idx) => {
-                    const fatia = valorTotal * (obterPeso(a) / somaPesos);
-                    if (fatia < a.aplicacaoMinima) {
-                        // deficit relativo: quão proporcionalmente abaixo do mínimo a fatia está
-                        const deficit = (a.aplicacaoMinima - fatia) / a.aplicacaoMinima;
-                        if (deficit > piorDeficit) {
-                            piorDeficit = deficit;
-                            piorIdx = idx;
-                        }
-                    }
-                });
-
-                if (piorIdx === -1) break; // nenhuma violação restante
-                atual.splice(piorIdx, 1);
-            }
-
-            return atual;
-        }
 
         const pesosKidsEstrategia = {
             faculdade:    { 'Renda Fixa': 20, 'Multimercado': 10, 'Ações': 50, 'Global': 20 },
@@ -568,211 +497,93 @@
         };
 
         // ─────────────────────────────────────────────────────────────
+        // NOVO: seleciona TODOS os ativos elegíveis cujo mínimo cabe
+        // no valor disponível. Quanto maior o valor, mais ativos aparecem.
+        // Nunca remove um ativo que já era elegível antes.
+        // ─────────────────────────────────────────────────────────────
+        function selecionarAtivosElegiveis(lista, valorDisponivel, obterPeso) {
+            // Passo 1: filtra só quem tem peso > 0 e mínimo <= valor disponível
+            let candidatos = lista.filter(a => obterPeso(a) > 0 && a.aplicacaoMinima <= valorDisponivel);
+
+            // Passo 2: ordena do menor mínimo para o maior (ativos baratos ficam sempre)
+            candidatos.sort((a, b) => a.aplicacaoMinima - b.aplicacaoMinima);
+
+            // Passo 3: garante que a fatia proporcional de cada ativo
+            // cobre seu mínimo real — remove somente quem não consegue
+            // ser coberto nem após redistribuição, priorizando os de menor mínimo
+            let selecionados = [...candidatos];
+            let estavel = false;
+
+            while (!estavel) {
+                estavel = true;
+                const somaPesos = selecionados.reduce((s, a) => s + obterPeso(a), 0) || 1;
+
+                // Encontra o pior violador (maior déficit relativo)
+                // mas só remove o de MAIOR mínimo entre os violadores
+                // para preservar os ativos mais baratos
+                let violadores = selecionados
+                    .map((a, idx) => {
+                        const fatia = valorDisponivel * (obterPeso(a) / somaPesos);
+                        const deficit = fatia < a.aplicacaoMinima
+                            ? (a.aplicacaoMinima - fatia) / a.aplicacaoMinima
+                            : 0;
+                        return { idx, deficit, minimo: a.aplicacaoMinima };
+                    })
+                    .filter(v => v.deficit > 0);
+
+                if (violadores.length > 0) {
+                    // Remove o violador com MAIOR aporte mínimo primeiro
+                    // (sempre preserva os ativos mais acessíveis)
+                    violadores.sort((a, b) => b.minimo - a.minimo);
+                    selecionados.splice(violadores[0].idx, 1);
+                    estavel = false;
+                }
+            }
+
+            return selecionados;
+        }
+
+        // ─────────────────────────────────────────────────────────────
         // BANCO DE DÚVIDAS
         // ─────────────────────────────────────────────────────────────
         const bancoDePerguntas = [
             {
                 categoria: '📍 Onde Encontrar os Investimentos',
                 perguntas: [
-                    {
-                        pergunta: 'Onde encontro o Fundos Passivos IMA-B?',
-                        resposta: `O <strong>Fundos Passivos ao IMA-B</strong> são fundos que acompanham o índice IMA-B, formado por títulos públicos atrelados à inflação (Tesouro IPCA+).<br><br>
-                        📌 <strong>Onde encontrar:</strong><br>
-                        • <strong>XP Investimentos</strong> — busque por "IMA-B" na aba Fundos<br>
-                        • <strong>BTG Pactual</strong> — aba Fundos → Renda Fixa → IMA-B<br>
-                        • <strong>Rico</strong> — Fundos → Indexados<br>
-                        • <strong>Inter Invest</strong> — aba Fundos<br>
-                        • <strong>NuInvest</strong> e <strong>Ágora</strong> também disponibilizam<br><br>
-                        💡 <strong>Dica:</strong> Na plataforma, filtre por "Renda Fixa Indexada" ou "IMA-B" e procure fundos com taxa de administração abaixo de 0,30% ao ano.`
-                    },
-                    {
-                        pergunta: 'Onde encontro o WRLD11?',
-                        resposta: `O <strong>WRLD11</strong> é um BDR (Brazilian Depositary Receipt) que replica o ETF Vanguard Total World Stock (VT), dando exposição a mais de 9.000 ações do mundo inteiro.<br><br>
-                        📌 <strong>Onde encontrar:</strong><br>
-                        • É negociado na <strong>B3</strong> (Bolsa brasileira) como uma ação normal<br>
-                        • Disponível em qualquer corretora: <strong>XP, BTG, Rico, Inter, NuInvest, Ágora, Clear</strong><br><br>
-                        💡 <strong>Como comprar:</strong> Acesse o Home Broker da sua corretora, busque o código <strong>WRLD11</strong> e compre como se fosse uma ação. O valor mínimo é de uma cota (cerca de R$ 10 a R$ 15).`
-                    },
-                    {
-                        pergunta: 'Onde encontro o BBSE3?',
-                        resposta: `<strong>BBSE3</strong> é a ação da <strong>BB Seguridade</strong>, empresa do grupo Banco do Brasil focada em seguros, previdência e capitalização.<br><br>
-                        📌 <strong>Onde encontrar:</strong><br>
-                        • Negociada na <strong>B3</strong> — disponível em qualquer corretora<br>
-                        • <strong>XP, BTG Pactual, Rico, Inter, NuInvest, Ágora, Clear</strong><br><br>
-                        💡 <strong>Como comprar:</strong> No Home Broker, busque <strong>BBSE3</strong>. É possível comprar a partir de 1 ação (em torno de R$ 30 a R$ 40).`
-                    },
-                    {
-                        pergunta: 'Onde encontro o SLCE3?',
-                        resposta: `<strong>SLCE3</strong> é a ação da <strong>SLC Agrícola</strong>, uma das maiores produtoras de grãos do Brasil (soja, milho, algodão).<br><br>
-                        📌 <strong>Onde encontrar:</strong><br>
-                        • Negociada na <strong>B3</strong> — qualquer corretora<br>
-                        • <strong>XP, BTG, Rico, Inter, NuInvest, Ágora, Clear</strong><br><br>
-                        💡 <strong>Como comprar:</strong> Busque <strong>SLCE3</strong> no Home Broker. Valor por volta de R$ 15 a R$ 25 por ação.`
-                    },
-                    {
-                        pergunta: 'Onde encontro o USDB11 e BNDX11?',
-                        resposta: `<strong>USDB11</strong> replica o ETF BND (Vanguard Total Bond Market) — renda fixa americana.<br>
-                        <strong>BNDX11</strong> replica o ETF BNDX — renda fixa global fora dos EUA.<br><br>
-                        📌 <strong>Onde encontrar:</strong><br>
-                        • Ambos são BDRs negociados na <strong>B3</strong><br>
-                        • Disponíveis em <strong>XP, BTG, Rico, Inter, NuInvest, Ágora</strong><br><br>
-                        💡 <strong>Como comprar:</strong> Busque os códigos <strong>USDB11</strong> ou <strong>BNDX11</strong> no Home Broker. Valor mínimo: 1 cota (~R$ 10).`
-                    },
-                    {
-                        pergunta: 'Onde encontro o IFRA11?',
-                        resposta: `<strong>IFRA11</strong> é um FIDC (Fundo de Investimento em Direitos Creditórios) de infraestrutura do Itaú.<br><br>
-                        📌 <strong>Onde encontrar:</strong><br>
-                        • Disponível no <strong>Itaú</strong> e em corretoras parceiras<br>
-                        • Consulte também em <strong>XP Investimentos</strong><br><br>
-                        💡 <strong>Dica:</strong> Por ser um FIDC, pode ter algumas restrições de acesso dependendo da plataforma. Verifique se é necessário ser investidor qualificado.`
-                    },
-                    {
-                        pergunta: 'Onde encontro o Dahlia Total Return?',
-                        resposta: `O <strong>Dahlia Total Return</strong> é um fundo multimercado da gestora Dahlia Capital.<br><br>
-                        📌 <strong>Onde encontrar:</strong><br>
-                        • <strong>Ágora, BTG Pactual, C6 Bank, Inter e XP Investimentos</strong><br><br>
-                        💡 <strong>Como investir:</strong> Acesse a plataforma escolhida → aba Fundos → busque "Dahlia Total Return". Aporte mínimo geralmente de R$ 500.`
-                    },
-                    {
-                        pergunta: 'Onde encontro o Absolute Vertex?',
-                        resposta: `O <strong>Absolute Vertex</strong> é um fundo multimercado da Absolute Investimentos, focado em estratégias macro.<br><br>
-                        📌 <strong>Onde encontrar:</strong><br>
-                        • <strong>Ágora, C6 Bank, BTG Pactual, Rico e XP Investimentos</strong><br><br>
-                        💡 <strong>Como investir:</strong> Plataforma → Fundos → busque "Absolute Vertex". Aporte mínimo em torno de R$ 500.`
-                    },
-                    {
-                        pergunta: 'Onde encontro o ALUG11?',
-                        resposta: `<strong>ALUG11</strong> replica o ETF VNQ da Vanguard — expõe ao mercado imobiliário americano (REITs).<br><br>
-                        📌 <strong>Onde encontrar:</strong><br>
-                        • BDR negociado na <strong>B3</strong> — disponível em qualquer corretora<br>
-                        • <strong>XP, BTG, Rico, Inter, NuInvest, Ágora</strong><br><br>
-                        💡 Busque <strong>ALUG11</strong> no Home Broker. Cota em torno de R$ 100 a R$ 130.`
-                    },
-                    {
-                        pergunta: 'Onde encontro o KLBN4?',
-                        resposta: `<strong>KLBN4</strong> é a ação preferencial da <strong>Klabin</strong>, maior produtora e exportadora de papéis para embalagens do Brasil.<br><br>
-                        📌 <strong>Onde encontrar:</strong><br>
-                        • Negociada na <strong>B3</strong> — disponível em qualquer corretora<br>
-                        • <strong>XP, BTG Pactual, Rico, Inter, NuInvest, Ágora, Clear</strong><br><br>
-                        💡 <strong>Como comprar:</strong> Busque <strong>KLBN4</strong> no Home Broker. É possível comprar a partir de 1 ação fracionária, por poucos reais.`
-                    },
-                    {
-                        pergunta: 'Onde encontro o FESA4?',
-                        resposta: `<strong>FESA4</strong> é a ação preferencial da <strong>Ferbasa</strong> (Companhia de Ferro Ligas da Bahia), única produtora integrada de ferrocromo das Américas.<br><br>
-                        📌 <strong>Onde encontrar:</strong><br>
-                        • Negociada na <strong>B3</strong> — qualquer corretora<br>
-                        • <strong>XP, BTG, Rico, Inter, NuInvest, Ágora, Clear</strong><br><br>
-                        💡 <strong>Como comprar:</strong> Busque <strong>FESA4</strong> no Home Broker. Valor por ação fica na faixa de poucos reais.`
-                    },
-                    {
-                        pergunta: 'Onde encontro o BRBI11?',
-                        resposta: `<strong>BRBI11</strong> é a unit da <strong>BR Partners</strong>, banco de investimento independente focado em M&A, mercado de capitais e tesouraria.<br><br>
-                        📌 <strong>Onde encontrar:</strong><br>
-                        • Negociada na <strong>B3</strong> como uma ação normal<br>
-                        • <strong>XP, BTG Pactual, Rico, Inter e Ágora</strong><br><br>
-                        💡 <strong>Como comprar:</strong> Busque <strong>BRBI11</strong> no Home Broker. Por ser uma unit, cada cota já reúne ações ordinárias e preferenciais da empresa.`
-                    },
-                    {
-                        pergunta: 'Onde encontro o XPML11?',
-                        resposta: `<strong>XPML11</strong> (XP Malls) é um fundo imobiliário de tijolo focado em participações em shopping centers pelo Brasil.<br><br>
-                        📌 <strong>Onde encontrar:</strong><br>
-                        • Negociado na <strong>B3</strong> como um FII — disponível em qualquer corretora<br>
-                        • <strong>XP, BTG Pactual, Rico, Inter e Ágora</strong><br><br>
-                        💡 <strong>Como comprar:</strong> Busque <strong>XPML11</strong> no Home Broker. Paga dividendos mensais, isentos de Imposto de Renda para pessoa física.`
-                    },
+                    { pergunta: 'Onde encontro o Fundos Passivos IMA-B?', resposta: `O <strong>Fundos Passivos ao IMA-B</strong> são fundos que acompanham o índice IMA-B, formado por títulos públicos atrelados à inflação (Tesouro IPCA+).<br><br>📌 <strong>Onde encontrar:</strong><br>• <strong>XP Investimentos</strong> — busque por "IMA-B" na aba Fundos<br>• <strong>BTG Pactual</strong> — aba Fundos → Renda Fixa → IMA-B<br>• <strong>Rico</strong> — Fundos → Indexados<br>• <strong>Inter Invest</strong> — aba Fundos<br>• <strong>NuInvest</strong> e <strong>Ágora</strong> também disponibilizam<br><br>💡 <strong>Dica:</strong> Na plataforma, filtre por "Renda Fixa Indexada" ou "IMA-B" e procure fundos com taxa de administração abaixo de 0,30% ao ano.` },
+                    { pergunta: 'Onde encontro o WRLD11?', resposta: `O <strong>WRLD11</strong> é um BDR que replica o ETF Vanguard Total World Stock (VT), dando exposição a mais de 9.000 ações do mundo inteiro.<br><br>📌 <strong>Onde encontrar:</strong><br>• É negociado na <strong>B3</strong> como uma ação normal<br>• Disponível em qualquer corretora: <strong>XP, BTG, Rico, Inter, NuInvest, Ágora, Clear</strong><br><br>💡 <strong>Como comprar:</strong> Acesse o Home Broker, busque <strong>WRLD11</strong> e compre como ação. Valor mínimo: uma cota (~R$ 10 a R$ 15).` },
+                    { pergunta: 'Onde encontro o BBSE3?', resposta: `<strong>BBSE3</strong> é a ação da <strong>BB Seguridade</strong>, focada em seguros, previdência e capitalização.<br><br>📌 <strong>Onde encontrar:</strong><br>• Negociada na <strong>B3</strong> — disponível em qualquer corretora<br>• <strong>XP, BTG Pactual, Rico, Inter, NuInvest, Ágora, Clear</strong><br><br>💡 <strong>Como comprar:</strong> No Home Broker, busque <strong>BBSE3</strong>. Compra a partir de 1 ação (~R$ 30 a R$ 40).` },
+                    { pergunta: 'Onde encontro o SLCE3?', resposta: `<strong>SLCE3</strong> é a ação da <strong>SLC Agrícola</strong>, uma das maiores produtoras de grãos do Brasil.<br><br>📌 <strong>Onde encontrar:</strong><br>• Negociada na <strong>B3</strong> — qualquer corretora<br>• <strong>XP, BTG, Rico, Inter, NuInvest, Ágora, Clear</strong>` },
+                    { pergunta: 'Onde encontro o USDB11 e BNDX11?', resposta: `<strong>USDB11</strong> replica o ETF BND — renda fixa americana.<br><strong>BNDX11</strong> replica o ETF BNDX — renda fixa global fora dos EUA.<br><br>📌 <strong>Onde encontrar:</strong><br>• Ambos são BDRs na <strong>B3</strong><br>• <strong>XP, BTG, Rico, Inter, NuInvest, Ágora</strong><br><br>💡 Cota mínima: ~R$ 10.` },
+                    { pergunta: 'Onde encontro o IFRA11?', resposta: `<strong>IFRA11</strong> é um FIDC de infraestrutura do Itaú.<br><br>📌 <strong>Onde encontrar:</strong><br>• <strong>Itaú</strong> e corretoras parceiras<br>• Consulte também em <strong>XP Investimentos</strong>` },
+                    { pergunta: 'Onde encontro o Dahlia Total Return?', resposta: `O <strong>Dahlia Total Return</strong> é um fundo multimercado da Dahlia Capital.<br><br>📌 <strong>Onde encontrar:</strong><br>• <strong>Ágora, BTG Pactual, C6 Bank, Inter e XP Investimentos</strong><br><br>💡 Aporte mínimo geralmente de R$ 500.` },
+                    { pergunta: 'Onde encontro o Absolute Vertex?', resposta: `O <strong>Absolute Vertex</strong> é um fundo multimercado macro da Absolute Investimentos.<br><br>📌 <strong>Onde encontrar:</strong><br>• <strong>Ágora, C6 Bank, BTG Pactual, Rico e XP Investimentos</strong><br><br>💡 Aporte mínimo em torno de R$ 500.` },
+                    { pergunta: 'Onde encontro o ALUG11?', resposta: `<strong>ALUG11</strong> replica o ETF VNQ — mercado imobiliário americano (REITs).<br><br>📌 <strong>Onde encontrar:</strong><br>• BDR na <strong>B3</strong> — qualquer corretora<br>• <strong>XP, BTG, Rico, Inter, NuInvest, Ágora</strong><br><br>💡 Cota em torno de R$ 100 a R$ 130.` },
+                    { pergunta: 'Onde encontro o KLBN4?', resposta: `<strong>KLBN4</strong> é a ação preferencial da <strong>Klabin</strong>, maior produtora e exportadora de papéis para embalagens do Brasil.<br><br>📌 <strong>Onde encontrar:</strong><br>• Negociada na <strong>B3</strong> — qualquer corretora<br>• <strong>XP, BTG Pactual, Rico, Inter, NuInvest, Ágora, Clear</strong>` },
+                    { pergunta: 'Onde encontro o FESA4?', resposta: `<strong>FESA4</strong> é a ação preferencial da <strong>Ferbasa</strong>, única produtora integrada de ferrocromo das Américas.<br><br>📌 <strong>Onde encontrar:</strong><br>• Negociada na <strong>B3</strong> — qualquer corretora<br>• <strong>XP, BTG, Rico, Inter, NuInvest, Ágora, Clear</strong>` },
+                    { pergunta: 'Onde encontro o BRBI11?', resposta: `<strong>BRBI11</strong> é a unit da <strong>BR Partners</strong>, banco de investimento independente.<br><br>📌 <strong>Onde encontrar:</strong><br>• Negociada na <strong>B3</strong><br>• <strong>XP, BTG Pactual, Rico, Inter e Ágora</strong>` },
+                    { pergunta: 'Onde encontro o XPML11?', resposta: `<strong>XPML11</strong> (XP Malls) é um FII com participações em shopping centers no Brasil.<br><br>📌 <strong>Onde encontrar:</strong><br>• Negociado na <strong>B3</strong> como FII<br>• <strong>XP, BTG Pactual, Rico, Inter e Ágora</strong><br><br>💡 Paga dividendos mensais, isentos de IR para pessoa física.` },
                 ]
             },
             {
                 categoria: '❓ Como Funciona o Site',
                 perguntas: [
-                    {
-                        pergunta: 'Como funciona a simulação de carteira?',
-                        resposta: `A simulação mostra <strong>como o Matias distribui seus próprios investimentos</strong> de forma proporcional ao valor que você digitar.<br><br>
-                        📌 <strong>Passo a passo:</strong><br>
-                        1. Responda as perguntas de perfil (conservador, moderado ou arrojado)<br>
-                        2. Digite um valor no campo "Simular Proporção"<br>
-                        3. O site separa automaticamente 30% para a reserva de emergência (liquidez) e calcula quanto dos 70% restantes iria para cada ativo coadjuvante<br><br>
-                        ⚠️ <strong>Importante:</strong> Isso é apenas uma simulação educacional baseada na carteira pessoal do Matias — não é recomendação de investimento. Além disso, o site só exibe ativos cuja fatia proporcional realmente cobre o aporte mínimo de cada um — não apenas ativos cujo mínimo "cabe" no valor total.`
-                    },
-                    {
-                        pergunta: 'Por que 30% sempre vai para a reserva de emergência?',
-                        resposta: `Antes de dividir qualquer valor entre os ativos coadjuvantes (Renda Fixa, Multimercado, Ações e Global), o simulador <strong>sempre separa 30% do montante total</strong> para a reserva de liquidez (Porquinho Inter ou Caixinha Nubank).<br><br>
-                        Isso reflete a lógica de organização financeira pessoal do Matias: manter um colchão de segurança líquido antes de qualquer alocação em ativos de prazo mais longo.<br><br>
-                        💡 Só os <strong>70% restantes</strong> são distribuídos proporcionalmente entre os ativos coadjuvantes, de acordo com o perfil simulado.`
-                    },
-                    {
-                        pergunta: 'O que é a aba "Meu Começo"?',
-                        resposta: `A aba <strong>"Meu Começo"</strong> mostra como o Matias investia quando era <strong>menor de idade</strong>, usando contas abertas por responsáveis legais em corretoras como a <strong>Rico</strong>.<br><br>
-                        É uma simulação histórica educacional com 3 estratégias que ele utilizou na época:<br>
-                        • 🎓 Acumulação de Longo Prazo<br>
-                        • 🌍 Proteção Cambial e Ativos Globais<br>
-                        • 🛡️ Estratégia Conservadora Inicial`
-                    },
-                    {
-                        pergunta: 'O que é o Porquinho Inter e a Caixinha Nubank?',
-                        resposta: `São as reservas de liquidez do Matias — onde ele guarda o "colchão de segurança" para emergências ou oportunidades rápidas. No simulador, 30% de qualquer valor digitado é direcionado automaticamente para uma dessas opções, antes da divisão entre os demais ativos.<br><br>
-                        🐷 <strong>Porquinho Inter:</strong> Conta remunerada do Banco Inter. Rende 100% do CDI com liquidez diária.<br><br>
-                        💜 <strong>Caixinha Nubank:</strong> RDB (Recibo de Depósito Bancário) do Nubank. Também rende 100% do CDI com resgate imediato.<br><br>
-                        💡 Ambas são opções seguras e com liquidez total para reserva de emergência.`
-                    },
-                    {
-                        pergunta: 'O gráfico de evolução é real?',
-                        resposta: `O gráfico mostra uma <strong>simulação educacional proporcional</strong> ao valor que você digitar — não representa resultados reais do Matias nem promessa de rendimento futuro.<br><br>
-                        Ele serve para ilustrar como um portfólio diversificado pode se comportar ao longo do tempo com aportes regulares.<br><br>
-                        ⚠️ Rentabilidade passada não garante rentabilidade futura.`
-                    },
-                    {
-                        pergunta: 'Por que alguns ativos somem quando eu digito um valor menor?',
-                        resposta: `Cada ativo tem um <strong>aporte mínimo real</strong> (o valor mínimo que de fato dá para investir nele). O simulador só mostra um ativo quando a fatia proporcional calculada para ele — já descontados os 30% da reserva de emergência — é, no mínimo, igual a esse valor mínimo.<br><br>
-                        Por exemplo: se um fundo exige R$ 500 de aporte mínimo, mas a fatia proporcional dele dentro dos 70% restantes daria apenas R$ 90, esse fundo não aparece — porque, na prática, R$ 90 não seria suficiente para investir nele.<br><br>
-                        💡 Quanto maior o valor digitado, mais ativos diferentes a simulação consegue encaixar com fatias realistas.`
-                    },
+                    { pergunta: 'Como funciona a simulação de carteira?', resposta: `A simulação mostra como o Matias distribui seus próprios investimentos de forma proporcional ao valor digitado.<br><br>📌 <strong>Passo a passo:</strong><br>1. Responda as perguntas de perfil<br>2. Digite um valor no campo "Simular Proporção"<br>3. O site separa 30% para reserva de emergência e distribui os 70% restantes entre os ativos que cabem no valor<br><br>⚠️ Quanto maior o valor digitado, mais ativos são exibidos — os de menor mínimo sempre permanecem e novos são adicionados conforme o valor cresce.` },
+                    { pergunta: 'Por que 30% sempre vai para a reserva de emergência?', resposta: `Antes de dividir qualquer valor entre os ativos, o simulador sempre separa 30% para reserva de liquidez.<br><br>Isso reflete a lógica de organização do Matias: manter um colchão de segurança antes de qualquer alocação de longo prazo.<br><br>💡 Só os 70% restantes são distribuídos entre os ativos coadjuvantes.` },
+                    { pergunta: 'Por que mais ativos aparecem conforme aumento o valor?', resposta: `O simulador foi construído para ser acumulativo: ativos de menor mínimo aparecem primeiro e permanecem sempre. Conforme o valor aumenta, novos ativos com mínimos maiores passam a ter fatia suficiente para aparecer.<br><br>Por exemplo: com R$ 10 você vê ativos de R$ 4-10. Com R$ 100, esses continuam e outros de R$ 80-100 são adicionados. Com R$ 1.000, todos os anteriores permanecem e fundos de R$ 500 entram também.` },
+                    { pergunta: 'O que é a aba "Meu Começo"?', resposta: `A aba "Meu Começo" mostra como o Matias investia quando era menor de idade, usando contas abertas por responsáveis em corretoras como a Rico.<br><br>São 3 estratégias históricas:<br>• 🎓 Acumulação de Longo Prazo<br>• 🌍 Proteção Cambial e Ativos Globais<br>• 🛡️ Estratégia Conservadora Inicial` },
+                    { pergunta: 'O que é o Porquinho Inter e a Caixinha Nubank?', resposta: `São as reservas de liquidez do Matias — 30% de qualquer valor simulado vai para uma delas automaticamente.<br><br>🐷 <strong>Porquinho Inter:</strong> Conta remunerada, 100% do CDI, liquidez diária.<br>💜 <strong>Caixinha Nubank:</strong> RDB do Nubank, 100% do CDI, resgate imediato.` },
                 ]
             },
             {
                 categoria: '💡 Conceitos Financeiros',
                 perguntas: [
-                    {
-                        pergunta: 'O que é IMA-B?',
-                        resposta: `O <strong>IMA-B</strong> (Índice de Mercado ANBIMA - Série B) é um índice que representa uma carteira de <strong>Títulos Públicos atrelados ao IPCA</strong> (inflação).<br><br>
-                        Na prática: fundos passivos ao IMA-B compram esses títulos e entregam a variação da inflação + juros reais.<br><br>
-                        💡 É uma boa escolha para quem quer <strong>proteger o dinheiro da inflação</strong> no longo prazo.`
-                    },
-                    {
-                        pergunta: 'O que é um ETF?',
-                        resposta: `<strong>ETF</strong> (Exchange Traded Fund) é um fundo negociado em bolsa como se fosse uma ação.<br><br>
-                        Ele replica um índice — por exemplo:<br>
-                        • <strong>WRLD11</strong> replica o VT (9.000+ ações do mundo)<br>
-                        • <strong>USDB11</strong> replica o BND (títulos americanos)<br><br>
-                        💡 Vantagem: diversificação enorme com uma única compra, e taxas geralmente baixas.`
-                    },
-                    {
-                        pergunta: 'O que é um BDR?',
-                        resposta: `<strong>BDR</strong> (Brazilian Depositary Receipt) é um ativo negociado na B3 que representa ativos lá de fora.<br><br>
-                        Exemplo: <strong>WRLD11</strong> é um BDR do ETF americano VT. Você compra em reais na B3, mas o dinheiro está exposto ao ativo internacional.<br><br>
-                        💡 Ótimo para ter exposição ao exterior sem precisar abrir conta fora do Brasil.`
-                    },
-                    {
-                        pergunta: 'O que é um Fundo Multimercado?',
-                        resposta: `Um <strong>Fundo Multimercado</strong> pode investir em diferentes classes de ativos ao mesmo tempo: ações, câmbio, juros, commodities, etc.<br><br>
-                        Exemplos na carteira do Matias:<br>
-                        • <strong>Dahlia Total Return</strong> — estratégia macro global<br>
-                        • <strong>Absolute Vertex</strong> — arbitragem de juros e câmbio<br>
-                        • <strong>Genoa Capital Radar</strong> — quantitativo<br><br>
-                        💡 São geridos ativamente por gestores profissionais.`
-                    },
-                    {
-                        pergunta: 'O que é CDI?',
-                        resposta: `O <strong>CDI</strong> (Certificado de Depósito Interbancário) é a taxa de referência de investimentos de renda fixa no Brasil.<br><br>
-                        Quando um investimento rende "100% do CDI", significa que acompanha essa taxa de referência de perto.<br><br>
-                        💡 O CDI fica geralmente próximo da taxa Selic (taxa básica de juros do Brasil).`
-                    },
-                    {
-                        pergunta: 'O que é um FII?',
-                        resposta: `<strong>FII</strong> (Fundo de Investimento Imobiliário) reúne dinheiro de vários investidores para comprar imóveis ou recebíveis ligados ao setor imobiliário, distribuindo a renda gerada (aluguéis, por exemplo) entre os cotistas.<br><br>
-                        Exemplo na carteira do Matias: <strong>XPML11</strong>, que detém participações em shopping centers pelo Brasil.<br><br>
-                        💡 Os rendimentos mensais de FIIs costumam ser isentos de Imposto de Renda para pessoa física, mas o valor da cota oscila como qualquer ativo de renda variável.`
-                    },
+                    { pergunta: 'O que é IMA-B?', resposta: `O <strong>IMA-B</strong> representa uma carteira de Títulos Públicos atrelados ao IPCA (inflação). Fundos passivos ao IMA-B entregam a variação da inflação + juros reais.<br><br>💡 Boa escolha para proteger o dinheiro da inflação no longo prazo.` },
+                    { pergunta: 'O que é um ETF?', resposta: `<strong>ETF</strong> (Exchange Traded Fund) é um fundo negociado em bolsa como ação. Ele replica um índice como o VT (9.000+ ações do mundo) ou BND (títulos americanos).<br><br>💡 Vantagem: diversificação enorme com uma única compra e taxas baixas.` },
+                    { pergunta: 'O que é um BDR?', resposta: `<strong>BDR</strong> (Brazilian Depositary Receipt) é um ativo negociado na B3 que representa ativos internacionais. Você compra em reais, mas está exposto ao ativo estrangeiro.<br><br>💡 Ótimo para ter exposição ao exterior sem abrir conta fora do Brasil.` },
+                    { pergunta: 'O que é um Fundo Multimercado?', resposta: `Um Fundo Multimercado pode investir em diferentes classes ao mesmo tempo: ações, câmbio, juros, commodities. São geridos ativamente por profissionais.` },
+                    { pergunta: 'O que é CDI?', resposta: `O <strong>CDI</strong> é a taxa de referência de investimentos de renda fixa no Brasil. Fica próximo da taxa Selic. "Render 100% do CDI" significa acompanhar essa taxa de referência.` },
+                    { pergunta: 'O que é um FII?', resposta: `<strong>FII</strong> (Fundo de Investimento Imobiliário) reúne investidores para comprar imóveis ou recebíveis imobiliários, distribuindo a renda gerada entre os cotistas.<br><br>💡 Rendimentos mensais de FIIs costumam ser isentos de IR para pessoa física.` },
                 ]
             }
         ];
@@ -781,53 +592,28 @@
             const lista = document.getElementById('lista-duvidas');
             let html = '';
             const termo = filtro.toLowerCase();
-
             bancoDePerguntas.forEach(grupo => {
-                const perguntasFiltradas = grupo.perguntas.filter(p =>
-                    !termo || p.pergunta.toLowerCase().includes(termo) || p.resposta.toLowerCase().includes(termo)
-                );
-                if (perguntasFiltradas.length === 0) return;
-
-                html += `<div class="mb-1">
-                    <p class="text-[10px] font-black text-slate-500 uppercase tracking-wider mb-1.5 px-1">${grupo.categoria}</p>
-                    <div class="space-y-1.5">`;
-
-                perguntasFiltradas.forEach((p, i) => {
+                const pf = grupo.perguntas.filter(p => !termo || p.pergunta.toLowerCase().includes(termo) || p.resposta.toLowerCase().includes(termo));
+                if (pf.length === 0) return;
+                html += `<div class="mb-1"><p class="text-[10px] font-black text-slate-500 uppercase tracking-wider mb-1.5 px-1">${grupo.categoria}</p><div class="space-y-1.5">`;
+                pf.forEach(p => {
                     const id = encodeURIComponent(p.pergunta);
-                    html += `
-                        <button onclick="mostrarResposta('${id}')"
-                            class="w-full text-left bg-slate-950 border border-slate-800 hover:border-cyan-500/50 hover:bg-cyan-950/10 p-3 rounded-xl text-xs font-semibold text-slate-200 transition flex items-center justify-between gap-2">
-                            <span>${p.pergunta}</span>
-                            <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-500 shrink-0"></i>
-                        </button>`;
+                    html += `<button onclick="mostrarResposta('${id}')" class="w-full text-left bg-slate-950 border border-slate-800 hover:border-cyan-500/50 hover:bg-cyan-950/10 p-3 rounded-xl text-xs font-semibold text-slate-200 transition flex items-center justify-between gap-2"><span>${p.pergunta}</span><i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-500 shrink-0"></i></button>`;
                 });
-
                 html += `</div></div>`;
             });
-
-            if (!html) {
-                html = '<p class="text-xs text-slate-500 text-center py-6">Nenhuma dúvida encontrada. Tente outra palavra.</p>';
-            }
-
+            if (!html) html = '<p class="text-xs text-slate-500 text-center py-6">Nenhuma dúvida encontrada.</p>';
             lista.innerHTML = html;
             lucide.createIcons();
         }
 
-        function filtrarDuvidas(valor) {
-            renderizarDuvidas(valor);
-            fecharResposta();
-        }
+        function filtrarDuvidas(valor) { renderizarDuvidas(valor); fecharResposta(); }
 
         function mostrarResposta(idEncoded) {
             const perguntaTexto = decodeURIComponent(idEncoded);
             let encontrado = null;
-            bancoDePerguntas.forEach(g => {
-                g.perguntas.forEach(p => {
-                    if (p.pergunta === perguntaTexto) encontrado = p;
-                });
-            });
+            bancoDePerguntas.forEach(g => g.perguntas.forEach(p => { if (p.pergunta === perguntaTexto) encontrado = p; }));
             if (!encontrado) return;
-
             document.getElementById('resposta-titulo').innerText = encontrado.pergunta;
             document.getElementById('resposta-texto').innerHTML = encontrado.resposta;
             const el = document.getElementById('resposta-duvida');
@@ -836,63 +622,28 @@
             lucide.createIcons();
         }
 
-        function fecharResposta() {
-            document.getElementById('resposta-duvida').classList.add('hidden');
-        }
+        function fecharResposta() { document.getElementById('resposta-duvida').classList.add('hidden'); }
 
         function alternarAbas(aba) {
             abaAtualAtiva = aba;
             localStorage.setItem('matias_aba_ativa', aba);
+            const ids = { carteira: 'nav-btn-carteira', perfil: 'nav-btn-perfil', menor: 'nav-btn-menor', conhecimento: 'nav-btn-conhecimento', duvidas: 'nav-btn-duvidas' };
+            const divs = { carteira: 'aba-conteudo-investimentos', perfil: 'aba-painel-perfil', menor: 'aba-menor-idade', conhecimento: 'aba-conhecimento', duvidas: 'aba-duvidas' };
+            Object.values(divs).forEach(id => document.getElementById(id).classList.add('hidden'));
+            document.getElementById(divs[aba]).classList.remove('hidden');
 
-            const btnCarteira     = document.getElementById('nav-btn-carteira');
-            const btnPerfil       = document.getElementById('nav-btn-perfil');
-            const btnMenor        = document.getElementById('nav-btn-menor');
-            const btnConhecimento = document.getElementById('nav-btn-conhecimento');
-            const btnDuvidas      = document.getElementById('nav-btn-duvidas');
-            const tagMenor        = document.getElementById('icon-menor-tag');
+            document.getElementById('nav-btn-carteira').className     = "flex flex-col items-center gap-1 py-1 text-slate-600";
+            document.getElementById('nav-btn-perfil').className       = "flex flex-col items-center gap-1 py-1 text-slate-600";
+            document.getElementById('nav-btn-menor').className        = "flex flex-col items-center gap-0.5 py-1 text-slate-600";
+            document.getElementById('nav-btn-conhecimento').className = "flex flex-col items-center gap-1 py-1 text-slate-600";
+            document.getElementById('nav-btn-duvidas').className      = "flex flex-col items-center gap-1 py-1 text-slate-600";
+            document.getElementById('icon-menor-tag').className       = "text-[9px] bg-slate-900 text-slate-400 font-black px-1 py-0.5 rounded border border-slate-800 font-logo";
 
-            const divInvestimentos = document.getElementById('aba-conteudo-investimentos');
-            const divPerfil        = document.getElementById('aba-painel-perfil');
-            const divMenor         = document.getElementById('aba-menor-idade');
-            const divConhecimento  = document.getElementById('aba-conhecimento');
-            const divDuvidas       = document.getElementById('aba-duvidas');
-
-            btnCarteira.className     = "flex flex-col items-center gap-1 py-1 text-slate-600";
-            btnPerfil.className       = "flex flex-col items-center gap-1 py-1 text-slate-600";
-            btnMenor.className        = "flex flex-col items-center gap-0.5 py-1 text-slate-600";
-            btnConhecimento.className = "flex flex-col items-center gap-1 py-1 text-slate-600";
-            btnDuvidas.className      = "flex flex-col items-center gap-1 py-1 text-slate-600";
-            tagMenor.className        = "text-[9px] bg-slate-900 text-slate-400 font-black px-1 py-0.5 rounded border border-slate-800 font-logo";
-
-            divInvestimentos.classList.add('hidden');
-            divPerfil.classList.add('hidden');
-            divMenor.classList.add('hidden');
-            divConhecimento.classList.add('hidden');
-            divDuvidas.classList.add('hidden');
-
-            if (aba === 'carteira') {
-                divInvestimentos.classList.remove('hidden');
-                btnCarteira.className = "flex flex-col items-center gap-1 py-1 nav-active";
-                recalcularExibicaoTotal();
-            } else if (aba === 'perfil') {
-                divPerfil.classList.remove('hidden');
-                btnPerfil.className = "flex flex-col items-center gap-1 py-1 nav-active";
-                atualizarGamificacao();
-            } else if (aba === 'menor') {
-                divMenor.classList.remove('hidden');
-                btnMenor.className = "flex flex-col items-center gap-0.5 py-1 text-purple-400";
-                tagMenor.className = "text-[9px] bg-purple-500/20 text-purple-400 font-black px-1 py-0.5 rounded border border-purple-500/40 font-logo";
-                recalcularExibicaoTotal();
-            } else if (aba === 'conhecimento') {
-                divConhecimento.classList.remove('hidden');
-                btnConhecimento.className = "flex flex-col items-center gap-1 py-1 nav-active";
-                recalcularExibicaoTotal();
-            } else if (aba === 'duvidas') {
-                divDuvidas.classList.remove('hidden');
-                btnDuvidas.className = "flex flex-col items-center gap-1 py-1 nav-active";
-                renderizarDuvidas();
-                document.getElementById('valor-aporte-display').innerText = "DÚVIDAS";
-            }
+            if (aba === 'carteira')     { document.getElementById('nav-btn-carteira').className = "flex flex-col items-center gap-1 py-1 nav-active"; recalcularExibicaoTotal(); }
+            else if (aba === 'perfil') { document.getElementById('nav-btn-perfil').className = "flex flex-col items-center gap-1 py-1 nav-active"; atualizarGamificacao(); }
+            else if (aba === 'menor')  { document.getElementById('nav-btn-menor').className = "flex flex-col items-center gap-0.5 py-1 text-purple-400"; document.getElementById('icon-menor-tag').className = "text-[9px] bg-purple-500/20 text-purple-400 font-black px-1 py-0.5 rounded border border-purple-500/40 font-logo"; recalcularExibicaoTotal(); }
+            else if (aba === 'conhecimento') { document.getElementById('nav-btn-conhecimento').className = "flex flex-col items-center gap-1 py-1 nav-active"; recalcularExibicaoTotal(); }
+            else if (aba === 'duvidas') { document.getElementById('nav-btn-duvidas').className = "flex flex-col items-center gap-1 py-1 nav-active"; renderizarDuvidas(); document.getElementById('valor-aporte-display').innerText = "DÚVIDAS"; }
         }
 
         function recalcularExibicaoTotal() {
@@ -910,14 +661,11 @@
         function definirObjetivoKids(objetivo) {
             objetivoKidsSelecionado = objetivo;
             localStorage.setItem('matias_kids_objetivo', objetivo);
-
             ['faculdade', 'intercambio', 'independencia'].forEach(obj => {
-                const btn = document.getElementById(`btn-kids-${obj}`);
-                btn.className = obj === objetivo
+                document.getElementById(`btn-kids-${obj}`).className = obj === objetivo
                     ? "w-full text-left bg-purple-500/10 border border-purple-500 p-3 rounded-lg text-xs font-bold text-purple-300 transition"
                     : "w-full text-left bg-slate-900 border border-slate-800 p-3 rounded-lg text-xs font-medium text-slate-300 transition";
             });
-
             const containerInput = document.getElementById('container-aporte-kids');
             containerInput.classList.remove('opacity-40', 'pointer-events-none');
             document.getElementById('input-valor-kids').placeholder = "0,00";
@@ -941,25 +689,20 @@
             }
 
             const distribuicaoAlvo = pesosKidsEstrategia[objetivoKidsSelecionado];
-            const maxAtivos = calcularQuantidadeAtivos(valorTotal);
 
-            // FILTRO: apenas ativos cujo mínimo é <= valor digitado
-            let ativosElegiveis = carteiraCompleta.filter(a =>
-                distribuicaoAlvo[a.categoria] > 0 &&
-                a.aplicacaoMinima <= valorTotal
+            // USA a nova lógica acumulativa
+            let ativosElegiveis = carteiraCompleta.filter(a => distribuicaoAlvo[a.categoria] > 0);
+            let ativosSelecionados = selecionarAtivosElegiveis(
+                ativosElegiveis,
+                valorTotal,
+                a => distribuicaoAlvo[a.categoria]
             );
-
-            ativosElegiveis.sort((a, b) => a.aplicacaoMinima - b.aplicacaoMinima);
-            let ativosSelecionados = selecionarComDiversificacao(ativosElegiveis, maxAtivos, distribuicaoAlvo);
-
-            // GARANTIA: a fatia proporcional de cada ativo precisa cobrir o mínimo real dele
-            ativosSelecionados = ajustarParaMinimosReais(ativosSelecionados, valorTotal, a => distribuicaoAlvo[a.categoria]);
 
             if (ativosSelecionados.length === 0) {
                 document.getElementById('lista-ativos-kids').innerHTML = `
                     <div class="bg-slate-950 rounded-xl border border-amber-500/20 p-4 text-center space-y-2">
                         <p class="text-xs text-amber-400 font-bold">⚠️ Valor abaixo do mínimo disponível</p>
-                        <p class="text-[11px] text-slate-400">Com R$ ${valorTotal.toLocaleString('pt-BR', {minimumFractionDigits:2})}, nenhum ativo desta estratégia está acessível com uma fatia real.<br>Tente valores a partir de <strong class="text-white">R$ 8,00</strong> para ações fracionárias.</p>
+                        <p class="text-[11px] text-slate-400">Com R$ ${valorTotal.toLocaleString('pt-BR', {minimumFractionDigits:2})}, nenhum ativo desta estratégia está acessível.<br>Tente valores a partir de <strong class="text-white">R$ 8,00</strong>.</p>
                     </div>`;
                 return;
             }
@@ -988,9 +731,7 @@
                                     ${tickerBadge}
                                 </div>
                                 <p class="text-[10px] text-slate-400 leading-snug">${ativo.nome.includes('—') ? ativo.nome.split('—')[1].trim() : ativo.nome}</p>
-                                <span class="inline-block text-[9px] uppercase font-black tracking-wider px-2 py-0.5 mt-1 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">
-                                    ${ativo.categoria}
-                                </span>
+                                <span class="inline-block text-[9px] uppercase font-black tracking-wider px-2 py-0.5 mt-1 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">${ativo.categoria}</span>
                             </div>
                             <div class="text-right shrink-0">
                                 <div class="text-sm font-black text-purple-400 font-logo">${(pct * 100).toFixed(0)}%</div>
@@ -1004,41 +745,6 @@
             });
 
             document.getElementById('lista-ativos-kids').innerHTML = htmlHTML;
-        }
-
-        // ─────────────────────────────────────────────────────────────
-        // Seleciona ativos garantindo diversificação de categorias.
-        // Pré-condição: todos os ativos em `lista` já passaram pelo
-        // filtro de aporte mínimo antes de entrar aqui.
-        // ─────────────────────────────────────────────────────────────
-        function selecionarComDiversificacao(lista, maxAtivos, pesosCat) {
-            if (lista.length <= maxAtivos) return lista;
-
-            const categorias = [...new Set(lista.map(a => a.categoria).filter(c => (pesosCat[c] || 0) > 0))];
-            const selecionados = [];
-            const usados = new Set();
-
-            // 1ª passagem: 1 ativo de cada categoria (prioridade por menor mínimo)
-            for (const cat of categorias) {
-                if (selecionados.length >= maxAtivos) break;
-                const candidato = lista.find(a => a.categoria === cat && !usados.has(a.nome));
-                if (candidato) {
-                    selecionados.push(candidato);
-                    usados.add(candidato.nome);
-                }
-            }
-
-            // 2ª passagem: completa até maxAtivos, priorizando maior peso
-            const restantes = lista
-                .filter(a => !usados.has(a.nome))
-                .sort((a, b) => (pesosCat[b.categoria] || 0) - (pesosCat[a.categoria] || 0));
-
-            for (const a of restantes) {
-                if (selecionados.length >= maxAtivos) break;
-                selecionados.push(a);
-            }
-
-            return selecionados;
         }
 
         function salvarDadosPerfil() {
@@ -1070,23 +776,19 @@
             const metaTipo  = localStorage.getItem('matias_meta_tipo');
             const metaValor = parseFloat(localStorage.getItem('matias_meta_valor')) || 0;
             const aporteAtual = obterValorNumerico();
-
             if (nome)  document.getElementById('user-nome').value  = nome;
             if (phone) document.getElementById('user-phone').value = phone;
             if (email) document.getElementById('user-email').value = email;
             if (nome || phone || email) progresso += 20;
             if (perfilInvestidor) progresso += 30;
             if (aporteAtual > 0) progresso += 30;
-
             document.getElementById('barra-progresso-perfil').style.width = `${progresso}%`;
             document.getElementById('txt-progresso-experiencia').innerText = `${progresso}% Concluído`;
-
             let tagNivel = "ESTUDANTE";
             if (progresso >= 50) tagNivel = "PRACTITIONER";
             if (progresso >= 90) tagNivel = "ESTRATEGISTA INDEPENDENTE";
             document.getElementById('perfil-nivel-tag').innerText = tagNivel;
             if (nome) document.getElementById('perfil-nome-titulo').innerText = nome;
-
             const metaContainer = document.getElementById('meta-visualizer');
             if (metaValor > 0) {
                 metaContainer.classList.remove('hidden');
@@ -1118,8 +820,7 @@
                     </button>
                     <button onclick="verificarMaioridade(false)" class="w-full text-left bg-slate-900 border border-slate-800 hover:border-purple-500 hover:bg-purple-500/5 p-2.5 rounded-lg text-xs font-bold text-slate-200 transition-all">
                         👎 Não, sou menor de idade (-18)
-                    </button>
-                `;
+                    </button>`;
                 return;
             }
             if (faseQuiz < perguntasQuiz.length) {
@@ -1146,9 +847,7 @@
                         <div class="flex items-center gap-1.5 text-purple-400 font-bold text-xs uppercase font-logo">
                             <i data-lucide="alert-triangle" class="w-4 h-4 text-purple-400"></i> Histórico de Investimento Jovem
                         </div>
-                        <p class="text-xs text-slate-300 leading-relaxed">
-                            Acesse a retrospectiva da minha carteira quando eu tinha menos de 18 anos e veja como foi estruturada minha base patrimonial de forma legal.
-                        </p>
+                        <p class="text-xs text-slate-300 leading-relaxed">Acesse a retrospectiva da minha carteira quando eu tinha menos de 18 anos.</p>
                         <button onclick="alternarAbas('menor')" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-logo font-black text-[11px] py-2 rounded-lg tracking-wider uppercase transition">
                             Ver Painel Histórico do Matias ➔
                         </button>
@@ -1166,10 +865,9 @@
         }
 
         function definirPerfilFinal() {
-            const badge          = document.getElementById('badge-perfil');
+            const badge           = document.getElementById('badge-perfil');
             const containerAporte = document.getElementById('container-aporte');
-            const inputAporte    = document.getElementById('input-valor-total');
-
+            const inputAporte     = document.getElementById('input-valor-total');
             if (pontuacaoTotalQuiz <= 4) {
                 perfilInvestidor = 'conservador';
                 badge.innerText  = 'SIMULAÇÃO DEFENSIVA';
@@ -1183,7 +881,6 @@
                 badge.innerText  = 'SIMULAÇÃO DINÂMICA COMPLETA';
                 badge.className  = "text-xs px-2 py-0.5 rounded font-bold bg-purple-500/20 text-purple-400 border border-purple-500/30";
             }
-
             localStorage.setItem('matias_perfil_definido', perfilInvestidor);
             document.getElementById('quiz-container').innerHTML = `
                 <div class="text-xs text-slate-400 bg-slate-900/60 p-2 rounded border border-slate-800 text-center">
@@ -1249,7 +946,6 @@
                 return;
             }
 
-            // ── RESERVA DE EMERGÊNCIA (30% sempre separado primeiro) ──
             const valorReserva  = valorTotal * PERCENTUAL_RESERVA_EMERGENCIA;
             const valorRestante = valorTotal - valorReserva;
             const nomeLiquidez  = liquidezSelecionada === 'porquinho' ? 'Porquinho Inter' : 'Caixinha Nubank';
@@ -1276,41 +972,22 @@
                 return;
             }
 
-            // A partir daqui, todo o cálculo proporcional usa apenas os
-            // 70% restantes (valorRestante) — os ativos coadjuvantes
-            // nunca disputam a fatia que já foi reservada para liquidez.
+            // ── NOVA LÓGICA ACUMULATIVA ────────────────────────────────
+            // Filtra por categoria se necessário, depois aplica seleção acumulativa
+            let candidatos = carteiraCompleta.filter(a => {
+                const temPeso = a.pesosPerfil[perfilInvestidor] > 0;
+                const categoriaOk = filtroAtual === 'todos' || a.categoria === filtroAtual;
+                return temPeso && categoriaOk;
+            });
 
-            // ── FILTRO ──────────────────────────────────────
-            // Passo 1: mantém apenas ativos com peso > 0 no perfil atual
-            //          E cujo aporte mínimo seja <= valor restante (70%)
-            let ativosFiltrados = carteiraCompleta.filter(a =>
-                a.pesosPerfil[perfilInvestidor] > 0 &&
-                a.aplicacaoMinima <= valorRestante
+            // Usa a nova função acumulativa — quanto maior o valor, mais ativos
+            let ativosFiltrados = selecionarAtivosElegiveis(
+                candidatos,
+                valorRestante,
+                a => a.pesosPerfil[perfilInvestidor]
             );
-
-            // Passo 2: aplica filtro de categoria (se não for "todos")
-            if (filtroAtual !== 'todos') {
-                ativosFiltrados = ativosFiltrados.filter(a => a.categoria === filtroAtual);
-            }
-
-            // Passo 3: limite de quantidade cresce com o valor restante (70%)
-            const maxAtivos = filtroAtual === 'todos'
-                ? calcularQuantidadeAtivos(valorRestante)
-                : ativosFiltrados.length;
-
-            // Passo 4: diversificação de categorias dentro do limite
-            const pesosProxy = Object.fromEntries(
-                ativosFiltrados.map(a => [a.categoria, a.pesosPerfil[perfilInvestidor]])
-            );
-            ativosFiltrados = selecionarComDiversificacao(ativosFiltrados, maxAtivos, pesosProxy);
-
-            // Passo 5 (CORREÇÃO): garante que a fatia proporcional de cada
-            // ativo selecionado realmente cobre o aporte mínimo dele,
-            // calculada sobre o valor restante (70%) — não sobre o total.
-            ativosFiltrados = ajustarParaMinimosReais(ativosFiltrados, valorRestante, a => a.pesosPerfil[perfilInvestidor]);
 
             if (ativosFiltrados.length === 0) {
-                // Encontra o mínimo mais baixo disponível para o perfil
                 const minimoDisponivel = Math.min(
                     ...carteiraCompleta
                         .filter(a => a.pesosPerfil[perfilInvestidor] > 0)
@@ -1320,15 +997,15 @@
                     <div class="bg-slate-950 rounded-xl border border-amber-500/20 p-4 text-center space-y-2">
                         <p class="text-xs text-amber-400 font-bold">⚠️ Valor abaixo do mínimo disponível</p>
                         <p class="text-[11px] text-slate-400 leading-relaxed">
-                            Após reservar 30% (${valorReserva.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}) para liquidez, restam <strong class="text-white">${valorRestante.toLocaleString('pt-BR', {minimumFractionDigits:2})}</strong> — valor insuficiente para nenhum ativo do perfil <strong class="text-white uppercase">${perfilInvestidor}</strong> neste filtro.<br><br>
-                            O menor aporte mínimo disponível é <strong class="text-cyan-400">R$ ${minimoDisponivel}</strong>. Tente aumentar o valor total ou mudar o filtro de categoria.
+                            Após reservar 30% (${valorReserva.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}) para liquidez, restam <strong class="text-white">${valorRestante.toLocaleString('pt-BR', {minimumFractionDigits:2})}</strong> — insuficiente para o perfil <strong class="text-white uppercase">${perfilInvestidor}</strong> neste filtro.<br><br>
+                            O menor mínimo disponível é <strong class="text-cyan-400">R$ ${minimoDisponivel}</strong>.
                         </p>
                     </div>`;
                 atualizarBarraComposicao();
                 return;
             }
 
-            let somaPesos = ativosFiltrados.reduce((s, a) => s + a.pesosPerfil[perfilInvestidor], 0) || 1;
+            let somaPesos  = ativosFiltrados.reduce((s, a) => s + a.pesosPerfil[perfilInvestidor], 0) || 1;
             let htmlAtivos = '';
             let acumulado  = 0;
 
@@ -1360,9 +1037,7 @@
                                     ${tickerBadge}
                                 </div>
                                 <p class="text-[10px] text-slate-400 leading-snug">${nomeExibicao}</p>
-                                <span class="inline-block text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 mt-1 rounded bg-slate-900 text-slate-400 border border-slate-800">
-                                    ${ativo.categoria}
-                                </span>
+                                <span class="inline-block text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 mt-1 rounded bg-slate-900 text-slate-400 border border-slate-800">${ativo.categoria}</span>
                             </div>
                             <div class="text-right shrink-0">
                                 <div class="text-sm font-black text-cyan-400 font-logo">${(pct * 100).toFixed(0)}%</div>
@@ -1375,7 +1050,6 @@
                     </div>`;
             });
 
-            // Card fixo da reserva de emergência, sempre no topo da lista
             const cardReserva = `
                 <div class="bg-slate-950 rounded-xl border border-amber-500/20 p-4">
                     <div class="flex justify-between items-start">
@@ -1385,9 +1059,7 @@
                                 <span class="inline-block text-[9px] font-black tracking-widest px-2 py-0.5 rounded bg-amber-900/40 text-amber-300 border border-amber-500/30 font-logo ml-1">RESERVA</span>
                             </div>
                             <p class="text-[10px] text-slate-400 leading-snug">Liquidez imediata separada antes da divisão entre os demais ativos.</p>
-                            <span class="inline-block text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 mt-1 rounded bg-slate-900 text-slate-400 border border-slate-800">
-                                Liquidez
-                            </span>
+                            <span class="inline-block text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 mt-1 rounded bg-slate-900 text-slate-400 border border-slate-800">Liquidez</span>
                         </div>
                         <div class="text-right shrink-0">
                             <div class="text-sm font-black text-amber-400 font-logo">30%</div>
@@ -1402,9 +1074,6 @@
 
         function atualizarBarraComposicao() {
             const barra = document.getElementById('barra-composicao');
-            // 30% sempre reservado para liquidez (âmbar); os 70% restantes
-            // mantêm a proporção relativa de Renda Fixa / Multimercado / Ações+Global
-            // de acordo com o perfil simulado.
             if (perfilInvestidor === 'conservador') {
                 barra.innerHTML = '<div class="h-full bg-amber-500" style="width:30%"></div><div class="h-full bg-emerald-500" style="width:59.5%"></div><div class="h-full bg-cyan-500" style="width:10.5%"></div>';
             } else if (perfilInvestidor === 'moderado') {
@@ -1425,10 +1094,8 @@
         function inicializarGrafico(periodo = '1A') {
             const ctx = document.getElementById('graficoEvolucao').getContext('2d');
             if (chartInstancia) chartInstancia.destroy();
-
             const baseAporte = obterValorNumerico();
             const dadosMultiplicados = dadosGraficoPeriodos[periodo].map(m => baseAporte + (baseAporte * (m / 100)));
-
             chartInstancia = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -1449,11 +1116,7 @@
                     maintainAspectRatio: false,
                     plugins: {
                         legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: ctx => ' Valor: ' + ctx.raw.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
-                            }
-                        }
+                        tooltip: { callbacks: { label: ctx => ' Valor: ' + ctx.raw.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) } }
                     },
                     scales: {
                         y: { display: true, grid: { color: '#1e293b' }, ticks: { color: '#475569', font: { size: 9 } } },
@@ -1473,17 +1136,7 @@
                     if (info) {
                         const preco   = info.brl.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
                         const variacao = info.brl_24h_change;
-                        html += `
-                            <div class="bg-slate-950 p-3 rounded-xl border border-slate-900">
-                                <div class="flex justify-between items-center mb-1">
-                                    <span class="text-xs font-bold text-white">${c.name}</span>
-                                    <span class="text-[10px] px-1.5 rounded font-logo text-black" style="background:${c.color}">${c.symbol}</span>
-                                </div>
-                                <div class="text-xs font-black font-logo text-slate-200">${preco}</div>
-                                <div class="text-[10px] font-bold ${variacao >= 0 ? 'text-emerald-400' : 'text-red-400'} mt-0.5">
-                                    ${variacao >= 0 ? '▲' : '▼'} ${variacao.toFixed(2)}% (24h)
-                                </div>
-                            </div>`;
+                        html += `<div class="bg-slate-950 p-3 rounded-xl border border-slate-900"><div class="flex justify-between items-center mb-1"><span class="text-xs font-bold text-white">${c.name}</span><span class="text-[10px] px-1.5 rounded font-logo text-black" style="background:${c.color}">${c.symbol}</span></div><div class="text-xs font-black font-logo text-slate-200">${preco}</div><div class="text-[10px] font-bold ${variacao >= 0 ? 'text-emerald-400' : 'text-red-400'} mt-0.5">${variacao >= 0 ? '▲' : '▼'} ${variacao.toFixed(2)}% (24h)</div></div>`;
                     }
                 });
                 document.getElementById('crypto-grid').innerHTML = html;
@@ -1500,7 +1153,6 @@
         window.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
             carregarCryptoFeeds();
-
             if (localStorage.getItem('matias_perfil_definido')) {
                 perfilInvestidor   = localStorage.getItem('matias_perfil_definido');
                 pontuacaoTotalQuiz = parseInt(localStorage.getItem('matias_pontos_quiz')) || 10;
@@ -1512,14 +1164,12 @@
             } else {
                 renderizarQuiz();
             }
-
             if (localStorage.getItem('matias_kids_objetivo')) {
                 if (localStorage.getItem('matias_kids_valor_cru')) {
                     document.getElementById('input-valor-kids').value = localStorage.getItem('matias_kids_valor_cru');
                 }
                 definirObjetivoKids(localStorage.getItem('matias_kids_objetivo'));
             }
-
             if (localStorage.getItem('matias_aba_ativa')) {
                 alternarAbas(localStorage.getItem('matias_aba_ativa'));
             }
