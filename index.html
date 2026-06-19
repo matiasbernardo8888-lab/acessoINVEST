@@ -454,19 +454,26 @@
         ];
 
         // ─────────────────────────────────────────────────────────────
+        // PERCENTUAL FIXO DE RESERVA DE EMERGÊNCIA
+        // Sempre separado ANTES de dividir o restante entre os
+        // ativos coadjuvantes (renda fixa, multimercado, ações, global)
+        // ─────────────────────────────────────────────────────────────
+        const PERCENTUAL_RESERVA_EMERGENCIA = 0.30;
+
+        // ─────────────────────────────────────────────────────────────
         // REGRA DE QUANTIDADE DE ATIVOS POR FAIXA DE VALOR
         // Apenas ativos com aplicacaoMinima <= valorTotal aparecem.
         // A quantidade máxima cresce com o valor.
+        // IMPORTANTE: esta faixa é aplicada sobre o valor JÁ SEM a
+        // reserva de emergência (ou seja, sobre os 70% restantes que
+        // de fato serão divididos entre os ativos coadjuvantes).
         // ─────────────────────────────────────────────────────────────
         function calcularQuantidadeAtivos(valor) {
-            if (valor < 50)    return 1;
-            if (valor < 150)   return 2;
-            if (valor < 300)   return 3;
-            if (valor < 600)   return 4;
-            if (valor < 1200)  return 5;
-            if (valor < 3000)  return 6;
-            if (valor < 8000)  return 7;
-            return 8;
+            if (valor < 150)   return 1;
+            if (valor < 1000)  return 3;
+            if (valor < 5000)  return 4;
+            if (valor < 10000) return 6;
+            return 7;
         }
 
         // ─────────────────────────────────────────────────────────────
@@ -513,18 +520,6 @@
 
             return atual;
         }
-
-        // ─────────────────────────────────────────────────────────────
-        // PESOS POR PERFIL (ABA "CARTEIRA") — definidos por CATEGORIA,
-        // seguindo exatamente a mesma lógica usada na aba "Meu Começo"
-        // (pesosKidsEstrategia): o peso vale para a categoria inteira,
-        // não para o ativo individual.
-        // ─────────────────────────────────────────────────────────────
-        const pesosPerfilEstrategia = {
-            conservador: { 'Renda Fixa': 100, 'Multimercado': 0,  'Ações': 0,  'Global': 0  },
-            moderado:    { 'Renda Fixa': 25,  'Multimercado': 20, 'Ações': 35, 'Global': 20 },
-            arrojado:    { 'Renda Fixa': 10,  'Multimercado': 12, 'Ações': 58, 'Global': 20 }
-        };
 
         const pesosKidsEstrategia = {
             faculdade:    { 'Renda Fixa': 20, 'Multimercado': 10, 'Ações': 50, 'Global': 20 },
@@ -696,14 +691,14 @@
                         📌 <strong>Passo a passo:</strong><br>
                         1. Responda as perguntas de perfil (conservador, moderado ou arrojado)<br>
                         2. Digite um valor no campo "Simular Proporção"<br>
-                        3. O site calcula automaticamente quanto iria para cada ativo<br><br>
+                        3. O site separa automaticamente 30% para a reserva de emergência (liquidez) e calcula quanto dos 70% restantes iria para cada ativo coadjuvante<br><br>
                         ⚠️ <strong>Importante:</strong> Isso é apenas uma simulação educacional baseada na carteira pessoal do Matias — não é recomendação de investimento. Além disso, o site só exibe ativos cuja fatia proporcional realmente cobre o aporte mínimo de cada um — não apenas ativos cujo mínimo "cabe" no valor total.`
                     },
                     {
-                        pergunta: 'O que significa perfil conservador, moderado e arrojado?',
-                        resposta: `<strong>Conservador:</strong> Foco em segurança. A maior parte vai para Renda Fixa (IMA-B, Valora, etc). Menor risco, retorno mais previsível.<br><br>
-                        <strong>Moderado:</strong> Equilíbrio entre segurança e crescimento. Divide entre Renda Fixa, Multimercados, algumas ações e ativos globais.<br><br>
-                        <strong>Arrojado:</strong> Aceita mais volatilidade em busca de maior retorno. Maior exposição a ações brasileiras, globais e multimercados.`
+                        pergunta: 'Por que 30% sempre vai para a reserva de emergência?',
+                        resposta: `Antes de dividir qualquer valor entre os ativos coadjuvantes (Renda Fixa, Multimercado, Ações e Global), o simulador <strong>sempre separa 30% do montante total</strong> para a reserva de liquidez (Porquinho Inter ou Caixinha Nubank).<br><br>
+                        Isso reflete a lógica de organização financeira pessoal do Matias: manter um colchão de segurança líquido antes de qualquer alocação em ativos de prazo mais longo.<br><br>
+                        💡 Só os <strong>70% restantes</strong> são distribuídos proporcionalmente entre os ativos coadjuvantes, de acordo com o perfil simulado.`
                     },
                     {
                         pergunta: 'O que é a aba "Meu Começo"?',
@@ -715,7 +710,7 @@
                     },
                     {
                         pergunta: 'O que é o Porquinho Inter e a Caixinha Nubank?',
-                        resposta: `São as reservas de liquidez do Matias — onde ele guarda o "colchão de segurança" para emergências ou oportunidades rápidas.<br><br>
+                        resposta: `São as reservas de liquidez do Matias — onde ele guarda o "colchão de segurança" para emergências ou oportunidades rápidas. No simulador, 30% de qualquer valor digitado é direcionado automaticamente para uma dessas opções, antes da divisão entre os demais ativos.<br><br>
                         🐷 <strong>Porquinho Inter:</strong> Conta remunerada do Banco Inter. Rende 100% do CDI com liquidez diária.<br><br>
                         💜 <strong>Caixinha Nubank:</strong> RDB (Recibo de Depósito Bancário) do Nubank. Também rende 100% do CDI com resgate imediato.<br><br>
                         💡 Ambas são opções seguras e com liquidez total para reserva de emergência.`
@@ -728,8 +723,8 @@
                     },
                     {
                         pergunta: 'Por que alguns ativos somem quando eu digito um valor menor?',
-                        resposta: `Cada ativo tem um <strong>aporte mínimo real</strong> (o valor mínimo que de fato dá para investir nele). O simulador só mostra um ativo quando a fatia proporcional calculada para ele é, no mínimo, igual a esse valor mínimo.<br><br>
-                        Por exemplo: se um fundo exige R$ 500 de aporte mínimo, mas a fatia proporcional dele dentro do valor que você digitou daria apenas R$ 90, esse fundo não aparece — porque, na prática, R$ 90 não seria suficiente para investir nele.<br><br>
+                        resposta: `Cada ativo tem um <strong>aporte mínimo real</strong> (o valor mínimo que de fato dá para investir nele). O simulador só mostra um ativo quando a fatia proporcional calculada para ele — já descontados os 30% da reserva de emergência — é, no mínimo, igual a esse valor mínimo.<br><br>
+                        Por exemplo: se um fundo exige R$ 500 de aporte mínimo, mas a fatia proporcional dele dentro dos 70% restantes daria apenas R$ 90, esse fundo não aparece — porque, na prática, R$ 90 não seria suficiente para investir nele.<br><br>
                         💡 Quanto maior o valor digitado, mais ativos diferentes a simulação consegue encaixar com fatias realistas.`
                     },
                 ]
@@ -1254,28 +1249,43 @@
                 return;
             }
 
+            // ── RESERVA DE EMERGÊNCIA (30% sempre separado primeiro) ──
+            const valorReserva  = valorTotal * PERCENTUAL_RESERVA_EMERGENCIA;
+            const valorRestante = valorTotal - valorReserva;
+            const nomeLiquidez  = liquidezSelecionada === 'porquinho' ? 'Porquinho Inter' : 'Caixinha Nubank';
+
             avisoLiq.classList.remove('hidden');
-            avisoLiq.innerHTML = liquidezSelecionada === 'porquinho'
-                ? `🟢 <strong>Simulação de Liquidez:</strong> Do montante simulado, eu alocaria uma parcela protetiva no <strong>Porquinho do Banco Inter</strong> para saques imediatos.`
-                : `🟢 <strong>Simulação de Liquidez:</strong> Do montante simulado, eu manteria uma parcela de segurança na <strong>Caixinha NuConta RDB</strong>.`;
+            avisoLiq.innerHTML = `🟢 <strong>Reserva de Emergência (30%):</strong> Dos ${valorTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} simulados, eu separaria primeiro <strong>${valorReserva.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong> no <strong>${nomeLiquidez}</strong> antes de dividir o restante entre os demais ativos.`;
             document.getElementById('secao-grafico').classList.remove('hidden');
             inicializarGrafico('1A');
 
             if (filtroAtual === 'Liquidez') {
                 document.getElementById('lista-ativos').innerHTML = `
                     <div class="bg-slate-950 rounded-xl border border-slate-900 p-4">
-                        <h3 class="text-xs font-bold text-white uppercase">${liquidezSelecionada === 'porquinho' ? 'Porquinho Inter' : 'Caixinha Nubank'}</h3>
-                        <p class="text-xs text-slate-400 mt-2">Reserva de oportunidade imediata com liquidez diária instantânea.</p>
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="text-xs font-bold text-white uppercase">${nomeLiquidez}</h3>
+                                <p class="text-xs text-slate-400 mt-2">Reserva de oportunidade imediata com liquidez diária instantânea. Sempre 30% do valor total simulado, separada antes de qualquer outra alocação.</p>
+                            </div>
+                            <div class="text-right shrink-0 pl-2">
+                                <div class="text-sm font-black text-amber-400 font-logo">30%</div>
+                                <div class="text-xs text-slate-300 font-bold mt-0.5">${valorReserva.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
+                            </div>
+                        </div>
                     </div>`;
                 return;
             }
 
+            // A partir daqui, todo o cálculo proporcional usa apenas os
+            // 70% restantes (valorRestante) — os ativos coadjuvantes
+            // nunca disputam a fatia que já foi reservada para liquidez.
+
             // ── FILTRO ──────────────────────────────────────
             // Passo 1: mantém apenas ativos com peso > 0 no perfil atual
-            //          E cujo aporte mínimo seja <= valor digitado
+            //          E cujo aporte mínimo seja <= valor restante (70%)
             let ativosFiltrados = carteiraCompleta.filter(a =>
                 a.pesosPerfil[perfilInvestidor] > 0 &&
-                a.aplicacaoMinima <= valorTotal
+                a.aplicacaoMinima <= valorRestante
             );
 
             // Passo 2: aplica filtro de categoria (se não for "todos")
@@ -1283,9 +1293,9 @@
                 ativosFiltrados = ativosFiltrados.filter(a => a.categoria === filtroAtual);
             }
 
-            // Passo 3: limite de quantidade cresce com o valor
+            // Passo 3: limite de quantidade cresce com o valor restante (70%)
             const maxAtivos = filtroAtual === 'todos'
-                ? calcularQuantidadeAtivos(valorTotal)
+                ? calcularQuantidadeAtivos(valorRestante)
                 : ativosFiltrados.length;
 
             // Passo 4: diversificação de categorias dentro do limite
@@ -1295,11 +1305,9 @@
             ativosFiltrados = selecionarComDiversificacao(ativosFiltrados, maxAtivos, pesosProxy);
 
             // Passo 5 (CORREÇÃO): garante que a fatia proporcional de cada
-            // ativo selecionado realmente cobre o aporte mínimo dele.
-            // Sem isso, um ativo com mínimo de R$ 500 podia aparecer com
-            // uma fatia de R$ 90 quando o valor total era R$ 600, por
-            // exemplo — incoerente com o valor digitado pelo usuário.
-            ativosFiltrados = ajustarParaMinimosReais(ativosFiltrados, valorTotal, a => a.pesosPerfil[perfilInvestidor]);
+            // ativo selecionado realmente cobre o aporte mínimo dele,
+            // calculada sobre o valor restante (70%) — não sobre o total.
+            ativosFiltrados = ajustarParaMinimosReais(ativosFiltrados, valorRestante, a => a.pesosPerfil[perfilInvestidor]);
 
             if (ativosFiltrados.length === 0) {
                 // Encontra o mínimo mais baixo disponível para o perfil
@@ -1312,8 +1320,8 @@
                     <div class="bg-slate-950 rounded-xl border border-amber-500/20 p-4 text-center space-y-2">
                         <p class="text-xs text-amber-400 font-bold">⚠️ Valor abaixo do mínimo disponível</p>
                         <p class="text-[11px] text-slate-400 leading-relaxed">
-                            Com <strong class="text-white">R$ ${valorTotal.toLocaleString('pt-BR', {minimumFractionDigits:2})}</strong>, nenhum ativo do perfil <strong class="text-white uppercase">${perfilInvestidor}</strong> está acessível com uma fatia real neste filtro.<br><br>
-                            O menor aporte mínimo disponível é <strong class="text-cyan-400">R$ ${minimoDisponivel}</strong>. Tente aumentar o valor ou mudar o filtro de categoria.
+                            Após reservar 30% (${valorReserva.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}) para liquidez, restam <strong class="text-white">${valorRestante.toLocaleString('pt-BR', {minimumFractionDigits:2})}</strong> — valor insuficiente para nenhum ativo do perfil <strong class="text-white uppercase">${perfilInvestidor}</strong> neste filtro.<br><br>
+                            O menor aporte mínimo disponível é <strong class="text-cyan-400">R$ ${minimoDisponivel}</strong>. Tente aumentar o valor total ou mudar o filtro de categoria.
                         </p>
                     </div>`;
                 atualizarBarraComposicao();
@@ -1327,8 +1335,8 @@
             ativosFiltrados.forEach((ativo, idx) => {
                 let pct          = ativo.pesosPerfil[perfilInvestidor] / somaPesos;
                 let valorAlocado = idx === ativosFiltrados.length - 1
-                    ? valorTotal - acumulado
-                    : valorTotal * pct;
+                    ? valorRestante - acumulado
+                    : valorRestante * pct;
                 acumulado += valorAlocado;
 
                 const tickerBadge = ativo.ticker
@@ -1367,18 +1375,42 @@
                     </div>`;
             });
 
-            document.getElementById('lista-ativos').innerHTML = htmlAtivos;
+            // Card fixo da reserva de emergência, sempre no topo da lista
+            const cardReserva = `
+                <div class="bg-slate-950 rounded-xl border border-amber-500/20 p-4">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1 pr-2">
+                            <div class="flex flex-wrap items-center gap-1 mb-0.5">
+                                <h3 class="text-xs font-bold text-white uppercase tracking-wide">${nomeLiquidez}</h3>
+                                <span class="inline-block text-[9px] font-black tracking-widest px-2 py-0.5 rounded bg-amber-900/40 text-amber-300 border border-amber-500/30 font-logo ml-1">RESERVA</span>
+                            </div>
+                            <p class="text-[10px] text-slate-400 leading-snug">Liquidez imediata separada antes da divisão entre os demais ativos.</p>
+                            <span class="inline-block text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 mt-1 rounded bg-slate-900 text-slate-400 border border-slate-800">
+                                Liquidez
+                            </span>
+                        </div>
+                        <div class="text-right shrink-0">
+                            <div class="text-sm font-black text-amber-400 font-logo">30%</div>
+                            <div class="text-xs text-slate-300 font-bold mt-0.5">${valorReserva.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
+                        </div>
+                    </div>
+                </div>`;
+
+            document.getElementById('lista-ativos').innerHTML = (filtroAtual === 'todos' ? cardReserva : '') + htmlAtivos;
             atualizarBarraComposicao();
         }
 
         function atualizarBarraComposicao() {
             const barra = document.getElementById('barra-composicao');
+            // 30% sempre reservado para liquidez (âmbar); os 70% restantes
+            // mantêm a proporção relativa de Renda Fixa / Multimercado / Ações+Global
+            // de acordo com o perfil simulado.
             if (perfilInvestidor === 'conservador') {
-                barra.innerHTML = '<div class="h-full bg-emerald-500" style="width:85%"></div><div class="h-full bg-cyan-500" style="width:15%"></div>';
+                barra.innerHTML = '<div class="h-full bg-amber-500" style="width:30%"></div><div class="h-full bg-emerald-500" style="width:59.5%"></div><div class="h-full bg-cyan-500" style="width:10.5%"></div>';
             } else if (perfilInvestidor === 'moderado') {
-                barra.innerHTML = '<div class="h-full bg-emerald-500" style="width:45%"></div><div class="h-full bg-cyan-500" style="width:35%"></div><div class="h-full bg-purple-500" style="width:20%"></div>';
+                barra.innerHTML = '<div class="h-full bg-amber-500" style="width:30%"></div><div class="h-full bg-emerald-500" style="width:31.5%"></div><div class="h-full bg-cyan-500" style="width:24.5%"></div><div class="h-full bg-purple-500" style="width:14%"></div>';
             } else {
-                barra.innerHTML = '<div class="h-full bg-emerald-500" style="width:15%"></div><div class="h-full bg-cyan-500" style="width:25%"></div><div class="h-full bg-purple-500" style="width:60%"></div>';
+                barra.innerHTML = '<div class="h-full bg-amber-500" style="width:30%"></div><div class="h-full bg-emerald-500" style="width:10.5%"></div><div class="h-full bg-cyan-500" style="width:17.5%"></div><div class="h-full bg-purple-500" style="width:42%"></div>';
             }
         }
 
