@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Matias Invest | Diário Gráfico de Carteira Pessoal</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -14,7 +16,7 @@
     <style>
         html { background: #000 !important; }
         * { box-sizing: border-box; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #000; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #000; margin:0; padding:0; overflow-x:hidden; }
         .font-logo { font-family: 'Orbitron', sans-serif; }
         input[type=number]::-webkit-inner-spin-button,
         input[type=number]::-webkit-outer-spin-button {
@@ -32,9 +34,407 @@
             70% { box-shadow: 0 0 0 10px rgba(6, 182, 212, 0); }
             100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); }
         }
+
+        /* ════════════════════════════════════════════════════════════
+           TELA DE ENTRADA (SPLASH) — estilos isolados sob #splash-screen
+           para nunca colidir com as classes do app principal
+        ════════════════════════════════════════════════════════════ */
+        #splash-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: #000000;
+            overflow: hidden;
+            color: #f0f9ff;
+        }
+
+        #splash-screen.splash-hidden {
+            display: none;
+        }
+
+        /* trava o scroll do site enquanto o splash está visível */
+        body.splash-active {
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        #splash-screen .particles-canvas {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        #splash-screen .grid-perspective {
+            position: fixed;
+            bottom: -10vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200vw;
+            height: 55vh;
+            background-image:
+                linear-gradient(to right, rgba(6,182,212,0.12) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(6,182,212,0.10) 1px, transparent 1px);
+            background-size: 60px 60px;
+            transform-origin: bottom center;
+            transform: translateX(-50%) perspective(600px) rotateX(65deg);
+            z-index: 0;
+            mask-image: radial-gradient(ellipse 80% 60% at 50% 100%, black 40%, transparent 100%);
+        }
+
+        #splash-screen .scanlines {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            background: repeating-linear-gradient(
+                to bottom,
+                transparent,
+                transparent 3px,
+                rgba(0,0,0,0.08) 3px,
+                rgba(0,0,0,0.08) 4px
+            );
+        }
+
+        #splash-screen .stage {
+            position: fixed;
+            inset: 0;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            padding: 32px 24px;
+        }
+
+        #splash-screen .hex-ring {
+            position: relative;
+            width: 96px;
+            height: 96px;
+            margin-bottom: 28px;
+            animation: splashFloatY 4s ease-in-out infinite;
+        }
+
+        #splash-screen .hex-svg {
+            width: 100%;
+            height: 100%;
+            animation: splashRotateSlow 18s linear infinite;
+        }
+
+        #splash-screen .hex-center-icon {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 22px;
+            color: #06b6d4;
+            letter-spacing: -1px;
+            text-shadow: 0 0 20px rgba(6,182,212,0.8);
+        }
+
+        #splash-screen .h-line {
+            width: min(340px, 90vw);
+            height: 1px;
+            background: linear-gradient(to right, transparent, #06b6d4, transparent);
+            opacity: 0.4;
+            margin: 4px 0 24px;
+        }
+
+        #splash-screen .logo-title {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: clamp(28px, 8vw, 48px);
+            letter-spacing: 0.15em;
+            line-height: 1;
+            text-align: center;
+            background: linear-gradient(135deg, #ffffff 0%, #06b6d4 50%, #ffffff 100%);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: splashShimmer 4s ease-in-out infinite;
+            text-shadow: none;
+        }
+
+        #splash-screen .logo-sub {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(9px, 2vw, 11px);
+            font-weight: 400;
+            letter-spacing: 0.4em;
+            color: #94a3b8;
+            text-align: center;
+            margin-top: 10px;
+            text-transform: uppercase;
+        }
+
+        #splash-screen .status-block {
+            margin-top: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        #splash-screen .status-line {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 10px;
+            letter-spacing: 0.25em;
+            color: #94a3b8;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        #splash-screen .dot-live {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #06b6d4;
+            box-shadow: 0 0 8px #06b6d4;
+            animation: splashBlink 1.2s ease-in-out infinite;
+        }
+
+        #splash-screen .loader-track {
+            width: min(280px, 80vw);
+            height: 2px;
+            background: rgba(6,182,212,0.12);
+            border-radius: 99px;
+            overflow: hidden;
+        }
+
+        #splash-screen .loader-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(to right, #0891b2, #06b6d4, #7dd3fc);
+            border-radius: 99px;
+            box-shadow: 0 0 10px #06b6d4;
+            animation: splashLoadFill 2.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        #splash-screen .loader-label {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 9px;
+            letter-spacing: 0.3em;
+            color: rgba(6,182,212,0.55);
+            margin-top: 10px;
+        }
+
+        #splash-screen .enter-btn {
+            opacity: 0;
+            margin-top: 40px;
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 40px;
+            background: transparent;
+            border: 1px solid rgba(6,182,212,0.5);
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.3em;
+            color: #06b6d4;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            animation: splashFadeInBtn 0.6s ease 2.9s forwards;
+        }
+
+        #splash-screen .enter-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: #06b6d4;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.35s ease;
+            z-index: -1;
+        }
+
+        #splash-screen .enter-btn:hover::before { transform: scaleX(1); }
+        #splash-screen .enter-btn:hover { color: #000; border-color: #06b6d4; box-shadow: 0 0 30px rgba(6,182,212,0.4); }
+
+        #splash-screen .enter-icon {
+            width: 16px;
+            height: 16px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            transition: transform 0.3s;
+        }
+        #splash-screen .enter-btn:hover .enter-icon { transform: translateX(4px); }
+
+        #splash-screen .splash-corner {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            z-index: 20;
+            opacity: 0.4;
+        }
+        #splash-screen .splash-corner-tl { top: 20px; left: 20px; border-top: 1px solid #06b6d4; border-left: 1px solid #06b6d4; }
+        #splash-screen .splash-corner-tr { top: 20px; right: 20px; border-top: 1px solid #06b6d4; border-right: 1px solid #06b6d4; }
+        #splash-screen .splash-corner-bl { bottom: 80px; left: 20px; border-bottom: 1px solid #06b6d4; border-left: 1px solid #06b6d4; }
+        #splash-screen .splash-corner-br { bottom: 80px; right: 20px; border-bottom: 1px solid #06b6d4; border-right: 1px solid #06b6d4; }
+
+        #splash-screen .footer-tag {
+            position: fixed;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 9px;
+            letter-spacing: 0.25em;
+            color: rgba(148,163,184,0.35);
+            text-transform: uppercase;
+            white-space: nowrap;
+            z-index: 20;
+        }
+
+        #splash-screen .data-hud {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 20;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 9px;
+            letter-spacing: 0.35em;
+            color: rgba(6,182,212,0.35);
+            white-space: nowrap;
+        }
+
+        @keyframes splashShimmer {
+            0%   { background-position: 0% 50%;   }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%;   }
+        }
+        @keyframes splashRotateSlow {
+            from { transform: rotate(0deg);   }
+            to   { transform: rotate(360deg); }
+        }
+        @keyframes splashFloatY {
+            0%, 100% { transform: translateY(0px);   }
+            50%       { transform: translateY(-8px); }
+        }
+        @keyframes splashBlink {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.2; }
+        }
+        @keyframes splashLoadFill {
+            0%   { width: 0%;    }
+            60%  { width: 85%;  }
+            80%  { width: 90%;  }
+            100% { width: 100%; }
+        }
+        @keyframes splashFadeInBtn {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0);    }
+        }
+
+        #splash-screen .splash-exit {
+            animation: splashExitScreen 0.7s cubic-bezier(0.7,0,1,1) forwards !important;
+        }
+        @keyframes splashExitScreen {
+            0%   { opacity: 1; transform: scale(1);    filter: brightness(1);  }
+            40%  { opacity: 1; transform: scale(1.01); filter: brightness(2);  }
+            100% { opacity: 0; transform: scale(1.04); filter: brightness(5);  }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            #splash-screen * { animation-duration: 0.01ms !important; }
+        }
     </style>
 </head>
-<body style="background:#000 important;" class="bg-black text-slate-100 min-h-screen pb-28">
+<body class="bg-black text-slate-100 min-h-screen pb-28 splash-active">
+
+    <!-- ════════════════════════════════════════════════════════════
+         TELA DE ENTRADA (SPLASH)
+         Fica por cima do site (z-index 9999) até o usuário clicar
+         em "ACESSAR CARTEIRA". O site real já carrega por baixo,
+         então a transição é instantânea, sem reload de página.
+    ════════════════════════════════════════════════════════════ -->
+    <div id="splash-screen">
+
+        <canvas id="particles-canvas" class="particles-canvas"></canvas>
+        <div class="grid-perspective"></div>
+        <div class="scanlines"></div>
+
+        <div class="splash-corner splash-corner-tl"></div>
+        <div class="splash-corner splash-corner-tr"></div>
+        <div class="splash-corner splash-corner-bl"></div>
+        <div class="splash-corner splash-corner-br"></div>
+
+        <div class="data-hud" id="hud-clock">——</div>
+
+        <div class="stage" id="splash-stage">
+
+            <div class="hex-ring">
+                <svg class="hex-svg" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <polygon points="48,4 88,26 88,70 48,92 8,70 8,26"
+                        stroke="rgba(6,182,212,0.25)" stroke-width="1" fill="none"/>
+                    <polygon points="48,12 80,30 80,66 48,84 16,66 16,30"
+                        stroke="rgba(6,182,212,0.15)" stroke-width="0.8" fill="none"/>
+                    <circle cx="48" cy="48" r="40"
+                        stroke="url(#arcGrad)" stroke-width="1.5" fill="none"
+                        stroke-dasharray="200 52"
+                        stroke-linecap="round"
+                        transform="rotate(-90 48 48)"/>
+                    <circle cx="48" cy="4"  r="2" fill="#06b6d4" opacity="0.8"/>
+                    <circle cx="88" cy="26" r="2" fill="#06b6d4" opacity="0.8"/>
+                    <circle cx="88" cy="70" r="2" fill="#06b6d4" opacity="0.8"/>
+                    <circle cx="48" cy="92" r="2" fill="#06b6d4" opacity="0.8"/>
+                    <circle cx="8"  cy="70" r="2" fill="#06b6d4" opacity="0.8"/>
+                    <circle cx="8"  cy="26" r="2" fill="#06b6d4" opacity="0.8"/>
+                    <defs>
+                        <linearGradient id="arcGrad" x1="0" y1="0" x2="96" y2="96" gradientUnits="userSpaceOnUse">
+                            <stop offset="0%"   stop-color="#0891b2"/>
+                            <stop offset="100%" stop-color="#06b6d4"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <div class="hex-center-icon">M</div>
+            </div>
+
+            <div class="logo-title">MATIAS INVEST</div>
+            <div class="logo-sub">Diário Pessoal · Simulação · Educação</div>
+
+            <div class="h-line"></div>
+
+            <div class="status-block">
+                <div class="status-line">
+                    <span class="dot-live"></span>
+                    <span>Sistema online · mercado monitorado</span>
+                </div>
+
+                <div class="loader-track">
+                    <div class="loader-fill"></div>
+                </div>
+                <div class="loader-label" id="loader-label">INICIALIZANDO MÓDULOS</div>
+            </div>
+
+            <button class="enter-btn" id="enter-btn" onclick="entrarNoSite()">
+                ACESSAR CARTEIRA
+                <svg class="enter-icon" viewBox="0 0 24 24">
+                    <polyline points="9 18 15 12 9 6"/>
+                </svg>
+            </button>
+
+        </div>
+
+        <div class="footer-tag">© MATIAS INVEST · USO EDUCACIONAL</div>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════
+         SITE PRINCIPAL — carrega normalmente por baixo do splash
+    ════════════════════════════════════════════════════════════ -->
     <div class="max-w-2xl mx-auto">
         <header class="sticky top-0 z-50 bg-black/95 backdrop-blur-md border-b border-slate-900 p-4">
             <div class="flex justify-between items-center">
@@ -422,6 +822,141 @@
     </div>
 
     <script>
+        /* ════════════════════════════════════════════════════════════
+           SCRIPT DA TELA DE ENTRADA (SPLASH)
+        ════════════════════════════════════════════════════════════ */
+        (function () {
+            function atualizarRelogioSplash() {
+                const agora = new Date();
+                const pad = n => String(n).padStart(2, '0');
+                const el = document.getElementById('hud-clock');
+                if (el) {
+                    el.textContent = `${pad(agora.getDate())}/${pad(agora.getMonth() + 1)}/${agora.getFullYear()}  ·  ${pad(agora.getHours())}:${pad(agora.getMinutes())}:${pad(agora.getSeconds())}`;
+                }
+            }
+            atualizarRelogioSplash();
+            setInterval(atualizarRelogioSplash, 1000);
+
+            const fasesSplash = [
+                'INICIALIZANDO MÓDULOS',
+                'CARREGANDO CARTEIRA',
+                'CALIBRANDO PERFIL',
+                'SISTEMA PRONTO'
+            ];
+            let faseSplash = 0;
+            const lblSplash = document.getElementById('loader-label');
+            const tickerSplash = setInterval(() => {
+                faseSplash++;
+                if (faseSplash >= fasesSplash.length) { clearInterval(tickerSplash); return; }
+                if (!lblSplash) return;
+                lblSplash.style.opacity = '0';
+                setTimeout(() => {
+                    lblSplash.textContent = fasesSplash[faseSplash];
+                    lblSplash.style.transition = 'opacity 0.4s';
+                    lblSplash.style.opacity = '1';
+                }, 200);
+            }, 700);
+
+            const canvasSplash = document.getElementById('particles-canvas');
+            const ctxSplash = canvasSplash.getContext('2d');
+            let W, H, particlesSplash = [];
+            let splashAtiva = true;
+
+            function resizeSplash() {
+                W = canvasSplash.width = window.innerWidth;
+                H = canvasSplash.height = window.innerHeight;
+            }
+            resizeSplash();
+            window.addEventListener('resize', resizeSplash);
+
+            function criarParticulaSplash() {
+                return {
+                    x: Math.random() * W,
+                    y: Math.random() * H,
+                    vx: (Math.random() - 0.5) * 0.4,
+                    vy: -Math.random() * 0.6 - 0.1,
+                    r: Math.random() * 1.2 + 0.3,
+                    alpha: Math.random() * 0.5 + 0.1,
+                    life: 0,
+                    maxLife: Math.random() * 200 + 100
+                };
+            }
+
+            for (let i = 0; i < 80; i++) particlesSplash.push(criarParticulaSplash());
+
+            function desenharLinhasSplash() {
+                for (let i = 0; i < particlesSplash.length; i++) {
+                    for (let j = i + 1; j < particlesSplash.length; j++) {
+                        const dx = particlesSplash[i].x - particlesSplash[j].x;
+                        const dy = particlesSplash[i].y - particlesSplash[j].y;
+                        const d = Math.sqrt(dx * dx + dy * dy);
+                        if (d < 100) {
+                            const a = (1 - d / 100) * 0.06;
+                            ctxSplash.strokeStyle = `rgba(6,182,212,${a})`;
+                            ctxSplash.lineWidth = 0.5;
+                            ctxSplash.beginPath();
+                            ctxSplash.moveTo(particlesSplash[i].x, particlesSplash[i].y);
+                            ctxSplash.lineTo(particlesSplash[j].x, particlesSplash[j].y);
+                            ctxSplash.stroke();
+                        }
+                    }
+                }
+            }
+
+            function loopSplash() {
+                if (!splashAtiva) return; // para de desenhar (e de consumir CPU) após sair
+                ctxSplash.clearRect(0, 0, W, H);
+                desenharLinhasSplash();
+
+                particlesSplash.forEach((p, i) => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.life++;
+
+                    const fade = p.life < 30
+                        ? p.life / 30
+                        : p.life > p.maxLife - 30
+                            ? (p.maxLife - p.life) / 30
+                            : 1;
+
+                    ctxSplash.beginPath();
+                    ctxSplash.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctxSplash.fillStyle = `rgba(6,182,212,${p.alpha * fade})`;
+                    ctxSplash.fill();
+
+                    if (p.life >= p.maxLife || p.y < -10 || p.x < -10 || p.x > W + 10) {
+                        particlesSplash[i] = criarParticulaSplash();
+                    }
+                });
+
+                requestAnimationFrame(loopSplash);
+            }
+            loopSplash();
+
+            // Expõe a função de entrada globalmente para o botão (onclick="entrarNoSite()")
+            window.entrarNoSite = function () {
+                const stage = document.getElementById('splash-stage');
+                const splash = document.getElementById('splash-screen');
+                stage.classList.add('splash-exit');
+                setTimeout(() => {
+                    splashAtiva = false;
+                    splash.classList.add('splash-hidden');
+                    document.body.classList.remove('splash-active');
+                }, 680);
+            };
+
+            // Enter / Espaço também funciona, só enquanto o splash estiver visível
+            document.addEventListener('keydown', e => {
+                if (!splashAtiva) return;
+                if (e.key === 'Enter' || e.key === ' ') window.entrarNoSite();
+            });
+        })();
+    </script>
+
+    <script>
+        /* ════════════════════════════════════════════════════════════
+           SCRIPT DO SITE PRINCIPAL (inalterado)
+        ════════════════════════════════════════════════════════════ */
         const carteiraCompleta = [
             { ticker: null,      nome: 'VALORA VANGUARD',                         categoria: 'Renda Fixa',   descricao: 'Ativo de crédito privado focado em prêmios estruturais de mercado corporativo.',              aplicacaoMinima: 500,  pesosPerfil: { conservador: 25, moderado: 15, arrojado: 5  }, ondeEncontrar: 'BTG Pactual, Itaú e XP Investimentos' },
             { ticker: null,      nome: 'SOLIS CAPITAL ANTARES PIONEIRO',           categoria: 'Renda Fixa',   descricao: 'Direitos creditórios com modelo estruturado focado em previsibilidade de prêmio.',             aplicacaoMinima: 500,  pesosPerfil: { conservador: 20, moderado: 10, arrojado: 5  }, ondeEncontrar: 'BTG Pactual e XP Investimentos' },
@@ -497,20 +1032,14 @@
         };
 
         // ─────────────────────────────────────────────────────────────
-        // NOVO: seleciona TODOS os ativos elegíveis cujo mínimo cabe
+        // Seleciona TODOS os ativos elegíveis cujo mínimo cabe
         // no valor disponível. Quanto maior o valor, mais ativos aparecem.
         // Nunca remove um ativo que já era elegível antes.
         // ─────────────────────────────────────────────────────────────
         function selecionarAtivosElegiveis(lista, valorDisponivel, obterPeso) {
-            // Passo 1: filtra só quem tem peso > 0 e mínimo <= valor disponível
             let candidatos = lista.filter(a => obterPeso(a) > 0 && a.aplicacaoMinima <= valorDisponivel);
-
-            // Passo 2: ordena do menor mínimo para o maior (ativos baratos ficam sempre)
             candidatos.sort((a, b) => a.aplicacaoMinima - b.aplicacaoMinima);
 
-            // Passo 3: garante que a fatia proporcional de cada ativo
-            // cobre seu mínimo real — remove somente quem não consegue
-            // ser coberto nem após redistribuição, priorizando os de menor mínimo
             let selecionados = [...candidatos];
             let estavel = false;
 
@@ -518,9 +1047,6 @@
                 estavel = true;
                 const somaPesos = selecionados.reduce((s, a) => s + obterPeso(a), 0) || 1;
 
-                // Encontra o pior violador (maior déficit relativo)
-                // mas só remove o de MAIOR mínimo entre os violadores
-                // para preservar os ativos mais baratos
                 let violadores = selecionados
                     .map((a, idx) => {
                         const fatia = valorDisponivel * (obterPeso(a) / somaPesos);
@@ -532,8 +1058,6 @@
                     .filter(v => v.deficit > 0);
 
                 if (violadores.length > 0) {
-                    // Remove o violador com MAIOR aporte mínimo primeiro
-                    // (sempre preserva os ativos mais acessíveis)
                     violadores.sort((a, b) => b.minimo - a.minimo);
                     selecionados.splice(violadores[0].idx, 1);
                     estavel = false;
@@ -672,7 +1196,6 @@
 
             const distribuicaoAlvo = pesosKidsEstrategia[objetivoKidsSelecionado];
 
-            // USA a nova lógica acumulativa
             let ativosElegiveis = carteiraCompleta.filter(a => distribuicaoAlvo[a.categoria] > 0);
             let ativosSelecionados = selecionarAtivosElegiveis(
                 ativosElegiveis,
@@ -951,15 +1474,12 @@
                 return;
             }
 
-            // ── NOVA LÓGICA ACUMULATIVA ────────────────────────────────
-            // Filtra por categoria se necessário, depois aplica seleção acumulativa
             let candidatos = carteiraCompleta.filter(a => {
                 const temPeso = a.pesosPerfil[perfilInvestidor] > 0;
                 const categoriaOk = filtroAtual === 'todos' || a.categoria === filtroAtual;
                 return temPeso && categoriaOk;
             });
 
-            // Usa a nova função acumulativa — quanto maior o valor, mais ativos
             let ativosFiltrados = selecionarAtivosElegiveis(
                 candidatos,
                 valorRestante,
