@@ -548,42 +548,24 @@
         // ─────────────────────────────────────────────────────────────
         const bancoDePerguntas = [
             {
-                categoria: '📍 Onde Encontrar os Investimentos',
-                perguntas: [
-                    { pergunta: 'Onde encontro o Fundos Passivos IMA-B?', resposta: `O <strong>Fundos Passivos ao IMA-B</strong> são fundos que acompanham o índice IMA-B, formado por títulos públicos atrelados à inflação (Tesouro IPCA+).<br><br>📌 <strong>Onde encontrar:</strong><br>• <strong>XP Investimentos</strong> — busque por "IMA-B" na aba Fundos<br>• <strong>BTG Pactual</strong> — aba Fundos → Renda Fixa → IMA-B<br>• <strong>Rico</strong> — Fundos → Indexados<br>• <strong>Inter Invest</strong> — aba Fundos<br>• <strong>NuInvest</strong> e <strong>Ágora</strong> também disponibilizam<br><br>💡 <strong>Dica:</strong> Na plataforma, filtre por "Renda Fixa Indexada" ou "IMA-B" e procure fundos com taxa de administração abaixo de 0,30% ao ano.` },
-                    { pergunta: 'Onde encontro o WRLD11?', resposta: `O <strong>WRLD11</strong> é um BDR que replica o ETF Vanguard Total World Stock (VT), dando exposição a mais de 9.000 ações do mundo inteiro.<br><br>📌 <strong>Onde encontrar:</strong><br>• É negociado na <strong>B3</strong> como uma ação normal<br>• Disponível em qualquer corretora: <strong>XP, BTG, Rico, Inter, NuInvest, Ágora, Clear</strong><br><br>💡 <strong>Como comprar:</strong> Acesse o Home Broker, busque <strong>WRLD11</strong> e compre como ação. Valor mínimo: uma cota (~R$ 10 a R$ 15).` },
-                    { pergunta: 'Onde encontro o BBSE3?', resposta: `<strong>BBSE3</strong> é a ação da <strong>BB Seguridade</strong>, focada em seguros, previdência e capitalização.<br><br>📌 <strong>Onde encontrar:</strong><br>• Negociada na <strong>B3</strong> — disponível em qualquer corretora<br>• <strong>XP, BTG Pactual, Rico, Inter, NuInvest, Ágora, Clear</strong><br><br>💡 <strong>Como comprar:</strong> No Home Broker, busque <strong>BBSE3</strong>. Compra a partir de 1 ação (~R$ 30 a R$ 40).` },
-                    { pergunta: 'Onde encontro o SLCE3?', resposta: `<strong>SLCE3</strong> é a ação da <strong>SLC Agrícola</strong>, uma das maiores produtoras de grãos do Brasil.<br><br>📌 <strong>Onde encontrar:</strong><br>• Negociada na <strong>B3</strong> — qualquer corretora<br>• <strong>XP, BTG, Rico, Inter, NuInvest, Ágora, Clear</strong>` },
-                    { pergunta: 'Onde encontro o USDB11 e BNDX11?', resposta: `<strong>USDB11</strong> replica o ETF BND — renda fixa americana.<br><strong>BNDX11</strong> replica o ETF BNDX — renda fixa global fora dos EUA.<br><br>📌 <strong>Onde encontrar:</strong><br>• Ambos são BDRs na <strong>B3</strong><br>• <strong>XP, BTG, Rico, Inter, NuInvest, Ágora</strong><br><br>💡 Cota mínima: ~R$ 10.` },
-                    { pergunta: 'Onde encontro o IFRA11?', resposta: `<strong>IFRA11</strong> é um FIDC de infraestrutura do Itaú.<br><br>📌 <strong>Onde encontrar:</strong><br>• <strong>Itaú</strong> e corretoras parceiras<br>• Consulte também em <strong>XP Investimentos</strong>` },
-                    { pergunta: 'Onde encontro o Dahlia Total Return?', resposta: `O <strong>Dahlia Total Return</strong> é um fundo multimercado da Dahlia Capital.<br><br>📌 <strong>Onde encontrar:</strong><br>• <strong>Ágora, BTG Pactual, C6 Bank, Inter e XP Investimentos</strong><br><br>💡 Aporte mínimo geralmente de R$ 500.` },
-                    { pergunta: 'Onde encontro o Absolute Vertex?', resposta: `O <strong>Absolute Vertex</strong> é um fundo multimercado macro da Absolute Investimentos.<br><br>📌 <strong>Onde encontrar:</strong><br>• <strong>Ágora, C6 Bank, BTG Pactual, Rico e XP Investimentos</strong><br><br>💡 Aporte mínimo em torno de R$ 500.` },
-                    { pergunta: 'Onde encontro o ALUG11?', resposta: `<strong>ALUG11</strong> replica o ETF VNQ — mercado imobiliário americano (REITs).<br><br>📌 <strong>Onde encontrar:</strong><br>• BDR na <strong>B3</strong> — qualquer corretora<br>• <strong>XP, BTG, Rico, Inter, NuInvest, Ágora</strong><br><br>💡 Cota em torno de R$ 100 a R$ 130.` },
-                    { pergunta: 'Onde encontro o KLBN4?', resposta: `<strong>KLBN4</strong> é a ação preferencial da <strong>Klabin</strong>, maior produtora e exportadora de papéis para embalagens do Brasil.<br><br>📌 <strong>Onde encontrar:</strong><br>• Negociada na <strong>B3</strong> — qualquer corretora<br>• <strong>XP, BTG Pactual, Rico, Inter, NuInvest, Ágora, Clear</strong>` },
-                    { pergunta: 'Onde encontro o FESA4?', resposta: `<strong>FESA4</strong> é a ação preferencial da <strong>Ferbasa</strong>, única produtora integrada de ferrocromo das Américas.<br><br>📌 <strong>Onde encontrar:</strong><br>• Negociada na <strong>B3</strong> — qualquer corretora<br>• <strong>XP, BTG, Rico, Inter, NuInvest, Ágora, Clear</strong>` },
-                    { pergunta: 'Onde encontro o BRBI11?', resposta: `<strong>BRBI11</strong> é a unit da <strong>BR Partners</strong>, banco de investimento independente.<br><br>📌 <strong>Onde encontrar:</strong><br>• Negociada na <strong>B3</strong><br>• <strong>XP, BTG Pactual, Rico, Inter e Ágora</strong>` },
-                    { pergunta: 'Onde encontro o XPML11?', resposta: `<strong>XPML11</strong> (XP Malls) é um FII com participações em shopping centers no Brasil.<br><br>📌 <strong>Onde encontrar:</strong><br>• Negociado na <strong>B3</strong> como FII<br>• <strong>XP, BTG Pactual, Rico, Inter e Ágora</strong><br><br>💡 Paga dividendos mensais, isentos de IR para pessoa física.` },
-                ]
-            },
-            {
                 categoria: '❓ Como Funciona o Site',
                 perguntas: [
-                    { pergunta: 'Como funciona a simulação de carteira?', resposta: `A simulação mostra como o Matias distribui seus próprios investimentos de forma proporcional ao valor digitado.<br><br>📌 <strong>Passo a passo:</strong><br>1. Responda as perguntas de perfil<br>2. Digite um valor no campo "Simular Proporção"<br>3. O site separa 30% para reserva de emergência e distribui os 70% restantes entre os ativos que cabem no valor<br><br>⚠️ Quanto maior o valor digitado, mais ativos são exibidos — os de menor mínimo sempre permanecem e novos são adicionados conforme o valor cresce.` },
-                    { pergunta: 'Por que 30% sempre vai para a reserva de emergência?', resposta: `Antes de dividir qualquer valor entre os ativos, o simulador sempre separa 30% para reserva de liquidez.<br><br>Isso reflete a lógica de organização do Matias: manter um colchão de segurança antes de qualquer alocação de longo prazo.<br><br>💡 Só os 70% restantes são distribuídos entre os ativos coadjuvantes.` },
-                    { pergunta: 'Por que mais ativos aparecem conforme aumento o valor?', resposta: `O simulador foi construído para ser acumulativo: ativos de menor mínimo aparecem primeiro e permanecem sempre. Conforme o valor aumenta, novos ativos com mínimos maiores passam a ter fatia suficiente para aparecer.<br><br>Por exemplo: com R$ 10 você vê ativos de R$ 4-10. Com R$ 100, esses continuam e outros de R$ 80-100 são adicionados. Com R$ 1.000, todos os anteriores permanecem e fundos de R$ 500 entram também.` },
-                    { pergunta: 'O que é a aba "Meu Começo"?', resposta: `A aba "Meu Começo" mostra como o Matias investia quando era menor de idade, usando contas abertas por responsáveis em corretoras como a Rico.<br><br>São 3 estratégias históricas:<br>• 🎓 Acumulação de Longo Prazo<br>• 🌍 Proteção Cambial e Ativos Globais<br>• 🛡️ Estratégia Conservadora Inicial` },
-                    { pergunta: 'O que é o Porquinho Inter e a Caixinha Nubank?', resposta: `São as reservas de liquidez do Matias — 30% de qualquer valor simulado vai para uma delas automaticamente.<br><br>🐷 <strong>Porquinho Inter:</strong> Conta remunerada, 100% do CDI, liquidez diária.<br>💜 <strong>Caixinha Nubank:</strong> RDB do Nubank, 100% do CDI, resgate imediato.` },
+                    { pergunta: 'Como funciona a simulação de carteira?', resposta: `A simulação mostra, de forma ilustrativa, como o Matias organiza proporcionalmente uma carteira hipotética conforme o valor digitado.<br><br>📌 <strong>Passo a passo:</strong><br>1. Responda as perguntas de perfil<br>2. Digite um valor no campo "Simular Proporção"<br>3. O site separa 30% para reserva de emergência e distribui os 70% restantes entre exemplos ilustrativos de categorias de ativos<br><br>⚠️ Quanto maior o valor digitado, mais exemplos ilustrativos são exibidos — os de menor mínimo sempre permanecem e novos são adicionados conforme o valor cresce.<br><br><strong>Importante:</strong> os nomes exibidos são exemplos genéricos de cada categoria de produto financeiro, não recomendações de compra de ativos específicos. Antes de investir de verdade, procure um profissional certificado (CNPI ou consultor de valores mobiliários registrado na CVM).` },
+                    { pergunta: 'Por que 30% sempre vai para a reserva de emergência?', resposta: `Antes de dividir qualquer valor entre as categorias de ativos, o simulador sempre separa 30% para reserva de liquidez, de forma ilustrativa.<br><br>Isso reflete a lógica de organização do Matias: manter um colchão de segurança antes de qualquer alocação de longo prazo.<br><br>💡 Só os 70% restantes são distribuídos entre as demais categorias, a título de exemplo educacional.` },
+                    { pergunta: 'Por que mais categorias aparecem conforme aumento o valor?', resposta: `O simulador foi construído para ser acumulativo: categorias com menor aporte mínimo de exemplo aparecem primeiro e permanecem sempre. Conforme o valor aumenta, novas categorias com mínimos maiores passam a ter fatia suficiente para aparecer.<br><br>Isso serve apenas para ilustrar, matematicamente, como a diversificação muda de acordo com o capital disponível — não é uma recomendação de produtos reais.` },
+                    { pergunta: 'O que é a aba "Meu Começo"?', resposta: `A aba "Meu Começo" conta, de forma narrativa, como o Matias organizava seus estudos sobre investimento quando era menor de idade, sempre por meio de conta aberta e supervisionada por seus responsáveis legais.<br><br>São 3 estratégias ilustrativas de estudo:<br>• 🎓 Acumulação de Longo Prazo<br>• 🌍 Proteção Cambial e Ativos Globais<br>• 🛡️ Estratégia Conservadora Inicial<br><br>Menores de idade não podem investir sozinhos e qualquer decisão financeira deve envolver os responsáveis legais e, quando aplicável, orientação profissional.` },
+                    { pergunta: 'O que é o Porquinho Inter e a Caixinha Nubank?', resposta: `São exemplos de reservas de liquidez do Matias — 30% de qualquer valor simulado vai para uma delas automaticamente, apenas como ilustração.<br><br>🐷 <strong>Porquinho Inter:</strong> Conta remunerada, referência 100% do CDI, liquidez diária.<br>💜 <strong>Caixinha Nubank:</strong> RDB do Nubank, referência 100% do CDI, resgate imediato.<br><br>Para condições e taxas atualizadas, consulte diretamente a instituição financeira.` },
                 ]
             },
             {
                 categoria: '💡 Conceitos Financeiros',
                 perguntas: [
-                    { pergunta: 'O que é IMA-B?', resposta: `O <strong>IMA-B</strong> representa uma carteira de Títulos Públicos atrelados ao IPCA (inflação). Fundos passivos ao IMA-B entregam a variação da inflação + juros reais.<br><br>💡 Boa escolha para proteger o dinheiro da inflação no longo prazo.` },
-                    { pergunta: 'O que é um ETF?', resposta: `<strong>ETF</strong> (Exchange Traded Fund) é um fundo negociado em bolsa como ação. Ele replica um índice como o VT (9.000+ ações do mundo) ou BND (títulos americanos).<br><br>💡 Vantagem: diversificação enorme com uma única compra e taxas baixas.` },
-                    { pergunta: 'O que é um BDR?', resposta: `<strong>BDR</strong> (Brazilian Depositary Receipt) é um ativo negociado na B3 que representa ativos internacionais. Você compra em reais, mas está exposto ao ativo estrangeiro.<br><br>💡 Ótimo para ter exposição ao exterior sem abrir conta fora do Brasil.` },
+                    { pergunta: 'O que é IMA-B?', resposta: `O <strong>IMA-B</strong> representa uma carteira de Títulos Públicos atrelados ao IPCA (inflação). Fundos passivos ao IMA-B entregam a variação da inflação + juros reais.<br><br>💡 Conceito usado como exemplo de proteção do dinheiro contra a inflação no longo prazo.` },
+                    { pergunta: 'O que é um ETF?', resposta: `<strong>ETF</strong> (Exchange Traded Fund) é um fundo negociado em bolsa como ação. Ele replica um índice, podendo dar exposição a centenas ou milhares de ativos de uma vez.<br><br>💡 Vantagem: diversificação ampla com uma única compra e taxas geralmente baixas.` },
+                    { pergunta: 'O que é um BDR?', resposta: `<strong>BDR</strong> (Brazilian Depositary Receipt) é um ativo negociado na B3 que representa ativos internacionais. Você compra em reais, mas fica exposto ao ativo estrangeiro de referência.<br><br>💡 Usado como conceito de exposição ao exterior sem precisar abrir conta fora do Brasil.` },
                     { pergunta: 'O que é um Fundo Multimercado?', resposta: `Um Fundo Multimercado pode investir em diferentes classes ao mesmo tempo: ações, câmbio, juros, commodities. São geridos ativamente por profissionais.` },
                     { pergunta: 'O que é CDI?', resposta: `O <strong>CDI</strong> é a taxa de referência de investimentos de renda fixa no Brasil. Fica próximo da taxa Selic. "Render 100% do CDI" significa acompanhar essa taxa de referência.` },
-                    { pergunta: 'O que é um FII?', resposta: `<strong>FII</strong> (Fundo de Investimento Imobiliário) reúne investidores para comprar imóveis ou recebíveis imobiliários, distribuindo a renda gerada entre os cotistas.<br><br>💡 Rendimentos mensais de FIIs costumam ser isentos de IR para pessoa física.` },
+                    { pergunta: 'O que é um FII?', resposta: `<strong>FII</strong> (Fundo de Investimento Imobiliário) reúne investidores para comprar imóveis ou recebíveis imobiliários, distribuindo a renda gerada entre os cotistas.<br><br>💡 Rendimentos mensais de FIIs costumam ser isentos de IR para pessoa física — confirme sempre a regra vigente.` },
                 ]
             }
         ];
@@ -702,7 +684,7 @@
                 document.getElementById('lista-ativos-kids').innerHTML = `
                     <div class="bg-slate-950 rounded-xl border border-amber-500/20 p-4 text-center space-y-2">
                         <p class="text-xs text-amber-400 font-bold">⚠️ Valor abaixo do mínimo disponível</p>
-                        <p class="text-[11px] text-slate-400">Com R$ ${valorTotal.toLocaleString('pt-BR', {minimumFractionDigits:2})}, nenhum ativo desta estratégia está acessível.<br>Tente valores a partir de <strong class="text-white">R$ 8,00</strong>.</p>
+                        <p class="text-[11px] text-slate-400">Com R$ ${valorTotal.toLocaleString('pt-BR', {minimumFractionDigits:2})}, nenhuma categoria desta estratégia está acessível neste exemplo.<br>Tente valores a partir de <strong class="text-white">R$ 8,00</strong>.</p>
                     </div>`;
                 return;
             }
@@ -718,29 +700,23 @@
                     : valorTotal * pct;
                 acumulado += valorAlocado;
 
-                const tickerBadge = ativo.ticker
-                    ? `<span class="inline-block text-[9px] font-black tracking-widest px-2 py-0.5 rounded bg-purple-900/60 text-purple-300 border border-purple-500/30 font-logo ml-1">${ativo.ticker}</span>`
-                    : '';
-
                 htmlHTML += `
                     <div class="bg-slate-950 rounded-xl border border-slate-900 p-4 hover:border-purple-900/40 transition">
                         <div class="flex justify-between items-start mb-2">
                             <div class="flex-1 pr-2">
                                 <div class="flex flex-wrap items-center gap-1 mb-1">
-                                    <h3 class="text-xs font-bold text-white uppercase tracking-wide">${ativo.ticker ? ativo.ticker : ativo.nome.split('—')[0].trim()}</h3>
-                                    ${tickerBadge}
+                                    <h3 class="text-xs font-bold text-white uppercase tracking-wide">${ativo.nome}</h3>
                                 </div>
-                                <p class="text-[10px] text-slate-400 leading-snug">${ativo.nome.includes('—') ? ativo.nome.split('—')[1].trim() : ativo.nome}</p>
+                                <p class="text-[10px] text-slate-400 leading-snug">${ativo.descricao}</p>
                                 <span class="inline-block text-[9px] uppercase font-black tracking-wider px-2 py-0.5 mt-1 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">${ativo.categoria}</span>
                             </div>
                             <div class="text-right shrink-0">
                                 <div class="text-sm font-black text-purple-400 font-logo">${(pct * 100).toFixed(0)}%</div>
                                 <div class="text-xs text-slate-300 font-bold mt-0.5">${valorAlocado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
-                                <div class="text-[9px] text-slate-500 mt-0.5">Mín: R$ ${ativo.aplicacaoMinima}</div>
+                                <div class="text-[9px] text-slate-500 mt-0.5">Mín. de exemplo: R$ ${ativo.aplicacaoMinima}</div>
                             </div>
                         </div>
-                        <p class="text-[11px] text-slate-400 leading-relaxed border-t border-slate-900 pt-2">${ativo.descricao}</p>
-                        <div class="text-[10px] text-slate-500 mt-1.5">📍 <span class="text-slate-400">Abertura de Conta de Menor via Responsável na Corretora Rico</span></div>
+                        <div class="text-[10px] text-slate-500 mt-1.5 border-t border-slate-900 pt-2">📍 <span class="text-slate-400">Exemplo ilustrativo de categoria de produto — não é indicação de compra. Menores de idade só podem investir com conta aberta e supervisionada por responsável legal.</span></div>
                     </div>`;
             });
 
@@ -885,6 +861,9 @@
             document.getElementById('quiz-container').innerHTML = `
                 <div class="text-xs text-slate-400 bg-slate-900/60 p-2 rounded border border-slate-800 text-center">
                     Modelo calibrado para: <strong class="text-white uppercase">${perfilInvestidor}</strong>. Insira um valor abaixo para ver a divisão proporcional.
+                </div>
+                <div class="text-[10px] text-amber-300/90 bg-amber-500/10 p-2 rounded border border-amber-500/20 text-center leading-relaxed">
+                    ⚠️ Ferramenta educacional com exemplos ilustrativos/fictícios de categorias de produtos. Não é recomendação de compra de ativo específico nem consultoria de investimentos registrada na CVM.
                 </div>`;
             containerAporte.classList.remove('opacity-40', 'pointer-events-none');
             inputAporte.removeAttribute('disabled');
@@ -951,7 +930,7 @@
             const nomeLiquidez  = liquidezSelecionada === 'porquinho' ? 'Porquinho Inter' : 'Caixinha Nubank';
 
             avisoLiq.classList.remove('hidden');
-            avisoLiq.innerHTML = `🟢 <strong>Reserva de Emergência (30%):</strong> Dos ${valorTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} simulados, eu separaria primeiro <strong>${valorReserva.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong> no <strong>${nomeLiquidez}</strong> antes de dividir o restante entre os demais ativos.`;
+            avisoLiq.innerHTML = `🟢 <strong>Reserva de Emergência (30%):</strong> Dos ${valorTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} simulados, eu separaria primeiro <strong>${valorReserva.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</strong> no <strong>${nomeLiquidez}</strong> antes de dividir o restante entre as demais categorias, a título de exemplo.`;
             document.getElementById('secao-grafico').classList.remove('hidden');
             inicializarGrafico('1A');
 
@@ -961,7 +940,7 @@
                         <div class="flex justify-between items-start">
                             <div>
                                 <h3 class="text-xs font-bold text-white uppercase">${nomeLiquidez}</h3>
-                                <p class="text-xs text-slate-400 mt-2">Reserva de oportunidade imediata com liquidez diária instantânea. Sempre 30% do valor total simulado, separada antes de qualquer outra alocação.</p>
+                                <p class="text-xs text-slate-400 mt-2">Reserva de oportunidade imediata com liquidez diária instantânea. Sempre 30% do valor total simulado, separada antes de qualquer outra alocação, como exemplo ilustrativo.</p>
                             </div>
                             <div class="text-right shrink-0 pl-2">
                                 <div class="text-sm font-black text-amber-400 font-logo">30%</div>
@@ -998,7 +977,7 @@
                         <p class="text-xs text-amber-400 font-bold">⚠️ Valor abaixo do mínimo disponível</p>
                         <p class="text-[11px] text-slate-400 leading-relaxed">
                             Após reservar 30% (${valorReserva.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}) para liquidez, restam <strong class="text-white">${valorRestante.toLocaleString('pt-BR', {minimumFractionDigits:2})}</strong> — insuficiente para o perfil <strong class="text-white uppercase">${perfilInvestidor}</strong> neste filtro.<br><br>
-                            O menor mínimo disponível é <strong class="text-cyan-400">R$ ${minimoDisponivel}</strong>.
+                            O menor mínimo de exemplo disponível é <strong class="text-cyan-400">R$ ${minimoDisponivel}</strong>.
                         </p>
                     </div>`;
                 atualizarBarraComposicao();
@@ -1016,37 +995,23 @@
                     : valorRestante * pct;
                 acumulado += valorAlocado;
 
-                const tickerBadge = ativo.ticker
-                    ? `<a href="https://www.google.com/search?q=${ativo.ticker}+acao+B3" target="_blank"
-                          title="Pesquisar ${ativo.ticker} na B3"
-                          class="inline-flex items-center gap-0.5 text-[9px] font-black tracking-widest px-2 py-0.5 rounded bg-cyan-900/50 text-cyan-300 border border-cyan-500/30 font-logo hover:bg-cyan-500/20 transition ml-1">
-                          ${ativo.ticker} <svg xmlns='http://www.w3.org/2000/svg' class='w-2.5 h-2.5 inline' fill='none' viewBox='0 0 24 24' stroke='currentColor'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14'/></svg>
-                       </a>`
-                    : '';
-
-                const nomeExibicao = ativo.ticker
-                    ? (ativo.nome.includes('—') ? ativo.nome.split('—')[1].trim() : ativo.nome)
-                    : ativo.nome;
-
                 htmlAtivos += `
                     <div class="bg-slate-950 rounded-xl border border-slate-900 p-4 hover:border-cyan-900/30 transition">
                         <div class="flex justify-between items-start">
                             <div class="flex-1 pr-2">
                                 <div class="flex flex-wrap items-center gap-1 mb-0.5">
-                                    <h3 class="text-xs font-bold text-white uppercase tracking-wide">${ativo.ticker || nomeExibicao}</h3>
-                                    ${tickerBadge}
+                                    <h3 class="text-xs font-bold text-white uppercase tracking-wide">${ativo.nome}</h3>
                                 </div>
-                                <p class="text-[10px] text-slate-400 leading-snug">${nomeExibicao}</p>
                                 <span class="inline-block text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 mt-1 rounded bg-slate-900 text-slate-400 border border-slate-800">${ativo.categoria}</span>
                             </div>
                             <div class="text-right shrink-0">
                                 <div class="text-sm font-black text-cyan-400 font-logo">${(pct * 100).toFixed(0)}%</div>
                                 <div class="text-xs text-slate-300 font-bold mt-0.5">${valorAlocado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</div>
-                                <div class="text-[9px] text-slate-500 mt-0.5">Mín: R$ ${ativo.aplicacaoMinima}</div>
+                                <div class="text-[9px] text-slate-500 mt-0.5">Mín. de exemplo: R$ ${ativo.aplicacaoMinima}</div>
                             </div>
                         </div>
                         <p class="text-[11px] text-slate-400 leading-normal mt-2 pt-2 border-t border-slate-900/60">${ativo.descricao}</p>
-                        <div class="text-[10px] text-slate-500 mt-1.5">📍 <span class="text-slate-400">${ativo.ondeEncontrar}</span></div>
+                        <div class="text-[10px] text-slate-500 mt-1.5">📍 <span class="text-slate-400">Exemplo ilustrativo da categoria — não é indicação de compra de um produto específico.</span></div>
                     </div>`;
             });
 
@@ -1058,7 +1023,7 @@
                                 <h3 class="text-xs font-bold text-white uppercase tracking-wide">${nomeLiquidez}</h3>
                                 <span class="inline-block text-[9px] font-black tracking-widest px-2 py-0.5 rounded bg-amber-900/40 text-amber-300 border border-amber-500/30 font-logo ml-1">RESERVA</span>
                             </div>
-                            <p class="text-[10px] text-slate-400 leading-snug">Liquidez imediata separada antes da divisão entre os demais ativos.</p>
+                            <p class="text-[10px] text-slate-400 leading-snug">Liquidez imediata separada antes da divisão entre as demais categorias, como exemplo.</p>
                             <span class="inline-block text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 mt-1 rounded bg-slate-900 text-slate-400 border border-slate-800">Liquidez</span>
                         </div>
                         <div class="text-right shrink-0">
