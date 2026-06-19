@@ -514,6 +514,18 @@
             return atual;
         }
 
+        // ─────────────────────────────────────────────────────────────
+        // PESOS POR PERFIL (ABA "CARTEIRA") — definidos por CATEGORIA,
+        // seguindo exatamente a mesma lógica usada na aba "Meu Começo"
+        // (pesosKidsEstrategia): o peso vale para a categoria inteira,
+        // não para o ativo individual.
+        // ─────────────────────────────────────────────────────────────
+        const pesosPerfilEstrategia = {
+            conservador: { 'Renda Fixa': 100, 'Multimercado': 0,  'Ações': 0,  'Global': 0  },
+            moderado:    { 'Renda Fixa': 25,  'Multimercado': 20, 'Ações': 35, 'Global': 20 },
+            arrojado:    { 'Renda Fixa': 10,  'Multimercado': 12, 'Ações': 58, 'Global': 20 }
+        };
+
         const pesosKidsEstrategia = {
             faculdade:    { 'Renda Fixa': 20, 'Multimercado': 10, 'Ações': 50, 'Global': 20 },
             intercambio:  { 'Renda Fixa': 10, 'Multimercado': 10, 'Ações': 20, 'Global': 60 },
