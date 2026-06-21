@@ -1145,6 +1145,358 @@
 
         function fecharResposta() { document.getElementById('resposta-duvida').classList.add('hidden'); }
 
+        // ─────────────────────────────────────────────────────────────
+        // TRILHA DE ESTUDOS — Conteúdo didático completo
+        // Conceitos gerais de educação financeira, sem indicação de
+        // compra de produtos específicos.
+        // ─────────────────────────────────────────────────────────────
+        const modulosEstudo = [
+            {
+                id: 'orcamento',
+                numero: 1,
+                tag: 'Fundamentos',
+                tagClass: 'bg-slate-500/10 text-slate-300 border border-slate-500/20',
+                titulo: 'Orçamento Pessoal e Controle Financeiro',
+                resumo: 'A base antes de qualquer investimento: entender para onde o seu dinheiro vai.',
+                conteudo: `
+                    <h4>Por que começar pelo orçamento?</h4>
+                    <p>Nenhuma estratégia de investimento resolve um orçamento no vermelho. Antes de pensar em "onde alocar dinheiro", o primeiro passo da educação financeira é entender exatamente quanto entra e quanto sai todo mês.</p>
+                    <h4>O método 50-30-20 (como ponto de partida)</h4>
+                    <ul>
+                        <li><strong>50% Essenciais:</strong> moradia, alimentação, transporte, contas fixas.</li>
+                        <li><strong>30% Desejos:</strong> lazer, assinaturas, compras não essenciais.</li>
+                        <li><strong>20% Futuro:</strong> reserva de emergência e investimentos.</li>
+                    </ul>
+                    <p>Essa divisão é apenas uma referência didática — cada pessoa deve ajustar os percentuais à sua própria realidade de renda e despesas fixas.</p>
+                    <div class="caixa-exemplo">
+                        <p><strong>Exemplo ilustrativo:</strong> Quem ganha R$ 3.000/mês, pelo método, destinaria cerca de R$ 600 ao "Futuro" — somando reserva de emergência e eventuais aportes.</p>
+                    </div>
+                    <h4>Ferramentas simples de controle</h4>
+                    <ul>
+                        <li>Planilha simples com entradas e saídas mensais</li>
+                        <li>Aplicativos de controle financeiro do próprio banco</li>
+                        <li>Revisão mensal: comparar o planejado com o realizado</li>
+                    </ul>
+                    <div class="caixa-alerta">
+                        <p>⚠️ Antes de qualquer aporte, é importante quitar dívidas caras (cartão de crédito, cheque especial), cujos juros costumam superar de longe o retorno de qualquer investimento.</p>
+                    </div>
+                `
+            },
+            {
+                id: 'reserva',
+                numero: 2,
+                tag: 'Fundamentos',
+                tagClass: 'bg-amber-500/10 text-amber-400 border border-amber-500/20',
+                titulo: 'Reserva de Emergência: o Primeiro Investimento',
+                resumo: 'Por que guardar dinheiro com liquidez antes de pensar em rentabilidade.',
+                conteudo: `
+                    <h4>O que é a reserva de emergência?</h4>
+                    <p>É uma quantia guardada em ativos de liquidez imediata, destinada a cobrir imprevistos — perda de renda, problemas de saúde, conserto urgente — sem precisar recorrer a dívidas caras ou vender investimentos de longo prazo em momento ruim.</p>
+                    <h4>Quanto guardar?</h4>
+                    <ul>
+                        <li><strong>Renda formal e estável:</strong> referência comum de 3 a 6 meses de despesas</li>
+                        <li><strong>Renda variável ou autônoma:</strong> referência comum de 6 a 12 meses de despesas</li>
+                    </ul>
+                    <p>Esses números são apenas parâmetros amplamente usados em educação financeira — não é uma regra fixa, e o ideal varia de pessoa para pessoa.</p>
+                    <h4>Onde costuma ficar esse tipo de reserva?</h4>
+                    <p>Os critérios técnicos mais importantes para esse tipo de recurso são: <strong>liquidez diária</strong> (poder resgatar a qualquer momento sem perda), <strong>baixo risco</strong> e <strong>proteção contra a inflação</strong>. Por isso costuma ficar em ativos pós-fixados atrelados ao CDI, como contas remuneradas, CDBs com liquidez diária ou Tesouro Selic.</p>
+                    <div class="caixa-exemplo">
+                        <p><strong>Exemplo didático:</strong> Alguém com R$ 2.500 de despesas mensais e renda estável, usando a referência de 4 meses, teria como meta de reserva cerca de R$ 10.000.</p>
+                    </div>
+                    <div class="caixa-alerta">
+                        <p>⚠️ Reserva de emergência não é lugar de buscar rentabilidade alta. A função dela é segurança e disponibilidade imediata, não ganho financeiro.</p>
+                    </div>
+                `
+            },
+            {
+                id: 'rendafixa',
+                numero: 3,
+                tag: 'Renda Fixa',
+                tagClass: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20',
+                titulo: 'Renda Fixa: Tesouro Direto, CDB, LCI/LCA',
+                resumo: 'Como funcionam os principais títulos de renda fixa disponíveis no Brasil.',
+                conteudo: `
+                    <h4>O que é "renda fixa"?</h4>
+                    <p>É a classe de investimentos em que, no momento da aplicação, já se conhece a regra de remuneração — mesmo que o valor final só seja conhecido no resgate (no caso dos pós-fixados). Em geral, é considerada uma classe de menor risco em comparação à renda variável.</p>
+                    <h4>Tesouro Direto</h4>
+                    <ul>
+                        <li><strong>Tesouro Selic:</strong> acompanha a taxa básica de juros (Selic). Indicado como referência para reserva de emergência por ter baixa volatilidade.</li>
+                        <li><strong>Tesouro IPCA+:</strong> paga uma taxa fixa mais a variação da inflação (IPCA). Costuma ser usado como proteção do poder de compra no longo prazo.</li>
+                        <li><strong>Tesouro Prefixado:</strong> taxa de juros definida no momento da compra, sem correção por inflação.</li>
+                    </ul>
+                    <h4>CDB (Certificado de Depósito Bancário)</h4>
+                    <p>É um empréstimo que o investidor faz a um banco, em troca de uma remuneração — geralmente um percentual do CDI. Costuma ter cobertura do FGC (Fundo Garantidor de Créditos) até o limite vigente por CPF e instituição.</p>
+                    <h4>LCI e LCA</h4>
+                    <p>Letras de Crédito Imobiliário e do Agronegócio. Funcionam de forma parecida com o CDB, mas o dinheiro capta recursos para financiar os setores imobiliário e agropecuário. A principal diferença prática é que, hoje, costumam ser isentas de Imposto de Renda para pessoa física — mas é sempre importante confirmar a regra vigente.</p>
+                    <div class="caixa-exemplo">
+                        <p><strong>Conceito-chave:</strong> "Render 110% do CDI" significa que, se o CDI render 1% em um período, o título renderia 1,1% nesse mesmo período.</p>
+                    </div>
+                    <div class="caixa-alerta">
+                        <p>⚠️ Renda fixa não é sinônimo de "sem risco". Existe risco de crédito (a instituição não pagar) e risco de mercado (perda em caso de venda antecipada de um título prefixado).</p>
+                    </div>
+                `
+            },
+            {
+                id: 'acoes',
+                numero: 4,
+                tag: 'Renda Variável',
+                tagClass: 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20',
+                titulo: 'Ações e o Funcionamento da Bolsa de Valores',
+                resumo: 'O que significa ser sócio de uma empresa por meio da bolsa.',
+                conteudo: `
+                    <h4>O que é uma ação?</h4>
+                    <p>Uma ação representa uma fração do capital social de uma empresa. Ao comprar uma ação, o investidor se torna sócio minoritário daquela companhia, participando (proporcionalmente) dos seus resultados — lucros, prejuízos e valorização ou desvalorização do negócio.</p>
+                    <h4>Como o investidor pode ganhar (ou perder) dinheiro?</h4>
+                    <ul>
+                        <li><strong>Valorização:</strong> o preço da ação sobe em relação ao valor de compra</li>
+                        <li><strong>Dividendos:</strong> distribuição de parte do lucro da empresa aos acionistas</li>
+                        <li><strong>Juros sobre Capital Próprio (JCP):</strong> outra forma de remuneração ao acionista, com tributação distinta dos dividendos</li>
+                    </ul>
+                    <p>O inverso também é verdadeiro: o preço pode cair e a empresa pode não distribuir lucros em períodos difíceis.</p>
+                    <h4>B3: a bolsa brasileira</h4>
+                    <p>A B3 é o ambiente regulado onde as ações de companhias abertas são negociadas no Brasil. A negociação acontece por meio de uma corretora de valores, que serve de intermediária entre o investidor e o mercado.</p>
+                    <h4>Análise fundamentalista vs. análise técnica</h4>
+                    <ul>
+                        <li><strong>Fundamentalista:</strong> estuda balanços, lucros, dívidas e perspectivas do negócio</li>
+                        <li><strong>Técnica (gráfica):</strong> estuda padrões de preço e volume negociado</li>
+                    </ul>
+                    <div class="caixa-alerta">
+                        <p>⚠️ Ações são consideradas ativos de maior volatilidade. Especialistas costumam recomendar que essa exposição seja compatível com objetivos de longo prazo e com a tolerância a oscilações de cada investidor.</p>
+                    </div>
+                `
+            },
+            {
+                id: 'fundos',
+                numero: 5,
+                tag: 'Fundos',
+                tagClass: 'bg-purple-500/10 text-purple-400 border border-purple-500/20',
+                titulo: 'Fundos de Investimento: Como Funcionam',
+                resumo: 'Gestão profissional coletiva e os principais tipos de fundos.',
+                conteudo: `
+                    <h4>O que é um fundo de investimento?</h4>
+                    <p>É uma "comunhão de recursos": vários investidores colocam dinheiro em conjunto, que é administrado por um gestor profissional seguindo uma política de investimento definida em regulamento. Cada investidor é dono de cotas proporcionais ao que aplicou.</p>
+                    <h4>Principais tipos de fundos</h4>
+                    <ul>
+                        <li><strong>Fundos de Renda Fixa:</strong> investem majoritariamente em títulos de renda fixa</li>
+                        <li><strong>Fundos Multimercado:</strong> podem transitar entre renda fixa, câmbio, juros e ações, com estratégias mais flexíveis</li>
+                        <li><strong>Fundos de Ações:</strong> ao menos 67% do patrimônio em ações</li>
+                        <li><strong>Fundos Cambiais:</strong> expostos à variação de moedas estrangeiras</li>
+                    </ul>
+                    <h4>Taxas que todo investidor deveria entender</h4>
+                    <ul>
+                        <li><strong>Taxa de administração:</strong> percentual cobrado anualmente sobre o patrimônio, independente do resultado</li>
+                        <li><strong>Taxa de performance:</strong> percentual cobrado sobre o que exceder um índice de referência (benchmark), geralmente só em fundos mais arrojados</li>
+                    </ul>
+                    <div class="caixa-exemplo">
+                        <p><strong>Conceito-chave:</strong> taxas de administração mais altas exigem desempenho proporcionalmente melhor do gestor para compensar o investidor frente a alternativas mais baratas, como fundos passivos.</p>
+                    </div>
+                    <h4>Gestão ativa x gestão passiva</h4>
+                    <p>Fundos de <strong>gestão ativa</strong> tentam superar um índice de referência por meio de decisões do gestor. Fundos de <strong>gestão passiva</strong> apenas replicam um índice (como um ETF), com taxas geralmente menores.</p>
+                `
+            },
+            {
+                id: 'fii',
+                numero: 6,
+                tag: 'Fundos Imobiliários',
+                tagClass: 'bg-orange-500/10 text-orange-400 border border-orange-500/20',
+                titulo: 'Fundos Imobiliários (FIIs)',
+                resumo: 'Como investir em imóveis e recebíveis imobiliários a partir de poucos reais.',
+                conteudo: `
+                    <h4>O que é um FII?</h4>
+                    <p>Um Fundo de Investimento Imobiliário reúne recursos de diversos investidores para aplicar no setor imobiliário — seja comprando imóveis físicos (galpões, shoppings, lajes corporativas) ou papéis ligados a esse setor, como CRIs (Certificados de Recebíveis Imobiliários).</p>
+                    <h4>Principais tipos de FII</h4>
+                    <ul>
+                        <li><strong>FIIs de Tijolo:</strong> possuem imóveis físicos e geram renda via aluguéis</li>
+                        <li><strong>FIIs de Papel:</strong> investem em títulos de crédito imobiliário (CRIs), funcionando como uma renda fixa imobiliária</li>
+                        <li><strong>FIIs de Fundos (FOFs):</strong> investem em cotas de outros FIIs</li>
+                    </ul>
+                    <h4>Como funciona a distribuição de renda?</h4>
+                    <p>Por lei, FIIs são obrigados a distribuir, no mínimo, 95% do lucro semestral apurado em regime de caixa aos cotistas — na prática, a maioria distribui esse valor mensalmente.</p>
+                    <div class="caixa-exemplo">
+                        <p><strong>Conceito-chave — Dividend Yield (DY):</strong> é o indicador que mostra quanto de renda um FII distribuiu em relação ao seu preço de cota em um período (geralmente expresso ao mês ou ao ano).</p>
+                    </div>
+                    <h4>Liquidez e negociação</h4>
+                    <p>As cotas de FIIs são negociadas na bolsa, como ações. Isso dá liquidez diária, mas também significa que o preço da cota pode oscilar conforme oferta e demanda — mesmo que o valor patrimonial do imóvel não tenha mudado.</p>
+                    <div class="caixa-alerta">
+                        <p>⚠️ Vacância (imóveis sem inquilino) e inadimplência de devedores de CRIs são riscos específicos do setor imobiliário que afetam diretamente a renda distribuída.</p>
+                    </div>
+                `
+            },
+            {
+                id: 'global',
+                numero: 7,
+                tag: 'Internacional',
+                tagClass: 'bg-blue-500/10 text-blue-400 border border-blue-500/20',
+                titulo: 'ETFs, BDRs e Investimento Internacional',
+                resumo: 'Como ganhar exposição ao exterior sem sair do Brasil.',
+                conteudo: `
+                    <h4>ETF (Exchange Traded Fund)</h4>
+                    <p>É um fundo de índice negociado em bolsa como se fosse uma ação. Ao comprar uma cota, o investidor ganha exposição a uma cesta inteira de ativos de uma só vez — o que facilita a diversificação com pouco capital.</p>
+                    <h4>BDR (Brazilian Depositary Receipt)</h4>
+                    <p>É um certificado negociado na B3 que representa ações de empresas listadas no exterior. Permite, em tese, investir (de forma indireta) em companhias internacionais comprando em reais, sem precisar abrir conta em uma corretora estrangeira.</p>
+                    <h4>Por que diversificar geograficamente?</h4>
+                    <ul>
+                        <li><strong>Redução do "risco-país":</strong> evita concentrar todo o patrimônio em uma única economia</li>
+                        <li><strong>Exposição a setores pouco representados no Brasil:</strong> como tecnologia de ponta</li>
+                        <li><strong>Exposição cambial:</strong> parte do patrimônio passa a acompanhar a variação de moedas estrangeiras</li>
+                    </ul>
+                    <div class="caixa-exemplo">
+                        <p><strong>Conceito-chave:</strong> um ETF que replica um índice amplo internacional concentra, em uma única compra, participação em milhares de empresas de diferentes países e setores.</p>
+                    </div>
+                    <div class="caixa-alerta">
+                        <p>⚠️ Investir no exterior (mesmo via produtos negociados na B3) expõe o investidor à variação cambial — o que pode tanto ampliar ganhos quanto ampliar perdas, dependendo do câmbio.</p>
+                    </div>
+                `
+            },
+            {
+                id: 'perfil',
+                numero: 8,
+                tag: 'Comportamento',
+                tagClass: 'bg-pink-500/10 text-pink-400 border border-pink-500/20',
+                titulo: 'Perfil de Investidor (Suitability) e Diversificação',
+                resumo: 'Por que o mesmo investimento não serve para todo mundo.',
+                conteudo: `
+                    <h4>O que é suitability?</h4>
+                    <p>É o processo, exigido pela regulação do mercado financeiro, de adequar os produtos de investimento ao perfil de cada cliente — considerando objetivos, horizonte de tempo e tolerância a risco. É por isso que corretoras e bancos aplicam questionários de perfil antes de liberar certos produtos.</p>
+                    <h4>Os três perfis mais comuns</h4>
+                    <ul>
+                        <li><strong>Conservador:</strong> prioriza preservação de capital, baixa tolerância a oscilações</li>
+                        <li><strong>Moderado:</strong> aceita alguma oscilação em troca de potencial de retorno maior no médio/longo prazo</li>
+                        <li><strong>Arrojado (ou agressivo):</strong> maior tolerância a perdas temporárias, em busca de retornos potencialmente mais altos no longo prazo</li>
+                    </ul>
+                    <h4>Por que diversificar?</h4>
+                    <p>Diversificação é distribuir os recursos entre diferentes classes de ativos, setores e geografias, de modo que o desempenho ruim de um investimento específico não comprometa o resultado da carteira como um todo.</p>
+                    <div class="caixa-exemplo">
+                        <p><strong>Conceito-chave:</strong> "não colocar todos os ovos na mesma cesta" é uma forma simples de descrever o princípio da diversificação — reduzir risco específico sem necessariamente abrir mão de retorno esperado.</p>
+                    </div>
+                    <h4>Vieses comportamentais comuns</h4>
+                    <ul>
+                        <li><strong>Aversão à perda:</strong> sentir o impacto de uma perda com mais intensidade do que um ganho equivalente</li>
+                        <li><strong>Excesso de confiança:</strong> superestimar a própria capacidade de prever o mercado</li>
+                        <li><strong>Efeito manada:</strong> investir em algo só porque "todo mundo está comprando"</li>
+                    </ul>
+                `
+            },
+            {
+                id: 'imposto',
+                numero: 9,
+                tag: 'Impostos',
+                tagClass: 'bg-red-500/10 text-red-400 border border-red-500/20',
+                titulo: 'Imposto de Renda sobre Investimentos',
+                resumo: 'Noções gerais de tributação — sempre confirme a regra vigente.',
+                conteudo: `
+                    <h4>Por que entender a tributação importa</h4>
+                    <p>O imposto incide sobre o ganho (rentabilidade), não sobre o valor total investido, e pode mudar significativamente o retorno líquido de cada tipo de aplicação. Regras tributárias podem mudar com o tempo — o ideal é sempre confirmar a legislação vigente no momento da decisão.</p>
+                    <h4>Tabela regressiva (renda fixa em geral)</h4>
+                    <ul>
+                        <li>Até 180 dias: alíquota mais alta</li>
+                        <li>De 181 a 360 dias: alíquota intermediária</li>
+                        <li>De 361 a 720 dias: alíquota menor</li>
+                        <li>Acima de 720 dias: menor alíquota da tabela</li>
+                    </ul>
+                    <p>Ou seja: quanto mais tempo o dinheiro fica aplicado, menor tende a ser o percentual de imposto sobre o ganho, como regra geral da tabela regressiva.</p>
+                    <h4>Ações</h4>
+                    <p>Para pessoa física, vendas de ações no mercado à vista até um determinado limite mensal costumam ser isentas de IR. Acima desse limite, incide alíquota sobre o ganho de capital, recolhida via DARF.</p>
+                    <h4>FIIs</h4>
+                    <p>Os rendimentos mensais distribuídos por FIIs costumam ser isentos de IR para pessoa física, desde certas condições (como o fundo ter cotas negociadas em bolsa e mínimo de cotistas). Já o ganho de capital na venda das cotas é tributado.</p>
+                    <div class="caixa-alerta">
+                        <p>⚠️ Este resumo é apenas educativo e genérico. A legislação tributária muda com frequência — antes de declarar ou pagar qualquer imposto, consulte a Receita Federal ou um contador.</p>
+                    </div>
+                `
+            },
+            {
+                id: 'juroscompostos',
+                numero: 10,
+                tag: 'Planejamento',
+                tagClass: 'bg-teal-500/10 text-teal-400 border border-teal-500/20',
+                titulo: 'Juros Compostos e Planejamento de Metas',
+                resumo: 'O efeito do tempo e da constância nos aportes.',
+                conteudo: `
+                    <h4>O que são juros compostos?</h4>
+                    <p>É quando o rendimento de um período passa a fazer parte do capital que gera rendimento no período seguinte — "juros sobre juros". É esse efeito que faz o crescimento de uma aplicação acelerar com o passar do tempo.</p>
+                    <div class="caixa-exemplo">
+                        <p><strong>Exemplo didático simplificado:</strong> R$ 1.000 aplicados a uma taxa hipotética de 10% ao ano, sem novos aportes, chegariam a aproximadamente R$ 1.100 no fim do ano 1, R$ 1.210 no fim do ano 2, e R$ 1.331 no fim do ano 3 — o ganho cresce porque incide sobre um capital cada vez maior.</p>
+                    </div>
+                    <h4>Por que a constância importa mais do que o valor</h4>
+                    <p>Aportar um valor menor, porém regularmente, ao longo de muitos anos tende a gerar um resultado mais robusto do que tentar "compensar" depois com aportes grandes e esporádicos — justamente por causa do tempo de exposição ao efeito dos juros compostos.</p>
+                    <h4>Como estruturar uma meta financeira</h4>
+                    <ul>
+                        <li><strong>Defina o valor-alvo:</strong> quanto, em termos concretos, você quer alcançar</li>
+                        <li><strong>Defina o prazo:</strong> em quantos meses ou anos pretende chegar lá</li>
+                        <li><strong>Calcule o aporte necessário:</strong> com base numa taxa de retorno realista e conservadora</li>
+                        <li><strong>Revise periodicamente:</strong> ajuste o plano conforme sua realidade muda</li>
+                    </ul>
+                    <div class="caixa-alerta">
+                        <p>⚠️ Toda projeção de rentabilidade futura é uma estimativa, não uma garantia. Rentabilidade passada não garante rentabilidade futura.</p>
+                    </div>
+                `
+            }
+        ];
+
+        let modulosAbertos = new Set();
+
+        function renderizarTrilhaEstudos(filtro = '') {
+            const container = document.getElementById('container-trilha-estudos');
+            if (!container) return;
+            const termo = filtro.toLowerCase().trim();
+
+            const modulosFiltrados = !termo
+                ? modulosEstudo
+                : modulosEstudo.filter(m =>
+                    m.titulo.toLowerCase().includes(termo) ||
+                    m.resumo.toLowerCase().includes(termo) ||
+                    m.tag.toLowerCase().includes(termo) ||
+                    m.conteudo.toLowerCase().includes(termo)
+                );
+
+            if (modulosFiltrados.length === 0) {
+                container.innerHTML = '<p class="text-xs text-slate-500 text-center py-8">Nenhum módulo encontrado para esse termo de busca.</p>';
+                return;
+            }
+
+            container.innerHTML = modulosFiltrados.map(m => {
+                const aberto = modulosAbertos.has(m.id);
+                return `
+                    <div class="modulo-card ${aberto ? 'aberto' : ''}" id="modulo-card-${m.id}">
+                        <button onclick="alternarModulo('${m.id}')" class="w-full flex items-center justify-between gap-3 p-4 text-left">
+                            <div class="flex items-start gap-3 flex-1 min-w-0">
+                                <span class="shrink-0 w-7 h-7 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-[10px] font-black text-slate-400 font-logo">${String(m.numero).padStart(2, '0')}</span>
+                                <div class="min-w-0">
+                                    <div class="flex items-center gap-1.5 mb-0.5">
+                                        <span class="tag-modulo ${m.tagClass}">${m.tag}</span>
+                                    </div>
+                                    <h4 class="text-xs font-bold text-white leading-snug">${m.titulo}</h4>
+                                    <p class="text-[10.5px] text-slate-500 leading-snug mt-0.5">${m.resumo}</p>
+                                </div>
+                            </div>
+                            <i data-lucide="chevron-right" class="modulo-chevron ${aberto ? 'aberto' : ''} w-4 h-4 text-slate-500 shrink-0"></i>
+                        </button>
+                        <div class="modulo-conteudo ${aberto ? 'aberto' : ''}" id="modulo-conteudo-${m.id}">
+                            <div class="prosa-estudo px-4 pb-4 pt-1 border-t border-slate-900/80">
+                                ${m.conteudo}
+                            </div>
+                        </div>
+                    </div>`;
+            }).join('');
+
+            lucide.createIcons();
+        }
+
+        function alternarModulo(id) {
+            if (modulosAbertos.has(id)) {
+                modulosAbertos.delete(id);
+            } else {
+                modulosAbertos.add(id);
+            }
+            const card = document.getElementById(`modulo-card-${id}`);
+            const conteudo = document.getElementById(`modulo-conteudo-${id}`);
+            const chevron = card ? card.querySelector('.modulo-chevron') : null;
+            const aberto = modulosAbertos.has(id);
+            if (card) card.classList.toggle('aberto', aberto);
+            if (conteudo) conteudo.classList.toggle('aberto', aberto);
+            if (chevron) chevron.classList.toggle('aberto', aberto);
+        }
+
         function alternarAbas(aba) {
             abaAtualAtiva = aba;
             localStorage.setItem('matias_aba_ativa', aba);
