@@ -373,6 +373,109 @@
         .caixa-alerta { background: rgba(245,158,11,0.07); border:1px solid rgba(245,158,11,0.25); border-left:3px solid #f59e0b; border-radius:8px; padding:10px 12px; margin:10px 0; }
         .caixa-alerta p { margin-bottom:0 !important; color:#fde68a !important; }
         .tag-modulo { font-size:9px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; padding:2px 8px; border-radius:99px; }
+
+        /* ════════════════════════════════════════════════════════════
+           GRÁFICO DE EVOLUÇÃO — visual futurista
+        ════════════════════════════════════════════════════════════ */
+        #chart-card {
+            position: relative;
+            background:
+                radial-gradient(circle at 12% 0%, rgba(6,182,212,0.10), transparent 55%),
+                radial-gradient(circle at 100% 100%, rgba(124,58,237,0.07), transparent 50%),
+                #020617;
+            overflow: hidden;
+        }
+        #chart-card::before {
+            /* grade fina de fundo, estilo "painel de controle" */
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(to right, rgba(6,182,212,0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(6,182,212,0.05) 1px, transparent 1px);
+            background-size: 22px 22px;
+            mask-image: radial-gradient(ellipse 85% 70% at 50% 30%, black 30%, transparent 90%);
+            pointer-events: none;
+        }
+        .chart-corner { position: absolute; width: 16px; height: 16px; opacity: .55; pointer-events: none; z-index: 5; }
+        .chart-corner-tl { top: 10px; left: 10px; border-top: 1.5px solid #06b6d4; border-left: 1.5px solid #06b6d4; }
+        .chart-corner-tr { top: 10px; right: 10px; border-top: 1.5px solid #06b6d4; border-right: 1.5px solid #06b6d4; }
+        .chart-corner-bl { bottom: 10px; left: 10px; border-bottom: 1.5px solid #06b6d4; border-left: 1.5px solid #06b6d4; }
+        .chart-corner-br { bottom: 10px; right: 10px; border-bottom: 1.5px solid #06b6d4; border-right: 1.5px solid #06b6d4; }
+
+        .chart-live-badge {
+            display: inline-flex; align-items: center; gap: 5px;
+            font-size: 9px; font-weight: 800; letter-spacing: .15em; text-transform: uppercase;
+            color: #67e8f9; background: rgba(6,182,212,0.08); border: 1px solid rgba(6,182,212,0.25);
+            padding: 3px 8px; border-radius: 99px; font-family: 'Orbitron', sans-serif;
+        }
+        .chart-live-dot { width: 5px; height: 5px; border-radius: 50%; background: #22d3ee; box-shadow: 0 0 6px #22d3ee; animation: splashBlink 1.3s ease-in-out infinite; }
+
+        .chart-stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 22px;
+            letter-spacing: .01em;
+            background: linear-gradient(135deg, #ffffff 0%, #67e8f9 60%, #06b6d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 24px rgba(6,182,212,0.35);
+        }
+        .chart-stat-variacao {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            padding: 2px 7px;
+            border-radius: 6px;
+        }
+
+        #chart-canvas-wrapper { position: relative; }
+
+        #pulse-marker {
+            position: absolute;
+            width: 9px;
+            height: 9px;
+            margin: -4.5px 0 0 -4.5px;
+            border-radius: 50%;
+            background: #22d3ee;
+            box-shadow: 0 0 10px 3px rgba(6,182,212,0.7);
+            pointer-events: none;
+            z-index: 8;
+        }
+        #pulse-marker.hidden { display: none; }
+        #pulse-marker::after {
+            content: '';
+            position: absolute;
+            inset: -7px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(6,182,212,0.65);
+            animation: chartPulseRing 1.8s ease-out infinite;
+        }
+        @keyframes chartPulseRing {
+            0%   { transform: scale(0.35); opacity: 1; }
+            100% { transform: scale(2.6);  opacity: 0; }
+        }
+
+        .chart-tooltip-box {
+            position: absolute;
+            pointer-events: none;
+            z-index: 30;
+            opacity: 0;
+            background: rgba(2,6,23,0.96);
+            border: 1px solid rgba(6,182,212,0.45);
+            border-radius: 8px;
+            padding: 7px 11px;
+            transform: translate(-50%, -125%);
+            transition: opacity .12s ease, transform .12s ease;
+            box-shadow: 0 0 22px rgba(6,182,212,0.22), 0 4px 14px rgba(0,0,0,0.5);
+            white-space: nowrap;
+        }
+        .chart-tooltip-label { font-family: 'Orbitron', sans-serif; font-size: 8px; color: #67e8f9; text-transform: uppercase; letter-spacing: .15em; }
+        .chart-tooltip-value { font-family: 'Orbitron', sans-serif; font-size: 13.5px; font-weight: 900; color: #fff; margin-top: 2px; }
     </style>
 </head>
 <body class="bg-black text-slate-100 min-h-screen pb-28 splash-active">
@@ -537,29 +640,45 @@
             </div>
 
             <section id="secao-grafico" class="p-4 hidden">
-                <div class="bg-slate-950 p-4 rounded-xl border border-slate-900 space-y-4">
-                    <div class="flex justify-between items-center border-b border-slate-900 pb-3">
+                <div id="chart-card" class="p-4 rounded-xl border border-slate-900 space-y-4">
+                    <div class="chart-corner chart-corner-tl"></div>
+                    <div class="chart-corner chart-corner-tr"></div>
+                    <div class="chart-corner chart-corner-bl"></div>
+                    <div class="chart-corner chart-corner-br"></div>
+
+                    <div class="relative flex justify-between items-start border-b border-slate-900/80 pb-3">
                         <div>
-                            <div class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Meu Histórico de Patrimônio</div>
-                            <div class="text-lg font-black text-cyan-400 font-logo animate-pulse" id="dashboard-rend-carteira">Evolução Pessoal</div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <div class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Meu Histórico de Patrimônio</div>
+                                <span class="chart-live-badge"><span class="chart-live-dot"></span>Ao Vivo</span>
+                            </div>
+                            <div class="flex items-end gap-2">
+                                <span class="chart-stat-value" id="stat-valor-atual">R$ 0,00</span>
+                                <span class="chart-stat-variacao text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 mb-1" id="stat-variacao-periodo">▲ 0,0%</span>
+                            </div>
                         </div>
-                        <div class="flex gap-1 bg-slate-900 p-1 rounded-lg border border-slate-800">
+                        <div class="flex gap-1 bg-slate-900/80 p-1 rounded-lg border border-slate-800 shrink-0">
                             <button onclick="atualizarPeriodoGrafico('1A', this)" class="px-2 py-1 text-[10px] font-bold rounded bg-cyan-500 text-black transition">1A</button>
                             <button onclick="atualizarPeriodoGrafico('2A', this)" class="px-2 py-1 text-[10px] font-bold rounded text-slate-400 hover:text-white transition">2A</button>
                             <button onclick="atualizarPeriodoGrafico('MAX', this)" class="px-2 py-1 text-[10px] font-bold rounded text-slate-400 hover:text-white transition">MAX</button>
                         </div>
                     </div>
 
-                    <div>
+                    <div class="relative">
                         <h2 class="text-xs font-bold text-white flex items-center gap-1.5 tracking-wider uppercase mb-3">
                             <i data-lucide="line-chart" class="w-4 h-4 text-cyan-400"></i> Histórico de Crescimento Real da Minha Conta
                         </h2>
-                        <div class="w-full h-44">
+                        <div class="w-full h-56" id="chart-canvas-wrapper">
                             <canvas id="graficoEvolucao"></canvas>
+                            <div id="pulse-marker" class="hidden"></div>
+                            <div id="chart-tooltip" class="chart-tooltip-box">
+                                <div class="chart-tooltip-label" id="chart-tooltip-label">Mês 1</div>
+                                <div class="chart-tooltip-value" id="chart-tooltip-value">R$ 0,00</div>
+                            </div>
                         </div>
                     </div>
                     
-                    <div class="pt-2 border-t border-slate-900">
+                    <div class="relative pt-2 border-t border-slate-900/80">
                         <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Divisão Percentual Atual do Meu Dinheiro</p>
                         <div id="barra-composicao" class="w-full h-3 rounded-full bg-slate-900 flex overflow-hidden"></div>
                     </div>
@@ -1943,38 +2062,159 @@
             inicializarGrafico(periodo);
         }
 
+        function formatarCompacto(valor) {
+            if (valor >= 1000000) return 'R$ ' + (valor / 1000000).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + 'M';
+            if (valor >= 1000) return 'R$ ' + (valor / 1000).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + 'k';
+            return 'R$ ' + valor.toFixed(0);
+        }
+
+        function posicionarPulseMarker(chart) {
+            const meta = chart.getDatasetMeta(0);
+            const ultimo = meta.data[meta.data.length - 1];
+            const marker = document.getElementById('pulse-marker');
+            if (ultimo && marker) {
+                marker.style.left = ultimo.x + 'px';
+                marker.style.top = ultimo.y + 'px';
+                marker.classList.remove('hidden');
+            }
+        }
+
+        // Plugin: brilho (glow) por trás da linha do gráfico
+        const glowLinePlugin = {
+            id: 'glowLinePlugin',
+            beforeDatasetsDraw(chart) {
+                const { ctx } = chart;
+                ctx.save();
+                ctx.shadowColor = 'rgba(6,182,212,0.85)';
+                ctx.shadowBlur = 16;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 0;
+            },
+            afterDatasetsDraw(chart) {
+                chart.ctx.restore();
+                posicionarPulseMarker(chart);
+            }
+        };
+
+        // Plugin: linha de mira (crosshair) tracejada ao passar o mouse
+        const crosshairPlugin = {
+            id: 'crosshairPlugin',
+            afterDatasetsDraw(chart) {
+                const ativos = chart.tooltip && chart.tooltip.getActiveElements ? chart.tooltip.getActiveElements() : [];
+                if (!ativos || ativos.length === 0) return;
+                const { ctx, chartArea } = chart;
+                const x = ativos[0].element.x;
+                ctx.save();
+                ctx.beginPath();
+                ctx.setLineDash([4, 4]);
+                ctx.moveTo(x, chartArea.top);
+                ctx.lineTo(x, chartArea.bottom);
+                ctx.strokeStyle = 'rgba(103,232,249,0.45)';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+                ctx.restore();
+            }
+        };
+
+        // Tooltip externo customizado (glassmorphism, estilo painel futurista)
+        function tooltipExternoGrafico(context) {
+            const { chart, tooltip } = context;
+            const box = document.getElementById('chart-tooltip');
+            if (!box) return;
+            if (tooltip.opacity === 0) {
+                box.style.opacity = 0;
+                return;
+            }
+            const ponto = tooltip.dataPoints && tooltip.dataPoints[0];
+            if (!ponto) return;
+            document.getElementById('chart-tooltip-label').innerText = ponto.label;
+            document.getElementById('chart-tooltip-value').innerText = ponto.raw.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            box.style.opacity = 1;
+            box.style.left = tooltip.caretX + 'px';
+            box.style.top = tooltip.caretY + 'px';
+        }
+
         function inicializarGrafico(periodo = '1A') {
             const ctx = document.getElementById('graficoEvolucao').getContext('2d');
             if (chartInstancia) chartInstancia.destroy();
+            document.getElementById('pulse-marker').classList.add('hidden');
+
             const baseAporte = obterValorNumerico();
-            const dadosMultiplicados = dadosGraficoPeriodos[periodo].map(m => baseAporte + (baseAporte * (m / 100)));
+            const serieBruta = dadosGraficoPeriodos[periodo];
+            const dadosMultiplicados = serieBruta.map(m => baseAporte + (baseAporte * (m / 100)));
+
+            // Cabeçalho de estatísticas: valor atual + variação no período
+            const valorAtual = dadosMultiplicados[dadosMultiplicados.length - 1] || 0;
+            const variacaoPct = serieBruta[serieBruta.length - 1];
+            document.getElementById('stat-valor-atual').innerText = valorAtual.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            const elVariacao = document.getElementById('stat-variacao-periodo');
+            elVariacao.innerText = `▲ ${variacaoPct.toFixed(1)}%`;
+            elVariacao.className = 'chart-stat-variacao text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 mb-1';
+
             chartInstancia = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: ['Mês 1','Mês 2','Mês 3','Mês 4','Mês 5','Mês 6'],
+                    labels: ['Mês 1', 'Mês 2', 'Mês 3', 'Mês 4', 'Mês 5', 'Mês 6'],
                     datasets: [{
                         label: 'Simulação do Meu Portfólio',
                         data: dadosMultiplicados,
-                        borderColor: '#06b6d4',
-                        backgroundColor: 'rgba(6,182,212,0.03)',
-                        borderWidth: 2,
+                        borderWidth: 2.5,
                         fill: true,
-                        tension: 0.3,
-                        pointBackgroundColor: '#06b6d4'
+                        tension: 0.4,
+                        borderColor: (context) => {
+                            const { ctx: c, chartArea } = context.chart;
+                            if (!chartArea) return '#06b6d4';
+                            const g = c.createLinearGradient(chartArea.left, 0, chartArea.right, 0);
+                            g.addColorStop(0, '#0891b2');
+                            g.addColorStop(0.5, '#06b6d4');
+                            g.addColorStop(1, '#7dd3fc');
+                            return g;
+                        },
+                        backgroundColor: (context) => {
+                            const { ctx: c, chartArea } = context.chart;
+                            if (!chartArea) return 'rgba(6,182,212,0.05)';
+                            const g = c.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+                            g.addColorStop(0, 'rgba(6,182,212,0.45)');
+                            g.addColorStop(0.55, 'rgba(6,182,212,0.10)');
+                            g.addColorStop(1, 'rgba(6,182,212,0)');
+                            return g;
+                        },
+                        pointRadius: 0,
+                        pointHoverRadius: 6,
+                        pointHitRadius: 24,
+                        pointHoverBackgroundColor: '#22d3ee',
+                        pointHoverBorderColor: '#f0f9ff',
+                        pointHoverBorderWidth: 2
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    animation: { duration: 1100, easing: 'easeOutQuart' },
                     plugins: {
                         legend: { display: false },
-                        tooltip: { callbacks: { label: ctx => ' Valor: ' + ctx.raw.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) } }
+                        tooltip: { enabled: false, external: tooltipExternoGrafico }
                     },
                     scales: {
-                        y: { display: true, grid: { color: '#1e293b' }, ticks: { color: '#475569', font: { size: 9 } } },
-                        x: { grid: { display: false }, ticks: { color: '#475569', font: { size: 9 } } }
+                        y: {
+                            display: true,
+                            grid: { color: 'rgba(30,41,59,0.6)' },
+                            border: { display: false },
+                            ticks: {
+                                color: '#475569',
+                                font: { size: 9, family: "'Orbitron', sans-serif" },
+                                callback: (v) => formatarCompacto(v)
+                            }
+                        },
+                        x: {
+                            grid: { display: false },
+                            border: { display: false },
+                            ticks: { color: '#475569', font: { size: 9 } }
+                        }
                     }
-                }
+                },
+                plugins: [glowLinePlugin, crosshairPlugin]
             });
         }
 
