@@ -5,6 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Matias Invest | Diário Gráfico de Carteira Pessoal</title>
 
+    <!-- ════ SEGURANÇA: Content Security Policy ════
+         Bloqueia scripts externos não autorizados, inline eval, iframes,
+         e impede vazamento de dados via fetch/XHR para domínios não listados.
+         IMPORTANTE: Este site é 100% client-side. NÃO há .env, NÃO há chaves
+         de API expostas aqui — a única API usada (CoinGecko) é pública e não
+         requer autenticação. Nunca coloque chaves secretas em HTML/JS do frontend.
+    -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://unpkg.com https://cdn.jsdelivr.net;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+        font-src https://fonts.gstatic.com;
+        img-src 'self' data:;
+        connect-src https://api.coingecko.com;
+        frame-src 'none';
+        object-src 'none';
+        base-uri 'self';
+        form-action 'none';
+    ">
+    <!-- Bloqueia detecção de referência (privacidade do visitante) -->
+    <meta name="referrer" content="no-referrer">
+    <!-- Impede indexação de dados pessoais por crawlers -->
+    <meta name="robots" content="noindex, nofollow">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -20,8 +44,6 @@
         .font-logo { font-family: 'Orbitron', sans-serif; }
         input[type=number]::-webkit-inner-spin-button,
         input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-        .card-expand { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
-        .card-expand.active { max-height: 600px; }
         .nav-active { color: #06b6d4; }
         .nav-active svg { stroke: #06b6d4; }
         .nav-active span { color: #06b6d4; font-weight: 700; }
@@ -67,7 +89,6 @@
         @keyframes splashFadeInBtn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         #splash-screen .splash-exit { animation: splashExitScreen 0.7s cubic-bezier(0.7,0,1,1) forwards !important; }
         @keyframes splashExitScreen { 0% { opacity: 1; transform: scale(1); filter: brightness(1); } 40% { opacity: 1; transform: scale(1.01); filter: brightness(2); } 100% { opacity: 0; transform: scale(1.04); filter: brightness(5); } }
-        @media (prefers-reduced-motion: reduce) { #splash-screen * { animation-duration: 0.01ms !important; } }
 
         /* ═══ MÓDULOS ═══ */
         .modulo-card { background: #020617; border: 1px solid #0f172a; border-radius: 16px; overflow: hidden; transition: border-color .25s ease; }
@@ -113,155 +134,65 @@
         /* ═══ BANNER CVM ═══ */
         .banner-cvm { background: linear-gradient(135deg, rgba(245,158,11,0.12), rgba(245,158,11,0.05)); border: 1px solid rgba(245,158,11,0.35); border-radius: 12px; padding: 12px 14px; margin: 0 16px 12px; }
 
-        /* ═══ HOLOGRAMAS DE EDUCAÇÃO ═══ */
+        /* ═══ HOLOGRAMAS ═══ */
         .holo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         @media (max-width: 480px) { .holo-grid { grid-template-columns: 1fr; } }
-
-        .holo-card {
-            position: relative;
-            background: linear-gradient(135deg, rgba(6,182,212,0.04) 0%, rgba(2,6,23,0.98) 50%, rgba(124,58,237,0.04) 100%);
-            border: 1px solid rgba(6,182,212,0.18);
-            border-radius: 14px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: border-color .25s ease, transform .2s ease, box-shadow .25s ease;
-            text-decoration: none;
-            display: block;
-        }
-        .holo-card:hover {
-            border-color: rgba(6,182,212,0.6);
-            transform: translateY(-2px);
-            box-shadow: 0 0 28px rgba(6,182,212,0.18), 0 8px 24px rgba(0,0,0,0.5);
-        }
-        .holo-card::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background-image:
-                linear-gradient(to right, rgba(6,182,212,0.04) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(6,182,212,0.04) 1px, transparent 1px);
-            background-size: 18px 18px;
-            mask-image: radial-gradient(ellipse 100% 100% at 50% 0%, black 20%, transparent 80%);
-            pointer-events: none;
-            z-index: 0;
-        }
-        .holo-card::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 1px;
-            background: linear-gradient(to right, transparent, rgba(6,182,212,0.6), transparent);
-            opacity: 0;
-            transition: opacity .3s ease;
-        }
+        .holo-card { position: relative; background: linear-gradient(135deg, rgba(6,182,212,0.04) 0%, rgba(2,6,23,0.98) 50%, rgba(124,58,237,0.04) 100%); border: 1px solid rgba(6,182,212,0.18); border-radius: 14px; overflow: hidden; cursor: pointer; transition: border-color .25s ease, transform .2s ease, box-shadow .25s ease; text-decoration: none; display: block; }
+        .holo-card:hover { border-color: rgba(6,182,212,0.6); transform: translateY(-2px); box-shadow: 0 0 28px rgba(6,182,212,0.18), 0 8px 24px rgba(0,0,0,0.5); }
+        .holo-card::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(to right, rgba(6,182,212,0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(6,182,212,0.04) 1px, transparent 1px); background-size: 18px 18px; mask-image: radial-gradient(ellipse 100% 100% at 50% 0%, black 20%, transparent 80%); pointer-events: none; z-index: 0; }
+        .holo-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(to right, transparent, rgba(6,182,212,0.6), transparent); opacity: 0; transition: opacity .3s ease; }
         .holo-card:hover::after { opacity: 1; }
-
         .holo-card-inner { position: relative; z-index: 1; padding: 14px 13px 12px; }
-
-        .holo-icon-wrap {
-            width: 42px; height: 42px;
-            border-radius: 10px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 20px;
-            margin-bottom: 10px;
-            position: relative;
-        }
-        .holo-icon-wrap::after {
-            content: '';
-            position: absolute; inset: -1px;
-            border-radius: 11px;
-            border: 1px solid rgba(6,182,212,0.25);
-        }
-
+        .holo-icon-wrap { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 10px; position: relative; }
+        .holo-icon-wrap::after { content: ''; position: absolute; inset: -1px; border-radius: 11px; border: 1px solid rgba(6,182,212,0.25); }
         .holo-tag { font-size: 8px; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; padding: 2px 6px; border-radius: 99px; font-family: 'Orbitron', sans-serif; }
         .holo-title { font-size: 11.5px; font-weight: 800; color: #f1f5f9; line-height: 1.35; margin: 6px 0 4px; }
         .holo-desc { font-size: 10px; color: #64748b; line-height: 1.55; }
-
-        .holo-footer {
-            display: flex; align-items: center; justify-content: space-between;
-            margin-top: 10px; padding-top: 9px;
-            border-top: 1px solid rgba(15,23,42,0.9);
-        }
+        .holo-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; padding-top: 9px; border-top: 1px solid rgba(15,23,42,0.9); }
         .holo-creator { display: flex; align-items: center; gap: 6px; }
-        .holo-creator-avatar {
-            width: 22px; height: 22px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 8px; font-weight: 900; font-family: 'Orbitron', sans-serif;
-            border: 1px solid rgba(6,182,212,0.3);
-            background: rgba(6,182,212,0.1);
-            color: #67e8f9;
-            flex-shrink: 0;
-        }
+        .holo-creator-avatar { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 900; font-family: 'Orbitron', sans-serif; border: 1px solid rgba(6,182,212,0.3); background: rgba(6,182,212,0.1); color: #67e8f9; flex-shrink: 0; }
         .holo-creator-name { font-size: 9.5px; font-weight: 700; color: #94a3b8; }
-        .holo-yt-badge {
-            display: flex; align-items: center; gap: 4px;
-            background: rgba(255,0,0,0.12);
-            border: 1px solid rgba(255,0,0,0.3);
-            border-radius: 6px;
-            padding: 3px 7px;
-            font-size: 8.5px; font-weight: 800; color: #f87171;
-            font-family: 'Orbitron', sans-serif;
-            letter-spacing: .05em;
-            transition: background .2s;
-        }
+        .holo-yt-badge { display: flex; align-items: center; gap: 4px; background: rgba(255,0,0,0.12); border: 1px solid rgba(255,0,0,0.3); border-radius: 6px; padding: 3px 7px; font-size: 8.5px; font-weight: 800; color: #f87171; font-family: 'Orbitron', sans-serif; letter-spacing: .05em; transition: background .2s; }
         .holo-card:hover .holo-yt-badge { background: rgba(255,0,0,0.22); }
-
-        /* Efeito scan animado no hover */
-        @keyframes holoScan {
-            0% { top: -100%; }
-            100% { top: 200%; }
-        }
+        @keyframes holoScan { 0% { top: -100%; } 100% { top: 200%; } }
         .holo-card:hover .holo-scan { animation: holoScan 1.2s ease-in-out; }
-        .holo-scan {
-            position: absolute; left: 0; right: 0; height: 30%;
-            background: linear-gradient(to bottom, transparent, rgba(6,182,212,0.04), transparent);
-            pointer-events: none; z-index: 0;
-            top: -100%;
-        }
-
-        /* Seção de categorias de criadores */
-        .edu-section-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: .2em;
-            text-transform: uppercase;
-            color: #475569;
-            margin: 20px 0 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .edu-section-title::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: linear-gradient(to right, rgba(6,182,212,0.2), transparent);
-        }
-
-        /* ═══ TRILHA MELHORADA ═══ */
-        .trilha-holo-link {
-            display: flex; align-items: center; gap: 8px;
-            background: rgba(6,182,212,0.06);
-            border: 1px solid rgba(6,182,212,0.18);
-            border-radius: 8px;
-            padding: 8px 10px;
-            margin-top: 10px;
-            text-decoration: none;
-            transition: border-color .2s, background .2s;
-            cursor: pointer;
-        }
+        .holo-scan { position: absolute; left: 0; right: 0; height: 30%; background: linear-gradient(to bottom, transparent, rgba(6,182,212,0.04), transparent); pointer-events: none; z-index: 0; top: -100%; }
+        .edu-section-title { font-family: 'Orbitron', sans-serif; font-size: 10px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: #475569; margin: 20px 0 10px; display: flex; align-items: center; gap: 8px; }
+        .edu-section-title::after { content: ''; flex: 1; height: 1px; background: linear-gradient(to right, rgba(6,182,212,0.2), transparent); }
+        .trilha-holo-link { display: flex; align-items: center; gap: 8px; background: rgba(6,182,212,0.06); border: 1px solid rgba(6,182,212,0.18); border-radius: 8px; padding: 8px 10px; margin-top: 10px; text-decoration: none; transition: border-color .2s, background .2s; cursor: pointer; }
         .trilha-holo-link:hover { border-color: rgba(6,182,212,0.5); background: rgba(6,182,212,0.1); }
         .trilha-holo-link-icon { font-size: 13px; }
         .trilha-holo-link-body { flex: 1; }
         .trilha-holo-link-creator { font-size: 9.5px; font-weight: 700; color: #67e8f9; }
         .trilha-holo-link-desc { font-size: 9px; color: #64748b; margin-top: 1px; }
         .trilha-yt-badge { font-size: 8px; font-weight: 900; color: #f87171; font-family: 'Orbitron', sans-serif; background: rgba(255,0,0,0.1); border: 1px solid rgba(255,0,0,0.25); border-radius: 4px; padding: 2px 5px; flex-shrink: 0; }
+
+        /* ═══ CONFIGURAÇÕES ═══ */
+        .config-section { background: #020617; border: 1px solid #0f172a; border-radius: 16px; overflow: hidden; }
+        .config-section-header { padding: 14px 16px; border-bottom: 1px solid #0f172a; display: flex; align-items: center; gap: 10px; }
+        .config-section-body { padding: 16px; }
+        .config-toggle { position: relative; width: 40px; height: 22px; flex-shrink: 0; }
+        .config-toggle input { opacity: 0; width: 0; height: 0; }
+        .config-toggle-slider { position: absolute; inset: 0; background: #1e293b; border-radius: 99px; cursor: pointer; transition: background .25s; border: 1px solid #334155; }
+        .config-toggle-slider::before { content: ''; position: absolute; left: 3px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; border-radius: 50%; background: #475569; transition: all .25s; }
+        .config-toggle input:checked + .config-toggle-slider { background: rgba(6,182,212,0.25); border-color: rgba(6,182,212,0.5); }
+        .config-toggle input:checked + .config-toggle-slider::before { background: #06b6d4; left: calc(100% - 17px); box-shadow: 0 0 8px rgba(6,182,212,0.6); }
+        .config-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid #0f172a; }
+        .config-row:last-child { border-bottom: none; }
+        .config-row-label { flex: 1; }
+        .config-row-title { font-size: 11.5px; font-weight: 700; color: #e2e8f0; }
+        .config-row-desc { font-size: 9.5px; color: #475569; margin-top: 2px; line-height: 1.4; }
+        .config-select { background: #0f172a; border: 1px solid #1e293b; border-radius: 8px; color: #e2e8f0; font-size: 11px; padding: 6px 10px; outline: none; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; }
+        .config-select:focus { border-color: rgba(6,182,212,0.5); }
+        .config-badge-seguro { display: inline-flex; align-items: center; gap: 5px; font-size: 9px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #34d399; background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.25); padding: 3px 8px; border-radius: 99px; font-family: 'Orbitron', sans-serif; }
+        .config-badge-seguro::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: #34d399; box-shadow: 0 0 6px #34d399; }
+        .nivel-barra { height: 4px; border-radius: 99px; background: #0f172a; overflow: hidden; margin-top: 6px; }
+        .nivel-barra-fill { height: 100%; border-radius: 99px; transition: width .6s ease; }
     </style>
 </head>
 <body class="bg-black text-slate-100 min-h-screen pb-28 splash-active">
 
-    <!-- ════ SPLASH SCREEN ════ -->
+    <!-- ════ SPLASH ════ -->
     <div id="splash-screen">
         <canvas id="particles-canvas" class="particles-canvas"></canvas>
         <div class="grid-perspective"></div>
@@ -277,15 +208,15 @@
                     <polygon points="48,4 88,26 88,70 48,92 8,70 8,26" stroke="rgba(6,182,212,0.25)" stroke-width="1" fill="none"/>
                     <polygon points="48,12 80,30 80,66 48,84 16,66 16,30" stroke="rgba(6,182,212,0.15)" stroke-width="0.8" fill="none"/>
                     <circle cx="48" cy="48" r="40" stroke="url(#arcGrad)" stroke-width="1.5" fill="none" stroke-dasharray="200 52" stroke-linecap="round" transform="rotate(-90 48 48)"/>
-                    <circle cx="48" cy="4"  r="2" fill="#06b6d4" opacity="0.8"/>
+                    <circle cx="48" cy="4" r="2" fill="#06b6d4" opacity="0.8"/>
                     <circle cx="88" cy="26" r="2" fill="#06b6d4" opacity="0.8"/>
                     <circle cx="88" cy="70" r="2" fill="#06b6d4" opacity="0.8"/>
                     <circle cx="48" cy="92" r="2" fill="#06b6d4" opacity="0.8"/>
-                    <circle cx="8"  cy="70" r="2" fill="#06b6d4" opacity="0.8"/>
-                    <circle cx="8"  cy="26" r="2" fill="#06b6d4" opacity="0.8"/>
+                    <circle cx="8" cy="70" r="2" fill="#06b6d4" opacity="0.8"/>
+                    <circle cx="8" cy="26" r="2" fill="#06b6d4" opacity="0.8"/>
                     <defs>
                         <linearGradient id="arcGrad" x1="0" y1="0" x2="96" y2="96" gradientUnits="userSpaceOnUse">
-                            <stop offset="0%"   stop-color="#0891b2"/>
+                            <stop offset="0%" stop-color="#0891b2"/>
                             <stop offset="100%" stop-color="#06b6d4"/>
                         </linearGradient>
                     </defs>
@@ -331,7 +262,7 @@
                 ⚖️ Aviso Regulatório Obrigatório
             </p>
             <p class="text-[10px] text-amber-200/80 leading-relaxed">
-                Este ambiente é um <strong>diário pessoal de estudos</strong> do seu autor. Os nomes de categorias de produtos exibidos são <strong>meramente ilustrativos e genéricos</strong> — não constituem análise de valores mobiliários, recomendação de compra ou venda de ativos, consultoria de investimentos nem intermediação financeira, nos termos da <strong>Resolução CVM nº 20/2021</strong> e da <strong>Instrução CVM nº 592</strong>. Nenhum vínculo com corretoras ou registro CNPI/CNPJ financeiro corporativo. Rentabilidades passadas não são garantia de resultados futuros. Antes de qualquer decisão, consulte um <strong>profissional habilitado e registrado na CVM</strong>.
+                Este ambiente é um <strong>diário pessoal de estudos</strong>. Os nomes exibidos são <strong>meramente ilustrativos e genéricos</strong> — não constituem análise de valores mobiliários, recomendação de compra ou venda, nos termos da <strong>Resolução CVM nº 20/2021</strong>. Consulte um <strong>profissional habilitado e registrado na CVM</strong>.
             </p>
         </div>
 
@@ -346,7 +277,7 @@
                         <span id="badge-perfil" class="text-xs px-2 py-0.5 rounded font-bold bg-slate-900 text-slate-400 border border-slate-800">Não Definido</span>
                     </div>
                     <div id="quiz-container" class="space-y-3">
-                        <p class="text-xs text-slate-400">Responda para calibrar a visualização educacional da distribuição de categorias de ativos estudadas pelo Matias:</p>
+                        <p class="text-xs text-slate-400">Responda para calibrar a visualização educacional da distribuição de categorias de ativos:</p>
                         <div id="pergunta-fase" class="bg-slate-900 p-3 rounded-lg border border-slate-800/60">
                             <span class="text-[10px] uppercase tracking-widest text-slate-500 font-bold block mb-1" id="progresso-quiz">Verificação Inicial</span>
                             <p class="text-xs font-semibold text-white mb-3" id="texto-pergunta">Antes de iniciar, você é maior de idade?</p>
@@ -362,12 +293,12 @@
                         <input type="text" id="input-valor-total" oninput="formatarMoeda(this, 'adulto')" placeholder="Defina o perfil simulado primeiro" class="w-full bg-slate-900 border border-slate-800 rounded-lg pl-10 pr-4 py-2.5 text-white font-bold font-logo focus:outline-none focus:border-cyan-500 transition">
                     </div>
                     <p class="text-[10px] text-slate-500 leading-relaxed border-t border-slate-800 pt-2">
-                        ⚠️ O valor digitado é apenas uma referência matemática para fins educacionais. Não representa indicação de aporte real nem promessa de rentabilidade.
+                        ⚠️ O valor digitado é apenas uma referência matemática para fins educacionais. Não representa indicação de aporte real.
                     </p>
                     <div class="pt-2 border-t border-slate-800">
                         <div class="flex flex-col mb-2">
                             <label class="text-xs font-bold text-slate-300">EXEMPLO DE RESERVA DE LIQUIDEZ (EDUCACIONAL)</label>
-                            <p class="text-[11px] text-slate-500 leading-tight mt-0.5">Exemplo ilustrativo de onde pode ser mantida a reserva de curto prazo — apenas para fins didáticos. Não é indicação de produto específico.</p>
+                            <p class="text-[11px] text-slate-500 leading-tight mt-0.5">Exemplo ilustrativo de onde pode ser mantida a reserva de curto prazo — apenas para fins didáticos.</p>
                         </div>
                         <div class="grid grid-cols-2 gap-2">
                             <button id="btn-porquinho" onclick="selecionarLiquidez('porquinho')" class="toggle-liquid px-3 py-2 rounded-lg text-xs font-bold bg-amber-500/20 text-amber-400 border border-amber-500/40 flex items-center justify-center gap-1.5">
@@ -382,12 +313,12 @@
                 </div>
 
                 <div class="flex gap-2 overflow-x-auto pb-1 pt-1">
-                    <button id="filtro-todos" onclick="filtrarCategoria('todos', this)" class="filtro-btn active px-4 py-1.5 rounded-lg text-xs font-bold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 whitespace-nowrap">Todas as Categorias</button>
-                    <button id="filtro-Liquidez" onclick="filtrarCategoria('Liquidez', this)" class="filtro-btn px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">Liquidez</button>
-                    <button id="filtro-RendaFixa" onclick="filtrarCategoria('Renda Fixa', this)" class="filtro-btn px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">Renda Fixa</button>
-                    <button id="filtro-Multimercado" onclick="filtrarCategoria('Multimercado', this)" class="filtro-btn px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">Multimercado</button>
-                    <button id="filtro-Acoes" onclick="filtrarCategoria('Ações', this)" class="filtro-btn px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">Ações e FIIs</button>
-                    <button id="filtro-Global" onclick="filtrarCategoria('Global', this)" class="filtro-btn px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">Ativos Globais</button>
+                    <button id="filtro-todos" onclick="filtrarCategoria('todos', this)" class="filtro-btn active px-4 py-1.5 rounded-lg text-xs font-bold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 whitespace-nowrap">Todas</button>
+                    <button onclick="filtrarCategoria('Liquidez', this)" class="filtro-btn px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">Liquidez</button>
+                    <button onclick="filtrarCategoria('Renda Fixa', this)" class="filtro-btn px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">Renda Fixa</button>
+                    <button onclick="filtrarCategoria('Multimercado', this)" class="filtro-btn px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">Multimercado</button>
+                    <button onclick="filtrarCategoria('Ações', this)" class="filtro-btn px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">Ações e FIIs</button>
+                    <button onclick="filtrarCategoria('Global', this)" class="filtro-btn px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap">Global</button>
                 </div>
             </div>
 
@@ -445,12 +376,12 @@
                         <i data-lucide="trending-up" class="w-4 h-4 text-cyan-500"></i> Cotações Públicas de Criptoativos
                     </h2>
                     <span class="text-xs text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping inline-block mr-1"></span>LIVE FEED
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping inline-block mr-1"></span>LIVE
                     </span>
                 </div>
-                <p class="text-[10px] text-slate-500 mb-3">Apenas cotações públicas de mercado. Não constitui indicação de compra ou venda de criptoativos.</p>
+                <p class="text-[10px] text-slate-500 mb-3">Cotações públicas de mercado via CoinGecko (API pública, sem autenticação). Não constitui indicação de compra.</p>
                 <div id="crypto-grid" class="grid grid-cols-2 md:grid-cols-3 gap-2">
-                    <p class="text-xs text-slate-500 col-span-full text-center py-4">Carregando cotações públicas...</p>
+                    <p class="text-xs text-slate-500 col-span-full text-center py-4">Carregando cotações...</p>
                 </div>
             </section>
         </div>
@@ -464,13 +395,10 @@
                 </div>
                 <h3 class="text-sm font-extrabold text-white leading-snug">COMO EU ESTUDAVA ALOCAÇÕES QUANDO ERA MENOR DE IDADE</h3>
                 <p class="text-xs text-slate-300 leading-relaxed">
-                    Este espaço reconstrói de forma <strong>puramente educacional e pessoal</strong> a lógica matemática de divisão de categorias de ativos que estudei na minha juventude. Menores de idade são legalmente <strong>incapazes para assinar contratos financeiros</strong> sem o devido amparo dos responsáveis legais, conforme o Código Civil Brasileiro e as normas da CVM.
+                    Este espaço reconstrói de forma <strong>puramente educacional e pessoal</strong> a lógica matemática de divisão de categorias de ativos que estudei na minha juventude. Menores de idade são legalmente <strong>incapazes para assinar contratos financeiros</strong> sem o amparo dos responsáveis legais, conforme o Código Civil Brasileiro e as normas da CVM.
                 </p>
                 <div class="bg-purple-950/40 p-3 rounded-lg border border-purple-500/30 text-xs text-purple-200">
-                    ⚖️ <strong>AVISO LEGAL:</strong> Menores de 16 anos são absolutamente incapazes para atos financeiros. Entre 16 e 18 anos, são relativamente capazes e precisam ser representados ou assistidos pelos responsáveis legais. Qualquer investimento de menor só pode ocorrer por meio dos responsáveis legais, em conta aberta em nome deles ou do menor com autorização e supervisão adequada, conforme as normas vigentes.
-                </div>
-                <div class="bg-slate-900/60 p-3 rounded-lg border border-slate-700 text-xs text-slate-400">
-                    📚 <strong>MEMÓRIA DE ESTUDO:</strong> Os modelos abaixo são representações matemáticas genéricas de <strong>categorias de ativos</strong> — sem citar produtos específicos, gestores ou corretoras. São apenas exercícios didáticos da lógica de diversificação estudada pelo autor.
+                    ⚖️ <strong>AVISO LEGAL:</strong> Menores de 16 anos são absolutamente incapazes. Entre 16 e 18 anos são relativamente capazes — precisam de representação ou assistência dos responsáveis legais conforme normas vigentes.
                 </div>
             </div>
 
@@ -480,13 +408,13 @@
                 </label>
                 <div class="grid grid-cols-1 gap-2" id="kids-options-container">
                     <button onclick="definirObjetivoKids('faculdade')" id="btn-kids-faculdade" class="w-full text-left bg-slate-900 border border-slate-800 hover:border-purple-500 p-3 rounded-lg text-xs font-medium text-slate-300 transition">
-                        🎓 <strong>Modelo de Acumulação de Longo Prazo:</strong> Divisão hipotética com foco em categorias de ativos geradores de fluxo de caixa (estudo de conceito).
+                        🎓 <strong>Modelo de Acumulação de Longo Prazo:</strong> Divisão hipotética com foco em categorias geradoras de fluxo de caixa.
                     </button>
                     <button onclick="definirObjetivoKids('intercambio')" id="btn-kids-intercambio" class="w-full text-left bg-slate-900 border border-slate-800 hover:border-purple-500 p-3 rounded-lg text-xs font-medium text-slate-300 transition">
-                        🌍 <strong>Modelo com Exposição Cambial:</strong> Distribuição hipotética com maior peso em categorias de ativos globais e dolarizados (estudo de conceito).
+                        🌍 <strong>Modelo com Exposição Cambial:</strong> Distribuição hipotética com maior peso em ativos globais e dolarizados.
                     </button>
                     <button onclick="definirObjetivoKids('independencia')" id="btn-kids-independencia" class="w-full text-left bg-slate-900 border border-slate-800 hover:border-purple-500 p-3 rounded-lg text-xs font-medium text-slate-300 transition">
-                        🛡️ <strong>Modelo Conservador Inicial:</strong> Distribuição matemática com foco em categorias de Renda Fixa e baixa volatilidade (estudo de conceito).
+                        🛡️ <strong>Modelo Conservador Inicial:</strong> Distribuição com foco em Renda Fixa e baixa volatilidade.
                     </button>
                 </div>
             </div>
@@ -503,30 +431,24 @@
             <main id="lista-ativos-kids" class="space-y-3"></main>
         </div>
 
-        <!-- ════ ABA CONHECIMENTO (REFORMULADA) ════ -->
+        <!-- ════ ABA CONHECIMENTO ════ -->
         <div id="aba-conhecimento" class="hidden p-4 space-y-5">
-
-            <!-- Hero da aba -->
             <div class="bg-gradient-to-r from-cyan-950/40 via-slate-950 to-slate-950 p-5 rounded-xl border border-cyan-500/20 space-y-3">
                 <div class="flex items-center gap-2 text-cyan-400">
                     <i data-lucide="graduation-cap" class="w-6 h-6"></i>
                     <h2 class="text-base font-black uppercase tracking-wider font-logo">Portal Educacional Independente</h2>
                 </div>
-                <p class="text-xs text-slate-300 leading-relaxed">
-                    Conteúdo de educação financeira de uso pessoal. Cada tópico abaixo é um módulo holográfico com link direto para um vídeo de referência pública no YouTube. Clique em qualquer card para assistir.
-                </p>
+                <p class="text-xs text-slate-300 leading-relaxed">Conteúdo de educação financeira de uso pessoal. Cada card leva a um vídeo de referência pública no YouTube.</p>
                 <p class="text-[10px] text-amber-300/80 bg-amber-500/10 border border-amber-500/20 rounded p-2">
-                    ⚠️ Os criadores listados são referências educacionais públicas. A menção não é patrocínio, indicação comercial nem endosso de produtos específicos oferecidos por eles.
+                    ⚠️ Os criadores listados são referências educacionais públicas. A menção não é patrocínio nem endosso de produtos.
                 </p>
             </div>
 
-            <!-- Barra de busca hologramas -->
             <div class="relative">
                 <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"></i>
                 <input type="text" id="busca-holos" oninput="renderizarHologramas(this.value)" placeholder="Buscar tema (ex: Renda Fixa, ETF, Dividendos)..." class="w-full bg-slate-950 border border-slate-800 rounded-lg pl-9 pr-4 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-500 transition">
             </div>
 
-            <!-- Filtros de categoria dos hologramas -->
             <div class="flex gap-2 overflow-x-auto pb-1">
                 <button onclick="filtrarHolos('todos', this)" class="holo-filtro-btn active px-3 py-1.5 rounded-lg text-[10px] font-bold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 whitespace-nowrap font-logo">Todos</button>
                 <button onclick="filtrarHolos('fundamentos', this)" class="holo-filtro-btn px-3 py-1.5 rounded-lg text-[10px] font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap font-logo">Fundamentos</button>
@@ -538,17 +460,15 @@
                 <button onclick="filtrarHolos('comportamento', this)" class="holo-filtro-btn px-3 py-1.5 rounded-lg text-[10px] font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap font-logo">Mentalidade</button>
             </div>
 
-            <!-- Grid de hologramas -->
             <div id="holo-grid-container"></div>
 
-            <!-- Divider -->
             <div class="border-t border-slate-900 pt-2 space-y-4">
                 <div class="flex items-center justify-between">
                     <div>
                         <h3 class="text-sm font-black text-white uppercase tracking-wide flex items-center gap-2">
                             <i data-lucide="library" class="w-4 h-4 text-cyan-400"></i> Trilha de Estudos Matias Invest
                         </h3>
-                        <p class="text-[10px] text-slate-500 mt-0.5">Toque em cada módulo para expandir o conteúdo completo</p>
+                        <p class="text-[10px] text-slate-500 mt-0.5">Toque em cada módulo para expandir</p>
                     </div>
                     <span class="text-[9px] px-2 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-black uppercase tracking-wider whitespace-nowrap">10 módulos</span>
                 </div>
@@ -560,90 +480,230 @@
             </div>
         </div>
 
-        <!-- ════ ABA PERFIL ════ -->
+        <!-- ════ ABA CONFIGURAÇÕES (NOVA — substitui Perfil com dados pessoais) ════ -->
         <div id="aba-painel-perfil" class="hidden p-4 space-y-4">
+
+            <!-- Cabeçalho -->
             <div class="bg-gradient-to-br from-slate-950 to-slate-900 p-4 rounded-xl border border-slate-800 space-y-3">
                 <div class="flex justify-between items-center">
                     <div>
-                        <span class="text-[10px] font-bold uppercase tracking-widest text-cyan-400">CONTA EDUCACIONAL</span>
-                        <h2 class="text-base font-black text-white tracking-wide" id="perfil-nome-titulo">Estudante Anônimo</h2>
+                        <span class="text-[10px] font-bold uppercase tracking-widest text-cyan-400">PAINEL DE CONTROLE</span>
+                        <h2 class="text-base font-black text-white tracking-wide">Configurações</h2>
                     </div>
-                    <div class="bg-cyan-500/10 px-2.5 py-1 rounded-lg border border-cyan-500/20 text-center">
-                        <span class="text-[9px] block text-slate-500 font-bold">NÍVEL</span>
-                        <span class="text-xs font-black text-cyan-400 font-logo" id="perfil-nivel-tag">ESTUDANTE</span>
-                    </div>
+                    <span class="config-badge-seguro">Seguro</span>
                 </div>
-                <div class="space-y-1">
-                    <div class="flex justify-between text-[11px] font-medium text-slate-400">
-                        <span>Progresso de Estudos na Ferramenta</span>
-                        <span id="txt-progresso-experiencia">20%</span>
+                <p class="text-[10px] text-slate-500 leading-relaxed">
+                    Nenhum dado pessoal é coletado ou enviado. Todas as preferências ficam <strong class="text-slate-400">exclusivamente no seu dispositivo</strong> (localStorage) e podem ser apagadas a qualquer momento.
+                </p>
+            </div>
+
+            <!-- Progresso de uso da ferramenta -->
+            <div class="config-section">
+                <div class="config-section-header">
+                    <i data-lucide="bar-chart-2" class="w-4 h-4 text-cyan-400"></i>
+                    <h3 class="text-xs font-bold text-white uppercase tracking-wider">Progresso na Ferramenta</h3>
+                </div>
+                <div class="config-section-body space-y-3">
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-[10px] text-slate-400 font-medium">
+                            <span>Quiz de perfil respondido</span>
+                            <span id="status-quiz-config" class="font-bold text-slate-500">—</span>
+                        </div>
+                        <div class="flex justify-between text-[10px] text-slate-400 font-medium">
+                            <span>Valor hipotético inserido</span>
+                            <span id="status-valor-config" class="font-bold text-slate-500">—</span>
+                        </div>
+                        <div class="flex justify-between text-[10px] text-slate-400 font-medium">
+                            <span>Meta educacional definida</span>
+                            <span id="status-meta-config" class="font-bold text-slate-500">—</span>
+                        </div>
+                        <div class="flex justify-between text-[10px] text-slate-400 font-medium">
+                            <span>Aba de Educação visitada</span>
+                            <span id="status-edu-config" class="font-bold text-slate-500">—</span>
+                        </div>
                     </div>
-                    <div class="w-full h-2 bg-slate-900 rounded-full overflow-hidden border border-slate-800/50">
-                        <div id="barra-progresso-perfil" class="h-full bg-gradient-to-r from-cyan-500 to-blue-500 transition-all duration-500" style="width: 20%"></div>
+                    <div>
+                        <div class="flex justify-between text-[10px] font-bold mb-1">
+                            <span class="text-slate-400">Nível de exploração</span>
+                            <span class="text-cyan-400 font-logo" id="config-nivel-tag">ESTUDANTE</span>
+                        </div>
+                        <div class="nivel-barra">
+                            <div id="config-barra-progresso" class="nivel-barra-fill bg-gradient-to-r from-cyan-500 to-blue-500" style="width:20%"></div>
+                        </div>
+                        <div class="text-[9px] text-slate-600 mt-1 text-right" id="config-pct-progresso">20% explorado</div>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-slate-950 p-4 rounded-xl border border-slate-900 space-y-3">
-                <div class="flex items-center gap-2 border-b border-slate-900 pb-2">
-                    <i data-lucide="target" class="w-4 h-4 text-cyan-500"></i>
-                    <h3 class="text-xs font-bold text-white uppercase tracking-wider">Simulador de Metas — Apenas Educacional</h3>
+            <!-- Simulador de Meta -->
+            <div class="config-section">
+                <div class="config-section-header">
+                    <i data-lucide="target" class="w-4 h-4 text-cyan-400"></i>
+                    <h3 class="text-xs font-bold text-white uppercase tracking-wider">Meta Educacional</h3>
                 </div>
-                <p class="text-[11px] text-slate-400 leading-normal">Configure uma meta financeira própria para analisar simulações de proporções matemáticas. Não representa planejamento financeiro profissional.</p>
-                <div class="space-y-3 pt-1">
+                <div class="config-section-body space-y-3">
+                    <p class="text-[10px] text-slate-500">Configure uma meta hipotética para acompanhar a simulação. Não é planejamento financeiro real.</p>
                     <div>
-                        <label class="text-[10px] font-bold text-slate-500 block mb-1 uppercase">Tipo de meta de estudo:</label>
-                        <select id="meta-tipo" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-cyan-500">
+                        <label class="text-[10px] font-bold text-slate-500 block mb-1.5 uppercase">Tipo de meta</label>
+                        <select id="meta-tipo" class="config-select w-full">
                             <option value="Construção Orçamentária Inicial">Construção Orçamentária Inicial</option>
                             <option value="Simular Alocação de Longo Prazo">Simular Alocação de Longo Prazo</option>
                             <option value="Estudo de Caso: Primeiros R$ 10k">Estudo de Caso: Primeiros R$ 10k</option>
                         </select>
                     </div>
                     <div>
-                        <label class="text-[10px] font-bold text-slate-500 block mb-1 uppercase">Valor Alvo Hipotético (R$)</label>
-                        <input type="number" id="meta-valor" placeholder="Ex: 10000" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white font-logo focus:outline-none focus:border-cyan-500">
+                        <label class="text-[10px] font-bold text-slate-500 block mb-1.5 uppercase">Valor alvo hipotético (R$)</label>
+                        <input type="number" id="meta-valor" placeholder="Ex: 10000" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white font-logo focus:outline-none focus:border-cyan-500 transition">
                     </div>
                     <button onclick="salvarMeta()" class="w-full bg-cyan-500 hover:bg-cyan-600 text-black font-bold text-xs py-2 rounded-lg transition">
-                        Ativar Meta Educacional
+                        Salvar Meta Educacional
                     </button>
-                </div>
-                <div id="meta-visualizer" class="hidden bg-slate-900/40 border border-slate-800/60 p-3 rounded-lg mt-2 space-y-2">
-                    <div class="flex justify-between items-center text-xs">
-                        <span class="font-bold text-slate-300" id="lbl-meta-ativa">Nenhuma Meta</span>
-                        <span class="font-logo font-black text-cyan-400" id="lbl-meta-porcentagem">0%</span>
-                    </div>
-                    <div class="w-full h-1.5 bg-slate-950 rounded-full overflow-hidden">
-                        <div id="barra-meta-ativa" class="h-full bg-cyan-500 transition-all" style="width: 0%"></div>
-                    </div>
-                    <div class="flex justify-between text-[10px] text-slate-500">
-                        <span id="lbl-meta-atual">Valor Simulado: R$ 0,00</span>
-                        <span id="lbl-meta-alvo">Alvo: R$ 0,00</span>
+                    <div id="meta-visualizer" class="hidden bg-slate-900/40 border border-slate-800/60 p-3 rounded-lg space-y-2">
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="font-bold text-slate-300" id="lbl-meta-ativa">Nenhuma Meta</span>
+                            <span class="font-logo font-black text-cyan-400" id="lbl-meta-porcentagem">0%</span>
+                        </div>
+                        <div class="w-full h-1.5 bg-slate-950 rounded-full overflow-hidden">
+                            <div id="barra-meta-ativa" class="h-full bg-cyan-500 transition-all" style="width: 0%"></div>
+                        </div>
+                        <div class="flex justify-between text-[10px] text-slate-500">
+                            <span id="lbl-meta-atual">Simulado: R$ 0,00</span>
+                            <span id="lbl-meta-alvo">Alvo: R$ 0,00</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-slate-950 p-4 rounded-xl border border-slate-900 space-y-3">
-                <div class="flex items-center gap-2 border-b border-slate-900 pb-2">
-                    <i data-lucide="user-cog" class="w-4 h-4 text-cyan-500"></i>
-                    <h3 class="text-xs font-bold text-white uppercase tracking-wider">Dados Locais do Usuário</h3>
+            <!-- Preferências de Exibição -->
+            <div class="config-section">
+                <div class="config-section-header">
+                    <i data-lucide="sliders" class="w-4 h-4 text-cyan-400"></i>
+                    <h3 class="text-xs font-bold text-white uppercase tracking-wider">Preferências de Exibição</h3>
                 </div>
-                <p class="text-[10px] text-slate-500">Dados salvos apenas localmente no seu dispositivo (localStorage). Não são enviados a nenhum servidor.</p>
-                <div class="space-y-3 pt-1">
-                    <div>
-                        <label class="text-[10px] font-bold text-slate-500 block mb-1 uppercase">Nome de Usuário</label>
-                        <input type="text" id="user-nome" placeholder="Seu Nome" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-cyan-500">
+                <div class="config-section-body">
+                    <div class="config-row">
+                        <div class="config-row-label">
+                            <div class="config-row-title">Mostrar avisos CVM</div>
+                            <div class="config-row-desc">Exibe lembretes regulatórios em cada card de ativo</div>
+                        </div>
+                        <label class="config-toggle">
+                            <input type="checkbox" id="toggle-avisos-cvm" checked onchange="salvarPreferencia('avisos_cvm', this.checked)">
+                            <span class="config-toggle-slider"></span>
+                        </label>
                     </div>
-                    <div>
-                        <label class="text-[10px] font-bold text-slate-500 block mb-1 uppercase">WhatsApp (opcional)</label>
-                        <input type="text" id="user-phone" placeholder="(11) 99999-9999" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white font-logo focus:outline-none focus:border-cyan-500">
+                    <div class="config-row">
+                        <div class="config-row-label">
+                            <div class="config-row-title">Mostrar gráfico de evolução</div>
+                            <div class="config-row-desc">Exibe o gráfico de simulação hipotética de crescimento</div>
+                        </div>
+                        <label class="config-toggle">
+                            <input type="checkbox" id="toggle-grafico" checked onchange="salvarPreferencia('mostrar_grafico', this.checked)">
+                            <span class="config-toggle-slider"></span>
+                        </label>
                     </div>
-                    <div>
-                        <label class="text-[10px] font-bold text-slate-500 block mb-1 uppercase">E-mail (opcional)</label>
-                        <input type="email" id="user-email" placeholder="seuemail@provedor.com" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-cyan-500">
+                    <div class="config-row">
+                        <div class="config-row-label">
+                            <div class="config-row-title">Modo compacto de cards</div>
+                            <div class="config-row-desc">Oculta descrições longas nos cards de categoria</div>
+                        </div>
+                        <label class="config-toggle">
+                            <input type="checkbox" id="toggle-compacto" onchange="salvarPreferencia('modo_compacto', this.checked)">
+                            <span class="config-toggle-slider"></span>
+                        </label>
                     </div>
-                    <button onclick="salvarDadosPerfil()" class="w-full bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 font-bold text-xs py-2 rounded-lg transition flex items-center justify-center gap-1.5">
-                        <i data-lucide="save" class="w-3.5 h-3.5"></i> Salvar Preferências Educacionais
+                    <div class="config-row">
+                        <div class="config-row-label">
+                            <div class="config-row-title">Aba inicial ao abrir</div>
+                            <div class="config-row-desc">Qual aba carregar ao entrar no site</div>
+                        </div>
+                        <select id="select-aba-inicial" class="config-select" onchange="salvarPreferencia('aba_inicial', this.value)">
+                            <option value="carteira">Carteira</option>
+                            <option value="conhecimento">Educação</option>
+                            <option value="duvidas">Dúvidas</option>
+                            <option value="menor">Começo</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Segurança e Privacidade -->
+            <div class="config-section">
+                <div class="config-section-header">
+                    <i data-lucide="shield" class="w-4 h-4 text-emerald-400"></i>
+                    <h3 class="text-xs font-bold text-white uppercase tracking-wider">Segurança e Privacidade</h3>
+                </div>
+                <div class="config-section-body space-y-3">
+                    <div class="space-y-2">
+                        <div class="flex items-start gap-3 p-2.5 bg-emerald-500/5 rounded-lg border border-emerald-500/15">
+                            <span class="text-emerald-400 mt-0.5">✓</span>
+                            <div>
+                                <p class="text-[10.5px] font-bold text-emerald-300">Nenhum dado pessoal coletado</p>
+                                <p class="text-[9.5px] text-slate-500 mt-0.5">Este site não tem backend, não usa cookies de rastreamento e não envia nada a servidores externos.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 p-2.5 bg-emerald-500/5 rounded-lg border border-emerald-500/15">
+                            <span class="text-emerald-400 mt-0.5">✓</span>
+                            <div>
+                                <p class="text-[10.5px] font-bold text-emerald-300">Content Security Policy ativa</p>
+                                <p class="text-[9.5px] text-slate-500 mt-0.5">O cabeçalho CSP bloqueia scripts externos não autorizados, iframes e vazamento de dados.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 p-2.5 bg-emerald-500/5 rounded-lg border border-emerald-500/15">
+                            <span class="text-emerald-400 mt-0.5">✓</span>
+                            <div>
+                                <p class="text-[10.5px] font-bold text-emerald-300">Sem chaves de API expostas</p>
+                                <p class="text-[9.5px] text-slate-500 mt-0.5">A única API usada (CoinGecko) é pública e não requer autenticação. Nunca use .env em HTML/JS do frontend — segredos devem ficar no servidor.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 p-2.5 bg-emerald-500/5 rounded-lg border border-emerald-500/15">
+                            <span class="text-emerald-400 mt-0.5">✓</span>
+                            <div>
+                                <p class="text-[10.5px] font-bold text-emerald-300">Referrer bloqueado</p>
+                                <p class="text-[9.5px] text-slate-500 mt-0.5">A meta "no-referrer" impede que sites externos saibam que o visitante veio daqui.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-slate-900 pt-3">
+                        <p class="text-[10px] text-slate-500 mb-2">Dados armazenados localmente (localStorage):</p>
+                        <div class="bg-slate-900/60 rounded-lg p-2.5 font-mono text-[9px] text-slate-400 space-y-1" id="ls-debug">
+                            Carregando...
+                        </div>
+                    </div>
+
+                    <button onclick="resetarPerfil()" class="w-full bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 font-bold text-xs py-2 rounded-lg transition flex items-center justify-center gap-2">
+                        <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Apagar todos os dados locais
                     </button>
+                </div>
+            </div>
+
+            <!-- Sobre o site -->
+            <div class="config-section">
+                <div class="config-section-header">
+                    <i data-lucide="info" class="w-4 h-4 text-slate-400"></i>
+                    <h3 class="text-xs font-bold text-white uppercase tracking-wider">Sobre o Matias Invest</h3>
+                </div>
+                <div class="config-section-body space-y-2">
+                    <div class="config-row">
+                        <span class="config-row-title">Versão</span>
+                        <span class="text-[10px] font-bold text-cyan-400 font-logo">v2.0 — Seguro</span>
+                    </div>
+                    <div class="config-row">
+                        <span class="config-row-title">Tipo</span>
+                        <span class="text-[10px] text-slate-400">100% Client-Side · Sem Backend</span>
+                    </div>
+                    <div class="config-row">
+                        <span class="config-row-title">API externa</span>
+                        <span class="text-[10px] text-slate-400">CoinGecko (pública)</span>
+                    </div>
+                    <div class="config-row">
+                        <span class="config-row-title">Regulação</span>
+                        <span class="text-[10px] text-slate-400">Res. CVM 20/2021</span>
+                    </div>
+                    <div class="config-row border-none pb-0">
+                        <span class="config-row-title">Fins</span>
+                        <span class="text-[10px] text-amber-400 font-bold">Exclusivamente Educacional</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -655,7 +715,7 @@
                     <i data-lucide="message-circle-question" class="w-6 h-6"></i>
                     <h2 class="text-base font-black uppercase tracking-wider font-logo">Central de Dúvidas</h2>
                 </div>
-                <p class="text-xs text-slate-400 leading-relaxed">Perguntas e respostas com cunho exclusivamente educacional. Nenhuma resposta constitui recomendação de investimento.</p>
+                <p class="text-xs text-slate-400 leading-relaxed">Perguntas e respostas com cunho exclusivamente educacional.</p>
             </div>
             <div class="relative">
                 <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"></i>
@@ -669,24 +729,23 @@
                 </div>
                 <div id="resposta-texto" class="text-xs text-slate-300 leading-relaxed space-y-2"></div>
             </div>
-            <div class="flex items-center justify-center gap-2 w-full bg-slate-950 border border-slate-900 text-slate-400 font-semibold text-xs py-3 rounded-xl text-center leading-snug">
-                <i data-lucide="book-open" class="w-4 h-4 shrink-0"></i> Não encontrou? Confira a aba <strong class="text-cyan-400">Educação</strong> para conteúdo completo.
+            <div class="flex items-center justify-center gap-2 w-full bg-slate-950 border border-slate-900 text-slate-400 font-semibold text-xs py-3 rounded-xl text-center">
+                <i data-lucide="book-open" class="w-4 h-4 shrink-0"></i> Confira a aba <strong class="text-cyan-400">Educação</strong> para conteúdo completo.
             </div>
         </div>
 
         <!-- ════ RODAPÉ ════ -->
         <footer class="p-4 text-center border-t border-slate-900 bg-black text-[9px] text-slate-600 space-y-2">
-            <p class="font-bold text-slate-500">⚖️ AVISO DE TRANSPARÊNCIA REGULATÓRIA COMPLETO</p>
-            <p>O ambiente <strong>Matias Invest</strong> é um diário virtual pessoal de compartilhamento de metodologias de estudo e simulação matemática de categorias de ativos, de uso exclusivo do proprietário deste site, com base em suas experiências pessoais de aprendizado.</p>
-            <p><strong>Este sistema NÃO constitui, sob hipótese alguma:</strong> (a) análise de valores mobiliários nos termos da Resolução CVM nº 20/2021; (b) consultoria de valores mobiliários nos termos da Resolução CVM nº 19/2021; (c) intermediação de ativos financeiros; (d) oferta pública de valores mobiliários; (e) recomendação explícita ou implícita de compra, venda ou manutenção de qualquer ativo financeiro.</p>
-            <p>Nenhum nome de produto, fundo, ativo ou instituição financeira eventualmente citado configura indicação de compra ou parceria comercial. <strong>Rentabilidade passada não é garantia de rentabilidade futura.</strong> Antes de qualquer decisão de investimento, consulte um profissional habilitado e registrado na Comissão de Valores Mobiliários (CVM) — <a href="https://www.cvm.gov.br" target="_blank" class="text-cyan-700 underline">www.cvm.gov.br</a>.</p>
-            <p>O autor não possui registro de Analista de Valores Mobiliários (CNPI), Consultor de Valores Mobiliários (CVM) nem vínculo operacional com instituições financeiras para fins de intermediação.</p>
+            <p class="font-bold text-slate-500">⚖️ AVISO DE TRANSPARÊNCIA REGULATÓRIA</p>
+            <p>O ambiente <strong>Matias Invest</strong> é um diário virtual pessoal de compartilhamento de metodologias de estudo e simulação matemática de categorias de ativos, de uso exclusivo do proprietário, com base em experiências pessoais de aprendizado.</p>
+            <p><strong>Este sistema NÃO constitui:</strong> análise de valores mobiliários (Res. CVM nº 20/2021); consultoria de valores mobiliários (Res. CVM nº 19/2021); intermediação, oferta pública, ou recomendação de qualquer ativo financeiro. <strong>Rentabilidade passada não é garantia de rentabilidade futura.</strong></p>
+            <p>Consulte um profissional habilitado — <a href="https://www.cvm.gov.br" target="_blank" rel="noopener noreferrer" class="text-cyan-700 underline">www.cvm.gov.br</a>.</p>
         </footer>
 
         <!-- ════ NAVEGAÇÃO INFERIOR ════ -->
         <nav class="fixed bottom-0 left-0 right-0 bg-black/95 backdrop-blur-md border-t border-slate-900 z-50">
             <div class="max-w-2xl mx-auto grid grid-cols-6 gap-0.5 p-2 text-center">
-                <button id="nav-btn-menor" class="flex flex-col items-center gap-0.5 py-1" onclick="alternarAbas('menor')">
+                <button id="nav-btn-menor" class="flex flex-col items-center gap-0.5 py-1 text-slate-600" onclick="alternarAbas('menor')">
                     <span class="text-[9px] bg-slate-900 text-slate-400 font-black px-1 py-0.5 rounded border border-slate-800 font-logo transition-colors" id="icon-menor-tag">HIST</span>
                     <span class="text-[8px] font-bold text-slate-500">Começo</span>
                 </button>
@@ -703,7 +762,7 @@
                     <span class="text-[8px] font-medium text-slate-500">Educação</span>
                 </button>
                 <button id="nav-btn-perfil" class="flex flex-col items-center gap-1 py-1 text-slate-600" onclick="alternarAbas('perfil')">
-                    <i data-lucide="user" class="w-4 h-4"></i>
+                    <i data-lucide="settings" class="w-4 h-4"></i>
                     <span class="text-[8px] font-medium text-slate-500">Config</span>
                 </button>
                 <button class="flex flex-col items-center gap-1 py-1 text-slate-600 hover:text-red-400 transition" onclick="resetarPerfil()">
@@ -785,29 +844,29 @@
     <script>
     /* ════ DADOS DA CARTEIRA ════ */
     const carteiraCompleta = [
-        { ticker: null,     nome: 'FIDC de Crédito Privado (Exemplo Genérico)',          categoria: 'Renda Fixa',   descricao: 'Categoria: Fundo de Direitos Creditórios focado em prêmios de crédito corporativo. Nome ilustrativo — não é indicação de produto específico.',                aplicacaoMinima: 500,  pesosPerfil: { conservador: 25, moderado: 15, arrojado: 5  } },
-        { ticker: null,     nome: 'FIDC Estruturado com Foco em Previsibilidade',         categoria: 'Renda Fixa',   descricao: 'Categoria: Direitos creditórios com modelo estruturado de prêmio. Nome ilustrativo — não é indicação de produto específico.',                              aplicacaoMinima: 500,  pesosPerfil: { conservador: 20, moderado: 10, arrojado: 5  } },
-        { ticker: 'IFRA11', nome: 'ETF/FI de Infraestrutura (ex: IFRA11)',               categoria: 'Renda Fixa',   descricao: 'Categoria: Ativo de infraestrutura focado em crédito corporativo. O ticker é público e negociado na B3. Não é indicação de compra.',                    aplicacaoMinima: 80,   pesosPerfil: { conservador: 15, moderado: 10, arrojado: 5  } },
-        { ticker: null,     nome: 'Fundo Passivo Indexado ao IMA-B (Exemplo Genérico)',  categoria: 'Renda Fixa',   descricao: 'Categoria: Estratégia indexada à inflação real de longo prazo (IPCA+). Nome ilustrativo — existem vários fundos públicos desta categoria.',              aplicacaoMinima: 100,  pesosPerfil: { conservador: 25, moderado: 10, arrojado: 5  } },
-        { ticker: null,     nome: 'Fundo Multimercado com Ações e Macro (Genérico)',     categoria: 'Multimercado', descricao: 'Categoria: Multimercado dinâmico com ativos macro globais e ações. Nome ilustrativo — não é indicação de produto específico.',                          aplicacaoMinima: 500,  pesosPerfil: { conservador: 0,  moderado: 15, arrojado: 10 } },
-        { ticker: null,     nome: 'Fundo Macro de Juros e Moedas (Genérico)',            categoria: 'Multimercado', descricao: 'Categoria: Fundo focado em distorções táticas de juros e câmbio. Nome ilustrativo — não é indicação de produto específico.',                            aplicacaoMinima: 500,  pesosPerfil: { conservador: 0,  moderado: 10, arrojado: 10 } },
-        { ticker: null,     nome: 'Fundo Quantitativo de Arbitragem (Genérico)',         categoria: 'Multimercado', descricao: 'Categoria: Fundo com arbitragem quantitativa de índices e câmbio. Nome ilustrativo — não é indicação de produto específico.',                          aplicacaoMinima: 500,  pesosPerfil: { conservador: 0,  moderado: 10, arrojado: 5  } },
-        { ticker: null,     nome: 'Fundo de Ações Long Only — Qualidade (Genérico)',     categoria: 'Ações',        descricao: 'Categoria: Seleção ativa de ações com foco em geração de valor. Nome ilustrativo — não é indicação de produto específico.',                            aplicacaoMinima: 1000, pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 10 } },
-        { ticker: null,     nome: 'Fundo de Ações com Teses de Crescimento (Genérico)', categoria: 'Ações',        descricao: 'Categoria: FIA com foco em potencial de crescimento em bolsa. Nome ilustrativo — não é indicação de produto específico.',                              aplicacaoMinima: 1000, pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 15 } },
-        { ticker: null,     nome: 'Fundo de Ações Value Investing / BDR (Genérico)',    categoria: 'Ações',        descricao: 'Categoria: Value investing voltado a assimetrias de lucros. Nome ilustrativo — não é indicação de produto específico.',                                aplicacaoMinima: 5000, pesosPerfil: { conservador: 0,  moderado: 0,  arrojado: 15 } },
-        { ticker: 'BBSE3',  nome: 'Ação de Seguradora de Alta Geração de Caixa (ex: BBSE3)', categoria: 'Ações',   descricao: 'Categoria: Ação do setor de seguros com forte geração de caixa. Ticker público da B3. Não é indicação de compra de BBSE3 especificamente.',         aplicacaoMinima: 34,   pesosPerfil: { conservador: 0,  moderado: 10, arrojado: 10 } },
-        { ticker: 'SLCE3',  nome: 'Ação de Commodities Agrícolas (ex: SLCE3)',          categoria: 'Ações',        descricao: 'Categoria: Empresa do agronegócio com patrimônio de terras. Ticker público. Não é indicação de compra de SLCE3 especificamente.',                     aplicacaoMinima: 19,   pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 10 } },
-        { ticker: 'GMAT3',  nome: 'Ação de Varejo Alimentar em Expansão (ex: GMAT3)',   categoria: 'Ações',        descricao: 'Categoria: Varejo alimentar regional em crescimento. Ticker público. Não é indicação de compra de GMAT3 especificamente.',                            aplicacaoMinima: 8,    pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 5  } },
-        { ticker: 'BTHF11', nome: 'Portfólio Híbrido em Bolsa (ex: BTHF11)',           categoria: 'Ações',        descricao: 'Categoria: Ativo híbrido negociado em bolsa. Ticker público. Não é indicação de compra de BTHF11 especificamente.',                                  aplicacaoMinima: 10,   pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 5  } },
-        { ticker: 'KLBN4',  nome: 'Ação de Papel e Celulose com Dividendos (ex: KLBN4)',categoria: 'Ações',        descricao: 'Categoria: Empresa de papel/embalagens com histórico de dividendos. Ticker público. Não é indicação de compra de KLBN4 especificamente.',          aplicacaoMinima: 4,    pesosPerfil: { conservador: 0,  moderado: 10, arrojado: 10 } },
-        { ticker: 'FESA4',  nome: 'Ação de Mineração com Geração de Caixa (ex: FESA4)',categoria: 'Ações',        descricao: 'Categoria: Empresa de mineração com forte geração de caixa. Ticker público. Não é indicação de compra de FESA4 especificamente.',                  aplicacaoMinima: 7,    pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 10 } },
-        { ticker: 'BRBI11', nome: 'Unit de Banco de Investimento (ex: BRBI11)',         categoria: 'Ações',        descricao: 'Categoria: Banco de investimento independente. Ticker público. Não é indicação de compra de BRBI11 especificamente.',                                aplicacaoMinima: 15,   pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 10 } },
-        { ticker: 'XPML11', nome: 'FII de Shopping Centers (ex: XPML11)',              categoria: 'Ações',        descricao: 'Categoria: Fundo imobiliário de tijolo — shoppings. Rendimentos mensais isentos de IR para PF (confirme regra vigente). Ticker público.',           aplicacaoMinima: 105,  pesosPerfil: { conservador: 0,  moderado: 10, arrojado: 5  } },
-        { ticker: 'WRLD11', nome: 'ETF Global Diversificado (ex: WRLD11)',              categoria: 'Global',       descricao: 'Categoria: ETF que replica índice de ações globais via B3. Ticker público. Não é indicação de compra de WRLD11 especificamente.',                  aplicacaoMinima: 10,   pesosPerfil: { conservador: 0,  moderado: 10, arrojado: 15 } },
-        { ticker: null,     nome: 'Fundo de Ações Globais com Foco em Crescimento (Genérico)', categoria: 'Global', descricao: 'Categoria: Exposição a ativos internacionais de alto crescimento. Nome ilustrativo — não é indicação de produto específico.',                      aplicacaoMinima: 500,  pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 10 } },
-        { ticker: 'ALUG11', nome: 'ETF de Real Estate Global (ex: ALUG11)',             categoria: 'Global',       descricao: 'Categoria: Rastreamento de mercado imobiliário internacional. Ticker público. Não é indicação de compra de ALUG11 especificamente.',              aplicacaoMinima: 110,  pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 5  } },
-        { ticker: 'USDB11', nome: 'ETF de Renda Fixa Americana (ex: USDB11)',          categoria: 'Global',       descricao: 'Categoria: Rastreamento de títulos públicos do Tesouro americano. Ticker público. Não é indicação de compra de USDB11 especificamente.',          aplicacaoMinima: 10,   pesosPerfil: { conservador: 0,  moderado: 10, arrojado: 5  } },
-        { ticker: 'BNDX11', nome: 'ETF de Renda Fixa Internacional ex-EUA (ex: BNDX11)',categoria: 'Global',      descricao: 'Categoria: Renda fixa global fora dos EUA. Ticker público. Não é indicação de compra de BNDX11 especificamente.',                                aplicacaoMinima: 10,   pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 5  } }
+        { ticker: null,     nome: 'FIDC de Crédito Privado (Exemplo Genérico)',          categoria: 'Renda Fixa',   descricao: 'Categoria: Fundo de Direitos Creditórios focado em prêmios de crédito corporativo. Nome ilustrativo.',                aplicacaoMinima: 500,  pesosPerfil: { conservador: 25, moderado: 15, arrojado: 5  } },
+        { ticker: null,     nome: 'FIDC Estruturado com Foco em Previsibilidade',         categoria: 'Renda Fixa',   descricao: 'Categoria: Direitos creditórios com modelo estruturado de prêmio. Nome ilustrativo.',                              aplicacaoMinima: 500,  pesosPerfil: { conservador: 20, moderado: 10, arrojado: 5  } },
+        { ticker: 'IFRA11', nome: 'ETF/FI de Infraestrutura (ex: IFRA11)',               categoria: 'Renda Fixa',   descricao: 'Categoria: Ativo de infraestrutura focado em crédito corporativo. Ticker público negociado na B3. Não é indicação de compra.',    aplicacaoMinima: 80,   pesosPerfil: { conservador: 15, moderado: 10, arrojado: 5  } },
+        { ticker: null,     nome: 'Fundo Passivo Indexado ao IMA-B (Exemplo Genérico)',  categoria: 'Renda Fixa',   descricao: 'Categoria: Estratégia indexada à inflação real de longo prazo (IPCA+). Nome ilustrativo.',              aplicacaoMinima: 100,  pesosPerfil: { conservador: 25, moderado: 10, arrojado: 5  } },
+        { ticker: null,     nome: 'Fundo Multimercado com Ações e Macro (Genérico)',     categoria: 'Multimercado', descricao: 'Categoria: Multimercado dinâmico com ativos macro globais e ações. Nome ilustrativo.',                          aplicacaoMinima: 500,  pesosPerfil: { conservador: 0,  moderado: 15, arrojado: 10 } },
+        { ticker: null,     nome: 'Fundo Macro de Juros e Moedas (Genérico)',            categoria: 'Multimercado', descricao: 'Categoria: Fundo focado em distorções táticas de juros e câmbio. Nome ilustrativo.',                            aplicacaoMinima: 500,  pesosPerfil: { conservador: 0,  moderado: 10, arrojado: 10 } },
+        { ticker: null,     nome: 'Fundo Quantitativo de Arbitragem (Genérico)',         categoria: 'Multimercado', descricao: 'Categoria: Fundo com arbitragem quantitativa de índices e câmbio. Nome ilustrativo.',                          aplicacaoMinima: 500,  pesosPerfil: { conservador: 0,  moderado: 10, arrojado: 5  } },
+        { ticker: null,     nome: 'Fundo de Ações Long Only — Qualidade (Genérico)',     categoria: 'Ações',        descricao: 'Categoria: Seleção ativa de ações com foco em geração de valor. Nome ilustrativo.',                            aplicacaoMinima: 1000, pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 10 } },
+        { ticker: null,     nome: 'Fundo de Ações com Teses de Crescimento (Genérico)', categoria: 'Ações',        descricao: 'Categoria: FIA com foco em potencial de crescimento em bolsa. Nome ilustrativo.',                              aplicacaoMinima: 1000, pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 15 } },
+        { ticker: null,     nome: 'Fundo de Ações Value Investing / BDR (Genérico)',    categoria: 'Ações',        descricao: 'Categoria: Value investing voltado a assimetrias de lucros. Nome ilustrativo.',                                aplicacaoMinima: 5000, pesosPerfil: { conservador: 0,  moderado: 0,  arrojado: 15 } },
+        { ticker: 'BBSE3',  nome: 'Ação de Seguradora de Alta Geração de Caixa (ex: BBSE3)', categoria: 'Ações',   descricao: 'Ticker público da B3. Não é indicação de compra de BBSE3 especificamente.',         aplicacaoMinima: 34,   pesosPerfil: { conservador: 0,  moderado: 10, arrojado: 10 } },
+        { ticker: 'SLCE3',  nome: 'Ação de Commodities Agrícolas (ex: SLCE3)',          categoria: 'Ações',        descricao: 'Ticker público. Não é indicação de compra de SLCE3 especificamente.',                     aplicacaoMinima: 19,   pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 10 } },
+        { ticker: 'GMAT3',  nome: 'Ação de Varejo Alimentar em Expansão (ex: GMAT3)',   categoria: 'Ações',        descricao: 'Ticker público. Não é indicação de compra de GMAT3 especificamente.',                            aplicacaoMinima: 8,    pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 5  } },
+        { ticker: 'BTHF11', nome: 'Portfólio Híbrido em Bolsa (ex: BTHF11)',           categoria: 'Ações',        descricao: 'Ticker público. Não é indicação de compra de BTHF11 especificamente.',                                  aplicacaoMinima: 10,   pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 5  } },
+        { ticker: 'KLBN4',  nome: 'Ação de Papel e Celulose com Dividendos (ex: KLBN4)',categoria: 'Ações',        descricao: 'Ticker público. Não é indicação de compra de KLBN4 especificamente.',          aplicacaoMinima: 4,    pesosPerfil: { conservador: 0,  moderado: 10, arrojado: 10 } },
+        { ticker: 'FESA4',  nome: 'Ação de Mineração com Geração de Caixa (ex: FESA4)',categoria: 'Ações',        descricao: 'Ticker público. Não é indicação de compra de FESA4 especificamente.',                  aplicacaoMinima: 7,    pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 10 } },
+        { ticker: 'BRBI11', nome: 'Unit de Banco de Investimento (ex: BRBI11)',         categoria: 'Ações',        descricao: 'Ticker público. Não é indicação de compra de BRBI11 especificamente.',                                aplicacaoMinima: 15,   pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 10 } },
+        { ticker: 'XPML11', nome: 'FII de Shopping Centers (ex: XPML11)',              categoria: 'Ações',        descricao: 'Fundo imobiliário de tijolo — shoppings. Rendimentos mensais isentos de IR para PF (confirme regra vigente). Ticker público.',           aplicacaoMinima: 105,  pesosPerfil: { conservador: 0,  moderado: 10, arrojado: 5  } },
+        { ticker: 'WRLD11', nome: 'ETF Global Diversificado (ex: WRLD11)',              categoria: 'Global',       descricao: 'Ticker público. Não é indicação de compra de WRLD11 especificamente.',                  aplicacaoMinima: 10,   pesosPerfil: { conservador: 0,  moderado: 10, arrojado: 15 } },
+        { ticker: null,     nome: 'Fundo de Ações Globais com Foco em Crescimento (Genérico)', categoria: 'Global', descricao: 'Categoria: Exposição a ativos internacionais de alto crescimento. Nome ilustrativo.',                      aplicacaoMinima: 500,  pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 10 } },
+        { ticker: 'ALUG11', nome: 'ETF de Real Estate Global (ex: ALUG11)',             categoria: 'Global',       descricao: 'Ticker público. Não é indicação de compra de ALUG11 especificamente.',              aplicacaoMinima: 110,  pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 5  } },
+        { ticker: 'USDB11', nome: 'ETF de Renda Fixa Americana (ex: USDB11)',          categoria: 'Global',       descricao: 'Ticker público. Não é indicação de compra de USDB11 especificamente.',          aplicacaoMinima: 10,   pesosPerfil: { conservador: 0,  moderado: 10, arrojado: 5  } },
+        { ticker: 'BNDX11', nome: 'ETF de Renda Fixa Internacional ex-EUA (ex: BNDX11)',categoria: 'Global',      descricao: 'Ticker público. Não é indicação de compra de BNDX11 especificamente.',                                aplicacaoMinima: 10,   pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 5  } }
     ];
 
     const PERCENTUAL_RESERVA_EMERGENCIA = 0.30;
@@ -824,340 +883,31 @@
         { id: 'solana',   symbol: 'SOL', name: 'Solana',   color: '#9945ff' }
     ];
 
-    /* ════ HOLOGRAMAS EDUCACIONAIS ════
-       Cada item: tópico educacional + link YouTube de criador público de referência.
-       Os links apontam para canais/vídeos públicos — não são patrocínio.
-    ════ */
+    /* ════ HOLOGRAMAS EDUCACIONAIS ════ */
     const holoTopicos = [
-        // FUNDAMENTOS
-        {
-            id: 'orcamento-pessoal',
-            categoria: 'fundamentos',
-            icon: '💰',
-            iconBg: 'background:rgba(245,158,11,0.12)',
-            tag: 'Fundamentos',
-            tagClass: 'bg-amber-500/15 text-amber-400 border border-amber-500/25',
-            titulo: 'Orçamento Pessoal e Controle de Gastos',
-            desc: 'Aprenda a organizar receitas e despesas, criar planilhas e parar de gastar mais do que ganha.',
-            creator: 'Me Poupe!',
-            creatorInitials: 'MP',
-            url: 'https://www.youtube.com/@MePoupe',
-            videoDesc: 'Como montar seu orçamento'
-        },
-        {
-            id: 'reserva-emergencia',
-            categoria: 'fundamentos',
-            icon: '🛡️',
-            iconBg: 'background:rgba(16,185,129,0.12)',
-            tag: 'Fundamentos',
-            tagClass: 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25',
-            titulo: 'Reserva de Emergência: Por Onde Começar',
-            desc: 'Entenda quanto guardar, onde deixar e por que a reserva é o primeiro passo antes de qualquer investimento.',
-            creator: 'Nathalia Arcuri',
-            creatorInitials: 'NA',
-            url: 'https://www.youtube.com/@MePoupe',
-            videoDesc: 'Reserva de emergência do zero'
-        },
-        {
-            id: 'juros-compostos',
-            categoria: 'fundamentos',
-            icon: '📈',
-            iconBg: 'background:rgba(6,182,212,0.12)',
-            tag: 'Fundamentos',
-            tagClass: 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/25',
-            titulo: 'Juros Compostos: O Oitavo Maravilha',
-            desc: 'Como o tempo e a constância nos aportes criam riqueza exponencial. Simulações práticas.',
-            creator: 'O Primo Rico',
-            creatorInitials: 'PR',
-            url: 'https://www.youtube.com/@oprimorico',
-            videoDesc: 'Juros compostos na prática'
-        },
-        {
-            id: 'planejamento-financeiro',
-            categoria: 'fundamentos',
-            icon: '🗺️',
-            iconBg: 'background:rgba(168,85,247,0.12)',
-            tag: 'Fundamentos',
-            tagClass: 'bg-purple-500/15 text-purple-400 border border-purple-500/25',
-            titulo: 'Planejamento Financeiro Familiar',
-            desc: 'Metas, prioridades e como alinhar finanças em família. Método prático de Gustavo Cerbasi.',
-            creator: 'Gustavo Cerbasi',
-            creatorInitials: 'GC',
-            url: 'https://www.youtube.com/@gustavocerbasibr',
-            videoDesc: 'Planejamento financeiro real'
-        },
-        // RENDA FIXA
-        {
-            id: 'tesouro-direto',
-            categoria: 'rendafixa',
-            icon: '🏛️',
-            iconBg: 'background:rgba(16,185,129,0.12)',
-            tag: 'Renda Fixa',
-            tagClass: 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25',
-            titulo: 'Tesouro Direto: Selic, IPCA+ e Prefixado',
-            desc: 'Diferenças entre os títulos públicos, quando usar cada um e como comprar pelo Tesouro Direto.',
-            creator: 'Investidor Sardinha',
-            creatorInitials: 'IS',
-            url: 'https://www.youtube.com/@InvestidorSardinha',
-            videoDesc: 'Guia completo Tesouro Direto'
-        },
-        {
-            id: 'cdb-lci-lca',
-            categoria: 'rendafixa',
-            icon: '🏦',
-            iconBg: 'background:rgba(6,182,212,0.12)',
-            tag: 'Renda Fixa',
-            tagClass: 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/25',
-            titulo: 'CDB, LCI e LCA: Diferenças e Quando Usar',
-            desc: 'Entenda a tributação, o FGC, liquidez e como comparar títulos de renda fixa privada.',
-            creator: 'Thiago Nigro',
-            creatorInitials: 'TN',
-            url: 'https://www.youtube.com/@oprimorico',
-            videoDesc: 'CDB vs LCI vs LCA'
-        },
-        {
-            id: 'debentures-cri-cra',
-            categoria: 'rendafixa',
-            icon: '📋',
-            iconBg: 'background:rgba(245,158,11,0.12)',
-            tag: 'Renda Fixa',
-            tagClass: 'bg-amber-500/15 text-amber-400 border border-amber-500/25',
-            titulo: 'Debêntures, CRI e CRA: Crédito Privado',
-            desc: 'Como funcionam esses títulos de crédito privado, vantagens, riscos e como acessá-los.',
-            creator: 'Felipe Miranda',
-            creatorInitials: 'FM',
-            url: 'https://www.youtube.com/@empiricus',
-            videoDesc: 'Crédito privado para iniciantes'
-        },
-        // AÇÕES
-        {
-            id: 'como-funciona-bolsa',
-            categoria: 'acoes',
-            icon: '📊',
-            iconBg: 'background:rgba(6,182,212,0.12)',
-            tag: 'Ações',
-            tagClass: 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/25',
-            titulo: 'Como Funciona a Bolsa de Valores (B3)',
-            desc: 'Do pregão às ordens de compra e venda: o funcionamento da bolsa e como investir em ações.',
-            creator: 'Raul Sena',
-            creatorInitials: 'RS',
-            url: 'https://www.youtube.com/@InvestidorSardinha',
-            videoDesc: 'Começar na bolsa do zero'
-        },
-        {
-            id: 'analise-fundamentalista',
-            categoria: 'acoes',
-            icon: '🔬',
-            iconBg: 'background:rgba(168,85,247,0.12)',
-            tag: 'Ações',
-            tagClass: 'bg-purple-500/15 text-purple-400 border border-purple-500/25',
-            titulo: 'Análise Fundamentalista: P/L, ROE e Mais',
-            desc: 'Os principais indicadores para avaliar empresas: P/L, P/VP, ROE, dividend yield e outros.',
-            creator: 'Suno Research',
-            creatorInitials: 'SR',
-            url: 'https://www.youtube.com/@SunoResearch',
-            videoDesc: 'Análise fundamentalista prática'
-        },
-        {
-            id: 'dividendos',
-            categoria: 'acoes',
-            icon: '💸',
-            iconBg: 'background:rgba(16,185,129,0.12)',
-            tag: 'Ações',
-            tagClass: 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25',
-            titulo: 'Ações de Dividendos: Viver de Renda',
-            desc: 'Como selecionar empresas pagadoras, calcular DY, e montar uma carteira geradora de renda passiva.',
-            creator: 'Viver de Dividendos',
-            creatorInitials: 'VD',
-            url: 'https://www.youtube.com/@ViverdeDividendos',
-            videoDesc: 'Carteira de dividendos passo a passo'
-        },
-        {
-            id: 'value-investing',
-            categoria: 'acoes',
-            icon: '🧠',
-            iconBg: 'background:rgba(245,158,11,0.12)',
-            tag: 'Ações',
-            tagClass: 'bg-amber-500/15 text-amber-400 border border-amber-500/25',
-            titulo: 'Value Investing: A Filosofia de Buffett',
-            desc: 'Princípios do value investing, margem de segurança, e como pensar como dono de um negócio.',
-            creator: 'Bastter',
-            creatorInitials: 'BA',
-            url: 'https://www.youtube.com/@bastter',
-            videoDesc: 'Value investing brasileiro'
-        },
-        // FIIs
-        {
-            id: 'o-que-sao-fiis',
-            categoria: 'fiis',
-            icon: '🏢',
-            iconBg: 'background:rgba(245,158,11,0.12)',
-            tag: 'FIIs',
-            tagClass: 'bg-amber-500/15 text-amber-400 border border-amber-500/25',
-            titulo: 'Fundos Imobiliários: O Guia Completo',
-            desc: 'O que são FIIs, tipos (tijolo, papel, FOF), como funcionam os rendimentos e por que são populares.',
-            creator: 'Suno Research',
-            creatorInitials: 'SR',
-            url: 'https://www.youtube.com/@SunoResearch',
-            videoDesc: 'Guia completo de FIIs'
-        },
-        {
-            id: 'como-analisar-fii',
-            categoria: 'fiis',
-            icon: '🔍',
-            iconBg: 'background:rgba(6,182,212,0.12)',
-            tag: 'FIIs',
-            tagClass: 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/25',
-            titulo: 'Como Analisar FIIs: P/VP, DY e Vacância',
-            desc: 'Indicadores essenciais para avaliar um fundo imobiliário antes de investir: vacância, P/VP, WAULT.',
-            creator: 'Viver de Dividendos',
-            creatorInitials: 'VD',
-            url: 'https://www.youtube.com/@ViverdeDividendos',
-            videoDesc: 'Analisando FIIs corretamente'
-        },
-        {
-            id: 'fiis-papel-vs-tijolo',
-            categoria: 'fiis',
-            icon: '📄',
-            iconBg: 'background:rgba(168,85,247,0.12)',
-            tag: 'FIIs',
-            tagClass: 'bg-purple-500/15 text-purple-400 border border-purple-500/25',
-            titulo: 'FIIs de Papel vs. FIIs de Tijolo',
-            desc: 'Entenda as diferenças, riscos específicos de cada tipo e como alocar entre os dois na sua carteira.',
-            creator: 'Investidor Sardinha',
-            creatorInitials: 'IS',
-            url: 'https://www.youtube.com/@InvestidorSardinha',
-            videoDesc: 'Papel vs Tijolo na prática'
-        },
-        // GLOBAL
-        {
-            id: 'etfs-internacionais',
-            categoria: 'global',
-            icon: '🌍',
-            iconBg: 'background:rgba(6,182,212,0.12)',
-            tag: 'Global',
-            tagClass: 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/25',
-            titulo: 'ETFs Internacionais pela B3 e no Exterior',
-            desc: 'Como investir em índices globais (S&P 500, MSCI World) via ETFs na B3 ou em corretoras internacionais.',
-            creator: 'O Primo Rico',
-            creatorInitials: 'PR',
-            url: 'https://www.youtube.com/@oprimorico',
-            videoDesc: 'ETFs globais para brasileiros'
-        },
-        {
-            id: 'bdrs',
-            categoria: 'global',
-            icon: '🇺🇸',
-            iconBg: 'background:rgba(16,185,129,0.12)',
-            tag: 'Global',
-            tagClass: 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25',
-            titulo: 'BDRs: Como Investir em Empresas Gringas',
-            desc: 'O que são BDRs, como funcionam, tributação e como acessar Apple, Google e Amazon pela B3.',
-            creator: 'Thiago Nigro',
-            creatorInitials: 'TN',
-            url: 'https://www.youtube.com/@oprimorico',
-            videoDesc: 'BDRs: guia prático'
-        },
-        {
-            id: 'dolarizacao-carteira',
-            categoria: 'global',
-            icon: '💱',
-            iconBg: 'background:rgba(245,158,11,0.12)',
-            tag: 'Global',
-            tagClass: 'bg-amber-500/15 text-amber-400 border border-amber-500/25',
-            titulo: 'Dolarizar a Carteira: Proteção Cambial',
-            desc: 'Por que e como adicionar exposição ao dólar, euro e outros ativos internacionais para proteger o patrimônio.',
-            creator: 'Gustavo Cerbasi',
-            creatorInitials: 'GC',
-            url: 'https://www.youtube.com/@gustavocerbasibr',
-            videoDesc: 'Diversificação cambial'
-        },
-        // CRIPTO
-        {
-            id: 'blockchain-bitcoin',
-            categoria: 'cripto',
-            icon: '₿',
-            iconBg: 'background:rgba(247,147,26,0.15)',
-            tag: 'Cripto',
-            tagClass: 'bg-orange-500/15 text-orange-400 border border-orange-500/25',
-            titulo: 'Bitcoin e Blockchain: O Básico',
-            desc: 'O que é Bitcoin, como funciona o blockchain, proof of work e por que é considerado reserva de valor.',
-            creator: 'André Nishimura',
-            creatorInitials: 'AN',
-            url: 'https://www.youtube.com/@CryptoTVBrasil',
-            videoDesc: 'Bitcoin do zero ao avançado'
-        },
-        {
-            id: 'ethereum-defi',
-            categoria: 'cripto',
-            icon: '⟠',
-            iconBg: 'background:rgba(98,126,234,0.15)',
-            tag: 'Cripto',
-            tagClass: 'bg-indigo-500/15 text-indigo-400 border border-indigo-500/25',
-            titulo: 'Ethereum, DeFi e Smart Contracts',
-            desc: 'Como o Ethereum funciona, o que são contratos inteligentes, DeFi e as principais aplicações.',
-            creator: 'Coin Bureau Brasil',
-            creatorInitials: 'CB',
-            url: 'https://www.youtube.com/@coinbureaubrasil',
-            videoDesc: 'Ethereum e DeFi explicados'
-        },
-        {
-            id: 'riscos-cripto',
-            categoria: 'cripto',
-            icon: '⚠️',
-            iconBg: 'background:rgba(239,68,68,0.12)',
-            tag: 'Cripto',
-            tagClass: 'bg-red-500/15 text-red-400 border border-red-500/25',
-            titulo: 'Riscos do Mercado de Criptoativos',
-            desc: 'Volatilidade extrema, golpes (scam), regulação, custódia e por que criptoativos exigem cautela máxima.',
-            creator: 'Empiricus',
-            creatorInitials: 'EM',
-            url: 'https://www.youtube.com/@empiricus',
-            videoDesc: 'Riscos reais do cripto'
-        },
-        // COMPORTAMENTO
-        {
-            id: 'psicologia-do-investidor',
-            categoria: 'comportamento',
-            icon: '🧩',
-            iconBg: 'background:rgba(168,85,247,0.12)',
-            tag: 'Mentalidade',
-            tagClass: 'bg-purple-500/15 text-purple-400 border border-purple-500/25',
-            titulo: 'Psicologia do Investidor e Vieses Cognitivos',
-            desc: 'Por que o maior inimigo do investidor é ele mesmo: aversão à perda, efeito manada, excesso de confiança.',
-            creator: 'Gustavo Cerbasi',
-            creatorInitials: 'GC',
-            url: 'https://www.youtube.com/@gustavocerbasibr',
-            videoDesc: 'Psicologia e investimentos'
-        },
-        {
-            id: 'independencia-financeira',
-            categoria: 'comportamento',
-            icon: '🚀',
-            iconBg: 'background:rgba(6,182,212,0.12)',
-            tag: 'Mentalidade',
-            tagClass: 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/25',
-            titulo: 'Independência Financeira: O Caminho Real',
-            desc: 'O conceito de FIRE, número mágico da independência e estratégias para viver de renda passiva.',
-            creator: 'O Primo Rico',
-            creatorInitials: 'PR',
-            url: 'https://www.youtube.com/@oprimorico',
-            videoDesc: 'Independência financeira passo a passo'
-        },
-        {
-            id: 'mentalidade-rico',
-            categoria: 'comportamento',
-            icon: '💎',
-            iconBg: 'background:rgba(16,185,129,0.12)',
-            tag: 'Mentalidade',
-            tagClass: 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25',
-            titulo: 'Mentalidade Financeira de Longo Prazo',
-            desc: 'Como pensar em décadas, ignorar ruído de curto prazo e manter a disciplina nos aportes mensais.',
-            creator: 'Bastter',
-            creatorInitials: 'BA',
-            url: 'https://www.youtube.com/@bastter',
-            videoDesc: 'Investidor de longo prazo'
-        }
+        { id: 'orcamento-pessoal', categoria: 'fundamentos', icon: '💰', iconBg: 'background:rgba(245,158,11,0.12)', tag: 'Fundamentos', tagClass: 'bg-amber-500/15 text-amber-400 border border-amber-500/25', titulo: 'Orçamento Pessoal e Controle de Gastos', desc: 'Aprenda a organizar receitas e despesas, criar planilhas e parar de gastar mais do que ganha.', creator: 'Me Poupe!', creatorInitials: 'MP', url: 'https://www.youtube.com/@MePoupe', videoDesc: 'Como montar seu orçamento' },
+        { id: 'reserva-emergencia', categoria: 'fundamentos', icon: '🛡️', iconBg: 'background:rgba(16,185,129,0.12)', tag: 'Fundamentos', tagClass: 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25', titulo: 'Reserva de Emergência: Por Onde Começar', desc: 'Entenda quanto guardar, onde deixar e por que a reserva é o primeiro passo antes de qualquer investimento.', creator: 'Nathalia Arcuri', creatorInitials: 'NA', url: 'https://www.youtube.com/@MePoupe', videoDesc: 'Reserva de emergência do zero' },
+        { id: 'juros-compostos', categoria: 'fundamentos', icon: '📈', iconBg: 'background:rgba(6,182,212,0.12)', tag: 'Fundamentos', tagClass: 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/25', titulo: 'Juros Compostos: O Oitavo Maravilha', desc: 'Como o tempo e a constância nos aportes criam riqueza exponencial. Simulações práticas.', creator: 'O Primo Rico', creatorInitials: 'PR', url: 'https://www.youtube.com/@oprimorico', videoDesc: 'Juros compostos na prática' },
+        { id: 'planejamento-financeiro', categoria: 'fundamentos', icon: '🗺️', iconBg: 'background:rgba(168,85,247,0.12)', tag: 'Fundamentos', tagClass: 'bg-purple-500/15 text-purple-400 border border-purple-500/25', titulo: 'Planejamento Financeiro Familiar', desc: 'Metas, prioridades e como alinhar finanças em família.', creator: 'Gustavo Cerbasi', creatorInitials: 'GC', url: 'https://www.youtube.com/@gustavocerbasibr', videoDesc: 'Planejamento financeiro real' },
+        { id: 'tesouro-direto', categoria: 'rendafixa', icon: '🏛️', iconBg: 'background:rgba(16,185,129,0.12)', tag: 'Renda Fixa', tagClass: 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25', titulo: 'Tesouro Direto: Selic, IPCA+ e Prefixado', desc: 'Diferenças entre os títulos públicos, quando usar cada um e como comprar.', creator: 'Investidor Sardinha', creatorInitials: 'IS', url: 'https://www.youtube.com/@InvestidorSardinha', videoDesc: 'Guia completo Tesouro Direto' },
+        { id: 'cdb-lci-lca', categoria: 'rendafixa', icon: '🏦', iconBg: 'background:rgba(6,182,212,0.12)', tag: 'Renda Fixa', tagClass: 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/25', titulo: 'CDB, LCI e LCA: Diferenças e Quando Usar', desc: 'Tributação, FGC, liquidez e como comparar títulos de renda fixa privada.', creator: 'Thiago Nigro', creatorInitials: 'TN', url: 'https://www.youtube.com/@oprimorico', videoDesc: 'CDB vs LCI vs LCA' },
+        { id: 'debentures-cri-cra', categoria: 'rendafixa', icon: '📋', iconBg: 'background:rgba(245,158,11,0.12)', tag: 'Renda Fixa', tagClass: 'bg-amber-500/15 text-amber-400 border border-amber-500/25', titulo: 'Debêntures, CRI e CRA: Crédito Privado', desc: 'Como funcionam esses títulos de crédito privado, vantagens, riscos e como acessá-los.', creator: 'Felipe Miranda', creatorInitials: 'FM', url: 'https://www.youtube.com/@empiricus', videoDesc: 'Crédito privado para iniciantes' },
+        { id: 'como-funciona-bolsa', categoria: 'acoes', icon: '📊', iconBg: 'background:rgba(6,182,212,0.12)', tag: 'Ações', tagClass: 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/25', titulo: 'Como Funciona a Bolsa de Valores (B3)', desc: 'Do pregão às ordens de compra e venda: o funcionamento da bolsa.', creator: 'Raul Sena', creatorInitials: 'RS', url: 'https://www.youtube.com/@InvestidorSardinha', videoDesc: 'Começar na bolsa do zero' },
+        { id: 'analise-fundamentalista', categoria: 'acoes', icon: '🔬', iconBg: 'background:rgba(168,85,247,0.12)', tag: 'Ações', tagClass: 'bg-purple-500/15 text-purple-400 border border-purple-500/25', titulo: 'Análise Fundamentalista: P/L, ROE e Mais', desc: 'Os principais indicadores para avaliar empresas.', creator: 'Suno Research', creatorInitials: 'SR', url: 'https://www.youtube.com/@SunoResearch', videoDesc: 'Análise fundamentalista prática' },
+        { id: 'dividendos', categoria: 'acoes', icon: '💸', iconBg: 'background:rgba(16,185,129,0.12)', tag: 'Ações', tagClass: 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25', titulo: 'Ações de Dividendos: Viver de Renda', desc: 'Como selecionar empresas pagadoras e montar uma carteira geradora de renda passiva.', creator: 'Viver de Dividendos', creatorInitials: 'VD', url: 'https://www.youtube.com/@ViverdeDividendos', videoDesc: 'Carteira de dividendos passo a passo' },
+        { id: 'value-investing', categoria: 'acoes', icon: '🧠', iconBg: 'background:rgba(245,158,11,0.12)', tag: 'Ações', tagClass: 'bg-amber-500/15 text-amber-400 border border-amber-500/25', titulo: 'Value Investing: A Filosofia de Buffett', desc: 'Princípios do value investing, margem de segurança, e como pensar como dono de um negócio.', creator: 'Bastter', creatorInitials: 'BA', url: 'https://www.youtube.com/@bastter', videoDesc: 'Value investing brasileiro' },
+        { id: 'o-que-sao-fiis', categoria: 'fiis', icon: '🏢', iconBg: 'background:rgba(245,158,11,0.12)', tag: 'FIIs', tagClass: 'bg-amber-500/15 text-amber-400 border border-amber-500/25', titulo: 'Fundos Imobiliários: O Guia Completo', desc: 'O que são FIIs, tipos (tijolo, papel, FOF), como funcionam os rendimentos.', creator: 'Suno Research', creatorInitials: 'SR', url: 'https://www.youtube.com/@SunoResearch', videoDesc: 'Guia completo de FIIs' },
+        { id: 'como-analisar-fii', categoria: 'fiis', icon: '🔍', iconBg: 'background:rgba(6,182,212,0.12)', tag: 'FIIs', tagClass: 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/25', titulo: 'Como Analisar FIIs: P/VP, DY e Vacância', desc: 'Indicadores essenciais para avaliar um fundo imobiliário antes de investir.', creator: 'Viver de Dividendos', creatorInitials: 'VD', url: 'https://www.youtube.com/@ViverdeDividendos', videoDesc: 'Analisando FIIs corretamente' },
+        { id: 'fiis-papel-vs-tijolo', categoria: 'fiis', icon: '📄', iconBg: 'background:rgba(168,85,247,0.12)', tag: 'FIIs', tagClass: 'bg-purple-500/15 text-purple-400 border border-purple-500/25', titulo: 'FIIs de Papel vs. FIIs de Tijolo', desc: 'Diferenças, riscos específicos de cada tipo e como alocar na carteira.', creator: 'Investidor Sardinha', creatorInitials: 'IS', url: 'https://www.youtube.com/@InvestidorSardinha', videoDesc: 'Papel vs Tijolo na prática' },
+        { id: 'etfs-internacionais', categoria: 'global', icon: '🌍', iconBg: 'background:rgba(6,182,212,0.12)', tag: 'Global', tagClass: 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/25', titulo: 'ETFs Internacionais pela B3 e no Exterior', desc: 'Como investir em índices globais (S&P 500, MSCI World) via ETFs.', creator: 'O Primo Rico', creatorInitials: 'PR', url: 'https://www.youtube.com/@oprimorico', videoDesc: 'ETFs globais para brasileiros' },
+        { id: 'bdrs', categoria: 'global', icon: '🇺🇸', iconBg: 'background:rgba(16,185,129,0.12)', tag: 'Global', tagClass: 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25', titulo: 'BDRs: Como Investir em Empresas Gringas', desc: 'O que são BDRs, como funcionam, tributação e como acessar ações internacionais pela B3.', creator: 'Thiago Nigro', creatorInitials: 'TN', url: 'https://www.youtube.com/@oprimorico', videoDesc: 'BDRs: guia prático' },
+        { id: 'dolarizacao-carteira', categoria: 'global', icon: '💱', iconBg: 'background:rgba(245,158,11,0.12)', tag: 'Global', tagClass: 'bg-amber-500/15 text-amber-400 border border-amber-500/25', titulo: 'Dolarizar a Carteira: Proteção Cambial', desc: 'Por que e como adicionar exposição ao dólar e outros ativos internacionais.', creator: 'Gustavo Cerbasi', creatorInitials: 'GC', url: 'https://www.youtube.com/@gustavocerbasibr', videoDesc: 'Diversificação cambial' },
+        { id: 'blockchain-bitcoin', categoria: 'cripto', icon: '₿', iconBg: 'background:rgba(247,147,26,0.15)', tag: 'Cripto', tagClass: 'bg-orange-500/15 text-orange-400 border border-orange-500/25', titulo: 'Bitcoin e Blockchain: O Básico', desc: 'O que é Bitcoin, como funciona o blockchain e por que é considerado reserva de valor.', creator: 'André Nishimura', creatorInitials: 'AN', url: 'https://www.youtube.com/@CryptoTVBrasil', videoDesc: 'Bitcoin do zero ao avançado' },
+        { id: 'ethereum-defi', categoria: 'cripto', icon: '⟠', iconBg: 'background:rgba(98,126,234,0.15)', tag: 'Cripto', tagClass: 'bg-indigo-500/15 text-indigo-400 border border-indigo-500/25', titulo: 'Ethereum, DeFi e Smart Contracts', desc: 'Como o Ethereum funciona, contratos inteligentes, DeFi e as principais aplicações.', creator: 'Coin Bureau Brasil', creatorInitials: 'CB', url: 'https://www.youtube.com/@coinbureaubrasil', videoDesc: 'Ethereum e DeFi explicados' },
+        { id: 'riscos-cripto', categoria: 'cripto', icon: '⚠️', iconBg: 'background:rgba(239,68,68,0.12)', tag: 'Cripto', tagClass: 'bg-red-500/15 text-red-400 border border-red-500/25', titulo: 'Riscos do Mercado de Criptoativos', desc: 'Volatilidade extrema, golpes, regulação, custódia e por que criptoativos exigem cautela máxima.', creator: 'Empiricus', creatorInitials: 'EM', url: 'https://www.youtube.com/@empiricus', videoDesc: 'Riscos reais do cripto' },
+        { id: 'psicologia-do-investidor', categoria: 'comportamento', icon: '🧩', iconBg: 'background:rgba(168,85,247,0.12)', tag: 'Mentalidade', tagClass: 'bg-purple-500/15 text-purple-400 border border-purple-500/25', titulo: 'Psicologia do Investidor e Vieses Cognitivos', desc: 'Aversão à perda, efeito manada, excesso de confiança — o maior inimigo do investidor é ele mesmo.', creator: 'Gustavo Cerbasi', creatorInitials: 'GC', url: 'https://www.youtube.com/@gustavocerbasibr', videoDesc: 'Psicologia e investimentos' },
+        { id: 'independencia-financeira', categoria: 'comportamento', icon: '🚀', iconBg: 'background:rgba(6,182,212,0.12)', tag: 'Mentalidade', tagClass: 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/25', titulo: 'Independência Financeira: O Caminho Real', desc: 'O conceito de FIRE, número mágico da independência e estratégias para viver de renda passiva.', creator: 'O Primo Rico', creatorInitials: 'PR', url: 'https://www.youtube.com/@oprimorico', videoDesc: 'Independência financeira passo a passo' },
+        { id: 'mentalidade-rico', categoria: 'comportamento', icon: '💎', iconBg: 'background:rgba(16,185,129,0.12)', tag: 'Mentalidade', tagClass: 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25', titulo: 'Mentalidade Financeira de Longo Prazo', desc: 'Como pensar em décadas, ignorar ruído de curto prazo e manter a disciplina nos aportes.', creator: 'Bastter', creatorInitials: 'BA', url: 'https://www.youtube.com/@bastter', videoDesc: 'Investidor de longo prazo' }
     ];
 
     let holoFiltroAtivo = 'todos';
@@ -1180,17 +930,10 @@
             const buscaOk = !termo || h.titulo.toLowerCase().includes(termo) || h.desc.toLowerCase().includes(termo) || h.tag.toLowerCase().includes(termo) || h.creator.toLowerCase().includes(termo);
             return catOk && buscaOk;
         });
-
-        if (filtrados.length === 0) {
-            container.innerHTML = '<p class="text-xs text-slate-500 text-center py-8">Nenhum tópico encontrado para esta busca.</p>';
-            return;
-        }
-
-        // Agrupa por categoria para exibir seção title
+        if (filtrados.length === 0) { container.innerHTML = '<p class="text-xs text-slate-500 text-center py-8">Nenhum tópico encontrado.</p>'; return; }
         const categoriasOrdem = ['fundamentos','rendafixa','acoes','fiis','global','cripto','comportamento'];
         const nomesCat = { fundamentos:'🧱 Fundamentos', rendafixa:'💹 Renda Fixa', acoes:'📊 Ações', fiis:'🏢 Fundos Imobiliários', global:'🌍 Ativos Globais', cripto:'₿ Criptoativos', comportamento:'🧠 Mentalidade' };
         let html = '';
-
         if (holoFiltroAtivo === 'todos') {
             categoriasOrdem.forEach(cat => {
                 const grupo = filtrados.filter(h => h.categoria === cat);
@@ -1201,7 +944,6 @@
         } else {
             html += `<div class="holo-grid">${filtrados.map(h => renderHoloCard(h)).join('')}</div>`;
         }
-
         container.innerHTML = html;
     }
 
@@ -1209,9 +951,7 @@
         return `<a href="${h.url}" target="_blank" rel="noopener noreferrer" class="holo-card" title="Abrir no YouTube — ${h.creator}">
             <div class="holo-scan"></div>
             <div class="holo-card-inner">
-                <div class="holo-icon-wrap" style="${h.iconBg}">
-                    <span style="font-size:20px;line-height:1">${h.icon}</span>
-                </div>
+                <div class="holo-icon-wrap" style="${h.iconBg}"><span style="font-size:20px;line-height:1">${h.icon}</span></div>
                 <span class="holo-tag ${h.tagClass}">${h.tag}</span>
                 <h4 class="holo-title">${h.titulo}</h4>
                 <p class="holo-desc">${h.desc}</p>
@@ -1220,10 +960,7 @@
                         <div class="holo-creator-avatar">${h.creatorInitials}</div>
                         <span class="holo-creator-name">${h.creator}</span>
                     </div>
-                    <span class="holo-yt-badge">
-                        <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.3 31.3 0 0 0 0 12a31.3 31.3 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31.3 31.3 0 0 0 24 12a31.3 31.3 0 0 0-.5-5.8zM9.7 15.5V8.5l6.3 3.5-6.3 3.5z"/></svg>
-                        VER
-                    </span>
+                    <span class="holo-yt-badge"><svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31.3 31.3 0 0 0 0 12a31.3 31.3 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1A31.3 31.3 0 0 0 24 12a31.3 31.3 0 0 0-.5-5.8zM9.7 15.5V8.5l6.3 3.5-6.3 3.5z"/></svg>VER</span>
                 </div>
             </div>
         </a>`;
@@ -1231,27 +968,19 @@
 
     /* ════ BANCO DE DÚVIDAS ════ */
     const bancoDePerguntas = [
-        {
-            categoria: '❓ Como Funciona o Site',
-            perguntas: [
-                { pergunta: 'Como funciona a simulação de carteira?', resposta: `A simulação mostra, de forma ilustrativa e educacional, como se poderia organizar proporcionalmente uma carteira hipotética conforme o valor digitado.<br><br>📌 <strong>Passo a passo:</strong><br>1. Responda as perguntas de perfil<br>2. Digite um valor hipotético<br>3. O site separa 30% para reserva de emergência e distribui os 70% restantes entre categorias genéricas de ativos ilustrativas<br><br>⚠️ Os nomes exibidos são <strong>categorias genéricas</strong> de produtos financeiros, não recomendações de compra. Antes de investir de verdade, consulte um profissional certificado e registrado na CVM.` },
-                { pergunta: 'Por que 30% sempre vai para a reserva de emergência?', resposta: `Antes de dividir qualquer valor entre as categorias, o simulador separa 30% para reserva de liquidez — apenas como exercício educacional.<br><br>💡 Só os 70% restantes são distribuídos entre as demais categorias, a título de exemplo. A proporção de 30% é uma referência didática, não uma recomendação de alocação.` },
-                { pergunta: 'Os nomes de ativos exibidos são recomendações?', resposta: `<strong>Não.</strong> Todos os nomes exibidos são <strong>categorias genéricas ou ilustrativas</strong> de tipos de produtos financeiros.<br><br>Quando aparece um ticker (ex: WRLD11, KLBN4), trata-se de um exemplo público de como aquela <em>categoria</em> pode ser acessada — não é indicação de compra daquele ativo específico.<br><br>⚖️ Este site não é registrado como analista ou consultor de valores mobiliários na CVM e não realiza análise de valores mobiliários.` },
-                { pergunta: 'O que é a aba "Meu Começo"?', resposta: `A aba conta, de forma narrativa, como o Matias estudava sobre investimentos quando era menor de idade.<br><br>São 3 modelos hipotéticos de estudo. <strong>Menores de idade não podem investir sozinhos</strong> — qualquer decisão deve envolver os responsáveis legais, conforme o Código Civil e as normas da CVM.` },
-                { pergunta: 'O que é Conta Remunerada A e Conta Remunerada B?', resposta: `São exemplos genéricos de reservas de liquidez. O simulador aloca 30% nelas automaticamente como exemplo educacional.<br><br>💡 Na prática, existem diversas opções de contas remuneradas e RDBs no mercado. Pesquise as condições atuais diretamente nas instituições financeiras.` },
-            ]
-        },
-        {
-            categoria: '💡 Conceitos Financeiros',
-            perguntas: [
-                { pergunta: 'O que é IMA-B?', resposta: `O <strong>IMA-B</strong> é um índice que representa uma carteira de Títulos Públicos atrelados ao IPCA. Fundos indexados ao IMA-B entregam, em tese, a variação da inflação + juros reais.<br><br>💡 Conceito educacional de proteção do poder de compra no longo prazo.` },
-                { pergunta: 'O que é um ETF?', resposta: `<strong>ETF</strong> (Exchange Traded Fund) é um fundo negociado em bolsa como ação. Ele replica um índice, podendo dar exposição a centenas de ativos de uma vez.<br><br>💡 Vantagem conceitual: diversificação ampla com uma única operação e taxas geralmente menores do que fundos ativos.` },
-                { pergunta: 'O que é um BDR?', resposta: `<strong>BDR</strong> (Brazilian Depositary Receipt) é um ativo negociado na B3 que representa ativos internacionais. O investidor fica exposto ao ativo estrangeiro de referência comprando em reais.<br><br>💡 Conceito de exposição ao exterior sem conta fora do Brasil.` },
-                { pergunta: 'O que é um Fundo Multimercado?', resposta: `Um Fundo Multimercado pode investir em diferentes classes ao mesmo tempo: ações, câmbio, juros, commodities. São geridos ativamente por profissionais regulamentados.` },
-                { pergunta: 'O que é CDI?', resposta: `O <strong>CDI</strong> é a taxa de referência de investimentos de renda fixa no Brasil, próxima à taxa Selic. "Render 100% do CDI" significa acompanhar essa taxa de referência.` },
-                { pergunta: 'O que é um FII?', resposta: `<strong>FII</strong> (Fundo de Investimento Imobiliário) reúne investidores para comprar imóveis ou recebíveis imobiliários, distribuindo a renda gerada entre cotistas.<br><br>💡 Rendimentos mensais de FIIs costumam ser isentos de IR para PF — confirme sempre a regra vigente na legislação atual.` },
-            ]
-        }
+        { categoria: '❓ Como Funciona o Site', perguntas: [
+            { pergunta: 'Como funciona a simulação de carteira?', resposta: `A simulação mostra, de forma ilustrativa, como organizar proporcionalmente uma carteira hipotética.<br><br>📌 <strong>Passo a passo:</strong><br>1. Responda as perguntas de perfil<br>2. Digite um valor hipotético<br>3. O site separa 30% para reserva de emergência e distribui os 70% restantes entre categorias genéricas<br><br>⚠️ Os nomes são <strong>categorias genéricas</strong>, não recomendações de compra.` },
+            { pergunta: 'Os nomes de ativos exibidos são recomendações?', resposta: `<strong>Não.</strong> Todos os nomes são <strong>categorias genéricas ou ilustrativas</strong>. Quando aparece um ticker (ex: WRLD11), trata-se de um exemplo público de como aquela categoria pode ser acessada — não é indicação de compra daquele ativo específico.<br><br>⚖️ Este site não é registrado como analista ou consultor de valores mobiliários na CVM.` },
+            { pergunta: 'Meus dados pessoais são coletados?', resposta: `<strong>Não.</strong> Este site não coleta nenhum dado pessoal. Não há formulários de cadastro, não há backend, não há cookies de rastreamento.<br><br>✅ As preferências salvas ficam <strong>exclusivamente no localStorage do seu navegador</strong> e podem ser apagadas a qualquer momento pelo botão "Limpar" ou nas Configurações.` },
+            { pergunta: 'O que é Conta Remunerada A e Conta Remunerada B?', resposta: `São exemplos genéricos de reservas de liquidez. O simulador aloca 30% nelas automaticamente como exemplo educacional. Não representam produtos específicos de nenhuma instituição financeira.` },
+        ]},
+        { categoria: '💡 Conceitos Financeiros', perguntas: [
+            { pergunta: 'O que é IMA-B?', resposta: `O <strong>IMA-B</strong> é um índice que representa uma carteira de Títulos Públicos atrelados ao IPCA. Fundos indexados ao IMA-B entregam, em tese, a variação da inflação + juros reais.` },
+            { pergunta: 'O que é um ETF?', resposta: `<strong>ETF</strong> (Exchange Traded Fund) é um fundo negociado em bolsa como ação. Ele replica um índice, podendo dar exposição a centenas de ativos de uma vez.` },
+            { pergunta: 'O que é um BDR?', resposta: `<strong>BDR</strong> (Brazilian Depositary Receipt) é um ativo negociado na B3 que representa ativos internacionais. O investidor fica exposto ao ativo estrangeiro comprando em reais.` },
+            { pergunta: 'O que é um FII?', resposta: `<strong>FII</strong> (Fundo de Investimento Imobiliário) reúne investidores para comprar imóveis ou recebíveis imobiliários, distribuindo a renda entre cotistas. Rendimentos mensais costumam ser isentos de IR para PF — confirme a regra vigente.` },
+            { pergunta: 'O que é CDI?', resposta: `O <strong>CDI</strong> é a taxa de referência de investimentos de renda fixa no Brasil, próxima à taxa Selic. "Render 100% do CDI" significa acompanhar essa taxa de referência.` },
+        ]}
     ];
 
     function renderizarDuvidas(filtro = '') {
@@ -1264,7 +993,7 @@
             html += `<div class="mb-1"><p class="text-[10px] font-black text-slate-500 uppercase tracking-wider mb-1.5 px-1">${grupo.categoria}</p><div class="space-y-1.5">`;
             pf.forEach(p => {
                 const id = encodeURIComponent(p.pergunta);
-                html += `<button onclick="mostrarResposta('${id}')" class="w-full text-left bg-slate-950 border border-slate-800 hover:border-cyan-500/50 hover:bg-cyan-950/10 p-3 rounded-xl text-xs font-semibold text-slate-200 transition flex items-center justify-between gap-2"><span>${p.pergunta}</span><i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-500 shrink-0"></i></button>`;
+                html += `<button onclick="mostrarResposta('${id}')" class="w-full text-left bg-slate-950 border border-slate-800 hover:border-cyan-500/50 p-3 rounded-xl text-xs font-semibold text-slate-200 transition flex items-center justify-between gap-2"><span>${p.pergunta}</span><i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-500 shrink-0"></i></button>`;
             });
             html += `</div></div>`;
         });
@@ -1292,36 +1021,36 @@
 
     /* ════ TRILHA DE ESTUDOS ════ */
     const modulosEstudo = [
-        { id:'orcamento', numero:1, tag:'Fundamentos', tagClass:'bg-slate-500/10 text-slate-300 border border-slate-500/20', titulo:'Orçamento Pessoal e Controle Financeiro', resumo:'A base antes de qualquer investimento: entender para onde o seu dinheiro vai.',
+        { id:'orcamento', numero:1, tag:'Fundamentos', tagClass:'bg-slate-500/10 text-slate-300 border border-slate-500/20', titulo:'Orçamento Pessoal e Controle Financeiro', resumo:'A base antes de qualquer investimento.',
           ytLink: { url:'https://www.youtube.com/@MePoupe', creator:'Me Poupe!', desc:'Controle de gastos e orçamento' },
-          conteudo:`<h4>Por que começar pelo orçamento?</h4><p>Nenhuma estratégia de investimento resolve um orçamento no vermelho. Antes de pensar em alocação, o primeiro passo é entender exatamente quanto entra e quanto sai todo mês.</p><h4>O método 50-30-20 (referência didática)</h4><ul><li><strong>50% Essenciais:</strong> moradia, alimentação, transporte, contas fixas.</li><li><strong>30% Desejos:</strong> lazer, assinaturas, compras não essenciais.</li><li><strong>20% Futuro:</strong> reserva de emergência e investimentos.</li></ul><p>Essa divisão é apenas uma referência didática — cada pessoa deve ajustar à sua realidade.</p><div class="caixa-exemplo"><p><strong>Exemplo hipotético:</strong> Renda de R$ 3.000/mês → referência de R$ 600 para "Futuro".</p></div><div class="caixa-alerta"><p>⚠️ Antes de qualquer aporte, é importante quitar dívidas caras (cartão de crédito, cheque especial), cujos juros costumam superar qualquer investimento disponível.</p></div>` },
+          conteudo:`<h4>Por que começar pelo orçamento?</h4><p>Nenhuma estratégia de investimento resolve um orçamento no vermelho.</p><h4>O método 50-30-20 (referência didática)</h4><ul><li><strong>50% Essenciais:</strong> moradia, alimentação, transporte.</li><li><strong>30% Desejos:</strong> lazer, assinaturas.</li><li><strong>20% Futuro:</strong> reserva e investimentos.</li></ul><div class="caixa-alerta"><p>⚠️ Antes de qualquer aporte, quite dívidas caras.</p></div>` },
         { id:'reserva', numero:2, tag:'Fundamentos', tagClass:'bg-amber-500/10 text-amber-400 border border-amber-500/20', titulo:'Reserva de Emergência: o Primeiro Investimento', resumo:'Por que guardar dinheiro com liquidez antes de pensar em rentabilidade.',
           ytLink: { url:'https://www.youtube.com/@MePoupe', creator:'Nathalia Arcuri', desc:'Reserva de emergência na prática' },
-          conteudo:`<h4>O que é a reserva de emergência?</h4><p>Quantia guardada em ativos de liquidez imediata para cobrir imprevistos sem recorrer a dívidas caras ou liquidar investimentos de longo prazo no momento errado.</p><h4>Quanto guardar? (Referências didáticas)</h4><ul><li><strong>Renda formal estável:</strong> referência de 3 a 6 meses de despesas</li><li><strong>Renda variável/autônoma:</strong> referência de 6 a 12 meses de despesas</li></ul><h4>Onde costuma ficar?</h4><p>Critérios técnicos: <strong>liquidez diária</strong>, <strong>baixo risco</strong> e <strong>proteção contra inflação</strong>. Exemplos de categorias: contas remuneradas, CDBs com liquidez diária, Tesouro Selic.</p><div class="caixa-alerta"><p>⚠️ Reserva de emergência não é lugar de buscar alta rentabilidade. A função é segurança e disponibilidade imediata.</p></div>` },
-        { id:'rendafixa', numero:3, tag:'Renda Fixa', tagClass:'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20', titulo:'Renda Fixa: Tesouro Direto, CDB, LCI/LCA', resumo:'Como funcionam os principais títulos de renda fixa disponíveis no Brasil.',
+          conteudo:`<h4>O que é a reserva de emergência?</h4><p>Quantia guardada em ativos de liquidez imediata para cobrir imprevistos.</p><h4>Quanto guardar?</h4><ul><li><strong>Renda formal:</strong> 3 a 6 meses de despesas</li><li><strong>Autônomo:</strong> 6 a 12 meses</li></ul><div class="caixa-alerta"><p>⚠️ Reserva não é lugar de buscar alta rentabilidade.</p></div>` },
+        { id:'rendafixa', numero:3, tag:'Renda Fixa', tagClass:'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20', titulo:'Renda Fixa: Tesouro Direto, CDB, LCI/LCA', resumo:'Como funcionam os principais títulos de renda fixa.',
           ytLink: { url:'https://www.youtube.com/@InvestidorSardinha', creator:'Investidor Sardinha', desc:'Renda fixa para iniciantes' },
-          conteudo:`<h4>O que é "renda fixa"?</h4><p>Classe de investimentos em que se conhece a regra de remuneração na aplicação. Considerada de menor risco que renda variável em geral.</p><h4>Tesouro Direto</h4><ul><li><strong>Tesouro Selic:</strong> acompanha a Selic — referência para reserva de emergência.</li><li><strong>Tesouro IPCA+:</strong> inflação + taxa fixa — proteção do poder de compra.</li><li><strong>Tesouro Prefixado:</strong> taxa definida no momento da compra.</li></ul><h4>CDB</h4><p>Empréstimo ao banco em troca de remuneração — geralmente % do CDI. Costuma ter cobertura do FGC até o limite vigente.</p><h4>LCI e LCA</h4><p>Semelhantes ao CDB, financiam o setor imobiliário e agropecuário. Costumam ser isentas de IR para PF — confirme a regra vigente.</p><div class="caixa-alerta"><p>⚠️ Renda fixa não é sinônimo de "sem risco". Existe risco de crédito e risco de mercado em caso de venda antecipada.</p></div>` },
-        { id:'acoes', numero:4, tag:'Renda Variável', tagClass:'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20', titulo:'Ações e o Funcionamento da Bolsa de Valores', resumo:'O que significa ser sócio de uma empresa por meio da bolsa.',
+          conteudo:`<h4>Tesouro Direto</h4><ul><li><strong>Tesouro Selic:</strong> acompanha a Selic</li><li><strong>Tesouro IPCA+:</strong> inflação + taxa fixa</li><li><strong>Prefixado:</strong> taxa definida na compra</li></ul><h4>CDB</h4><p>Empréstimo ao banco com cobertura FGC até limite vigente.</p><h4>LCI e LCA</h4><p>Semelhantes ao CDB. Costumam ser isentas de IR para PF — confirme regra vigente.</p><div class="caixa-alerta"><p>⚠️ Renda fixa não é "sem risco". Existe risco de crédito e mercado.</p></div>` },
+        { id:'acoes', numero:4, tag:'Renda Variável', tagClass:'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20', titulo:'Ações e o Funcionamento da Bolsa', resumo:'O que significa ser sócio de uma empresa via bolsa.',
           ytLink: { url:'https://www.youtube.com/@InvestidorSardinha', creator:'Raul Sena', desc:'Como comprar ações na B3' },
-          conteudo:`<h4>O que é uma ação?</h4><p>Fração do capital social de uma empresa. Ao comprar, o investidor se torna sócio minoritário, participando dos resultados proporcionalmente.</p><h4>Como o investidor pode ganhar (ou perder)?</h4><ul><li><strong>Valorização:</strong> preço sobe em relação ao custo</li><li><strong>Dividendos:</strong> distribuição de parte do lucro</li><li><strong>JCP:</strong> outra forma de remuneração ao acionista</li></ul><h4>B3: a bolsa brasileira</h4><p>Ambiente regulado onde ações de companhias abertas são negociadas. A negociação ocorre por meio de corretoras de valores.</p><div class="caixa-alerta"><p>⚠️ Ações têm maior volatilidade. A exposição deve ser compatível com os objetivos e a tolerância a oscilações de cada investidor.</p></div>` },
-        { id:'fundos', numero:5, tag:'Fundos', tagClass:'bg-purple-500/10 text-purple-400 border border-purple-500/20', titulo:'Fundos de Investimento: Como Funcionam', resumo:'Gestão profissional coletiva e os principais tipos de fundos.',
+          conteudo:`<h4>O que é uma ação?</h4><p>Fração do capital social de uma empresa. Ao comprar, o investidor se torna sócio minoritário.</p><h4>Como o investidor pode ganhar (ou perder)?</h4><ul><li><strong>Valorização</strong></li><li><strong>Dividendos</strong></li><li><strong>JCP</strong></li></ul><div class="caixa-alerta"><p>⚠️ Ações têm maior volatilidade. Exposição deve ser compatível com o perfil.</p></div>` },
+        { id:'fundos', numero:5, tag:'Fundos', tagClass:'bg-purple-500/10 text-purple-400 border border-purple-500/20', titulo:'Fundos de Investimento: Como Funcionam', resumo:'Gestão profissional coletiva e tipos de fundos.',
           ytLink: { url:'https://www.youtube.com/@oprimorico', creator:'O Primo Rico', desc:'Fundos de investimento explicados' },
-          conteudo:`<h4>O que é um fundo?</h4><p>Comunhão de recursos administrada por gestor profissional. Cada investidor é dono de cotas proporcionais.</p><h4>Principais tipos</h4><ul><li><strong>Renda Fixa:</strong> majoritariamente títulos de renda fixa</li><li><strong>Multimercado:</strong> renda fixa, câmbio, juros e ações de forma flexível</li><li><strong>Ações:</strong> mínimo 67% em ações</li><li><strong>Cambial:</strong> variação de moedas estrangeiras</li></ul><h4>Taxas essenciais</h4><ul><li><strong>Administração:</strong> cobrada sobre o patrimônio independente do resultado</li><li><strong>Performance:</strong> sobre o que exceder o benchmark</li></ul><h4>Gestão ativa x passiva</h4><p>Fundos ativos tentam superar um índice; passivos replicam o índice com taxas geralmente menores.</p>` },
-        { id:'fii', numero:6, tag:'Fundos Imobiliários', tagClass:'bg-orange-500/10 text-orange-400 border border-orange-500/20', titulo:'Fundos Imobiliários (FIIs)', resumo:'Como investir no setor imobiliário a partir de poucos reais.',
+          conteudo:`<h4>O que é um fundo?</h4><p>Comunhão de recursos administrada por gestor profissional.</p><h4>Tipos principais</h4><ul><li><strong>Renda Fixa</strong></li><li><strong>Multimercado</strong></li><li><strong>Ações</strong></li><li><strong>Cambial</strong></li></ul><h4>Taxas</h4><ul><li><strong>Administração:</strong> sobre o patrimônio</li><li><strong>Performance:</strong> sobre o que exceder o benchmark</li></ul>` },
+        { id:'fii', numero:6, tag:'Fundos Imobiliários', tagClass:'bg-orange-500/10 text-orange-400 border border-orange-500/20', titulo:'Fundos Imobiliários (FIIs)', resumo:'Como investir no setor imobiliário.',
           ytLink: { url:'https://www.youtube.com/@SunoResearch', creator:'Suno Research', desc:'FIIs: guia completo' },
-          conteudo:`<h4>O que é um FII?</h4><p>Reúne recursos para aplicar no setor imobiliário — imóveis físicos ou papéis (CRIs). As cotas são negociadas na bolsa.</p><h4>Principais tipos</h4><ul><li><strong>Tijolo:</strong> imóveis físicos, renda via aluguéis</li><li><strong>Papel:</strong> CRIs, funcionam como renda fixa imobiliária</li><li><strong>FOF:</strong> cotas de outros FIIs</li></ul><h4>Distribuição de renda</h4><p>Por lei, FIIs distribuem no mínimo 95% do lucro caixa semestral — na prática, mensalmente.</p><div class="caixa-alerta"><p>⚠️ Vacância e inadimplência de CRIs afetam a renda distribuída. O preço da cota pode oscilar independente do valor patrimonial.</p></div>` },
-        { id:'global', numero:7, tag:'Internacional', tagClass:'bg-blue-500/10 text-blue-400 border border-blue-500/20', titulo:'ETFs, BDRs e Investimento Internacional', resumo:'Como ganhar exposição ao exterior sem sair do Brasil.',
+          conteudo:`<h4>O que é um FII?</h4><p>Reúne recursos para aplicar no setor imobiliário. Cotas negociadas em bolsa.</p><h4>Tipos</h4><ul><li><strong>Tijolo</strong></li><li><strong>Papel</strong></li><li><strong>FOF</strong></li></ul><div class="caixa-alerta"><p>⚠️ Vacância e inadimplência afetam a renda distribuída.</p></div>` },
+        { id:'global', numero:7, tag:'Internacional', tagClass:'bg-blue-500/10 text-blue-400 border border-blue-500/20', titulo:'ETFs, BDRs e Investimento Internacional', resumo:'Como ganhar exposição ao exterior.',
           ytLink: { url:'https://www.youtube.com/@oprimorico', creator:'Thiago Nigro', desc:'Investimentos internacionais para brasileiros' },
-          conteudo:`<h4>ETF</h4><p>Fundo de índice negociado em bolsa. Uma cota dá exposição a uma cesta inteira de ativos.</p><h4>BDR</h4><p>Certificado na B3 que representa ações de empresas do exterior. Permite exposição indireta em reais.</p><h4>Por que diversificar geograficamente?</h4><ul><li>Redução do risco-país</li><li>Exposição a setores pouco representados no Brasil</li><li>Exposição cambial</li></ul><div class="caixa-alerta"><p>⚠️ Investimento internacional expõe à variação cambial — pode ampliar ganhos ou perdas dependendo do câmbio.</p></div>` },
-        { id:'perfil', numero:8, tag:'Comportamento', tagClass:'bg-pink-500/10 text-pink-400 border border-pink-500/20', titulo:'Perfil de Investidor (Suitability) e Diversificação', resumo:'Por que o mesmo investimento não serve para todo mundo.',
+          conteudo:`<h4>ETF</h4><p>Fundo de índice negociado em bolsa. Uma cota dá exposição a uma cesta de ativos.</p><h4>BDR</h4><p>Certificado na B3 representando ações internacionais.</p><div class="caixa-alerta"><p>⚠️ Exposição cambial pode ampliar ganhos ou perdas.</p></div>` },
+        { id:'perfil', numero:8, tag:'Comportamento', tagClass:'bg-pink-500/10 text-pink-400 border border-pink-500/20', titulo:'Perfil de Investidor e Diversificação', resumo:'Por que o mesmo investimento não serve para todo mundo.',
           ytLink: { url:'https://www.youtube.com/@gustavocerbasibr', creator:'Gustavo Cerbasi', desc:'Qual é o seu perfil de investidor?' },
-          conteudo:`<h4>O que é suitability?</h4><p>Processo regulatório de adequar produtos ao perfil de cada cliente — objetivos, horizonte e tolerância a risco. Exigido pela regulação da CVM.</p><h4>Os três perfis mais comuns</h4><ul><li><strong>Conservador:</strong> prioriza preservação, baixa tolerância a oscilações</li><li><strong>Moderado:</strong> aceita alguma oscilação por maior potencial de retorno</li><li><strong>Arrojado:</strong> maior tolerância a perdas temporárias</li></ul><h4>Diversificação</h4><p>Distribuir recursos entre diferentes classes, setores e geografias para reduzir risco específico.</p><h4>Vieses comportamentais</h4><ul><li><strong>Aversão à perda:</strong> perda dói mais do que ganho equivalente</li><li><strong>Excesso de confiança:</strong> superestimar capacidade de prever o mercado</li><li><strong>Efeito manada:</strong> investir porque "todo mundo está comprando"</li></ul>` },
-        { id:'imposto', numero:9, tag:'Impostos', tagClass:'bg-red-500/10 text-red-400 border border-red-500/20', titulo:'Imposto de Renda sobre Investimentos', resumo:'Noções gerais de tributação — sempre confirme a regra vigente.',
+          conteudo:`<h4>Suitability</h4><p>Processo regulatório de adequar produtos ao perfil de cada cliente — exigido pela CVM.</p><h4>Perfis</h4><ul><li><strong>Conservador</strong></li><li><strong>Moderado</strong></li><li><strong>Arrojado</strong></li></ul><h4>Vieses comportamentais</h4><ul><li><strong>Aversão à perda</strong></li><li><strong>Excesso de confiança</strong></li><li><strong>Efeito manada</strong></li></ul>` },
+        { id:'imposto', numero:9, tag:'Impostos', tagClass:'bg-red-500/10 text-red-400 border border-red-500/20', titulo:'Imposto de Renda sobre Investimentos', resumo:'Noções gerais de tributação — confirme sempre a regra vigente.',
           ytLink: { url:'https://www.youtube.com/@oprimorico', creator:'O Primo Rico', desc:'IR sobre investimentos explicado' },
-          conteudo:`<h4>Por que entender a tributação importa</h4><p>O imposto incide sobre o ganho. Regras mudam — sempre confirme a legislação vigente antes de qualquer decisão.</p><h4>Tabela regressiva (renda fixa)</h4><ul><li>Até 180 dias: alíquota mais alta</li><li>181–360 dias: alíquota intermediária</li><li>361–720 dias: alíquota menor</li><li>Acima de 720 dias: menor alíquota</li></ul><p>Quanto mais tempo aplicado, menor tende a ser a alíquota sobre o ganho.</p><h4>Ações</h4><p>Vendas até certo limite mensal costumam ser isentas para PF. Acima: IR sobre ganho de capital via DARF.</p><h4>FIIs</h4><p>Rendimentos mensais costumam ser isentos para PF em certas condições. Ganho de capital na venda é tributado.</p><div class="caixa-alerta"><p>⚠️ Este conteúdo é genérico e educacional. Consulte a Receita Federal ou um contador antes de declarar ou pagar qualquer imposto.</p></div>` },
-        { id:'juroscompostos', numero:10, tag:'Planejamento', tagClass:'bg-teal-500/10 text-teal-400 border border-teal-500/20', titulo:'Juros Compostos e Planejamento de Metas', resumo:'O efeito do tempo e da constância nos aportes.',
+          conteudo:`<h4>Tabela regressiva (renda fixa)</h4><ul><li>Até 180 dias: alíquota mais alta</li><li>181–720 dias: alíquotas intermediárias</li><li>Acima de 720 dias: menor alíquota</li></ul><h4>Ações</h4><p>Vendas até certo limite mensal costumam ser isentas para PF.</p><div class="caixa-alerta"><p>⚠️ Consulte a Receita Federal ou contador antes de declarar.</p></div>` },
+        { id:'juroscompostos', numero:10, tag:'Planejamento', tagClass:'bg-teal-500/10 text-teal-400 border border-teal-500/20', titulo:'Juros Compostos e Planejamento de Metas', resumo:'O efeito do tempo e da constância.',
           ytLink: { url:'https://www.youtube.com/@oprimorico', creator:'O Primo Rico', desc:'Juros compostos e independência financeira' },
-          conteudo:`<h4>O que são juros compostos?</h4><p>Rendimento do período anterior passa a gerar rendimento no período seguinte — "juros sobre juros".</p><div class="caixa-exemplo"><p><strong>Exemplo didático hipotético:</strong> R$ 1.000 a 10% a.a. sem novos aportes: ~R$ 1.100 no ano 1, ~R$ 1.210 no ano 2, ~R$ 1.331 no ano 3.</p></div><h4>Por que a constância importa</h4><p>Aportes regulares ao longo do tempo tendem a superar aportes esporádicos maiores, pelo efeito do tempo de exposição.</p><h4>Como estruturar uma meta</h4><ul><li>Defina o valor-alvo concreto</li><li>Defina o prazo em meses/anos</li><li>Calcule o aporte com base em taxa realista e conservadora</li><li>Revise periodicamente</li></ul><div class="caixa-alerta"><p>⚠️ Projeções são estimativas, não garantias. Rentabilidade passada não garante rentabilidade futura.</p></div>` }
+          conteudo:`<h4>O que são juros compostos?</h4><p>Rendimento do período anterior passa a gerar rendimento no seguinte.</p><div class="caixa-exemplo"><p><strong>Exemplo hipotético:</strong> R$ 1.000 a 10% a.a. → ~R$ 1.331 no ano 3.</p></div><div class="caixa-alerta"><p>⚠️ Projeções são estimativas, não garantias.</p></div>` }
     ];
 
     let modulosAbertos = new Set();
@@ -1330,20 +1059,11 @@
         const container = document.getElementById('container-trilha-estudos');
         if (!container) return;
         const termo = filtro.toLowerCase().trim();
-        const modulosFiltrados = !termo ? modulosEstudo : modulosEstudo.filter(m =>
-            m.titulo.toLowerCase().includes(termo) || m.resumo.toLowerCase().includes(termo) || m.tag.toLowerCase().includes(termo) || m.conteudo.toLowerCase().includes(termo)
-        );
-        if (modulosFiltrados.length === 0) { container.innerHTML = '<p class="text-xs text-slate-500 text-center py-8">Nenhum módulo encontrado.</p>'; return; }
-        container.innerHTML = modulosFiltrados.map(m => {
+        const mf = !termo ? modulosEstudo : modulosEstudo.filter(m => m.titulo.toLowerCase().includes(termo) || m.resumo.toLowerCase().includes(termo) || m.tag.toLowerCase().includes(termo));
+        if (mf.length === 0) { container.innerHTML = '<p class="text-xs text-slate-500 text-center py-8">Nenhum módulo encontrado.</p>'; return; }
+        container.innerHTML = mf.map(m => {
             const aberto = modulosAbertos.has(m.id);
-            const linkYt = m.ytLink ? `<a href="${m.ytLink.url}" target="_blank" rel="noopener noreferrer" class="trilha-holo-link">
-                <span class="trilha-holo-link-icon">▶️</span>
-                <div class="trilha-holo-link-body">
-                    <div class="trilha-holo-link-creator">${m.ytLink.creator}</div>
-                    <div class="trilha-holo-link-desc">${m.ytLink.desc}</div>
-                </div>
-                <span class="trilha-yt-badge">YT</span>
-            </a>` : '';
+            const linkYt = m.ytLink ? `<a href="${m.ytLink.url}" target="_blank" rel="noopener noreferrer" class="trilha-holo-link"><span class="trilha-holo-link-icon">▶️</span><div class="trilha-holo-link-body"><div class="trilha-holo-link-creator">${m.ytLink.creator}</div><div class="trilha-holo-link-desc">${m.ytLink.desc}</div></div><span class="trilha-yt-badge">YT</span></a>` : '';
             return `<div class="modulo-card ${aberto?'aberto':''}" id="modulo-card-${m.id}">
                 <button onclick="alternarModulo('${m.id}')" class="w-full flex items-center justify-between gap-3 p-4 text-left">
                     <div class="flex items-start gap-3 flex-1 min-w-0">
@@ -1357,10 +1077,7 @@
                     <i data-lucide="chevron-right" class="modulo-chevron ${aberto?'aberto':''} w-4 h-4 text-slate-500 shrink-0"></i>
                 </button>
                 <div class="modulo-conteudo ${aberto?'aberto':''}" id="modulo-conteudo-${m.id}">
-                    <div class="prosa-estudo px-4 pb-4 pt-1 border-t border-slate-900/80">
-                        ${m.conteudo}
-                        ${linkYt}
-                    </div>
+                    <div class="prosa-estudo px-4 pb-4 pt-1 border-t border-slate-900/80">${m.conteudo}${linkYt}</div>
                 </div>
             </div>`;
         }).join('');
@@ -1378,6 +1095,7 @@
         if (chevron) chevron.classList.toggle('aberto', aberto);
     }
 
+    /* ════ NAVEGAÇÃO ════ */
     function alternarAbas(aba) {
         abaAtualAtiva = aba;
         localStorage.setItem('matias_aba_ativa', aba);
@@ -1390,9 +1108,13 @@
         });
         document.getElementById('icon-menor-tag').className = "text-[9px] bg-slate-900 text-slate-400 font-black px-1 py-0.5 rounded border border-slate-800 font-logo";
         if (aba==='carteira') { document.getElementById('nav-btn-carteira').className="flex flex-col items-center gap-1 py-1 nav-active"; recalcularExibicaoTotal(); }
-        else if (aba==='perfil') { document.getElementById('nav-btn-perfil').className="flex flex-col items-center gap-1 py-1 nav-active"; atualizarGamificacao(); }
+        else if (aba==='perfil') { document.getElementById('nav-btn-perfil').className="flex flex-col items-center gap-1 py-1 nav-active"; atualizarConfiguracoes(); }
         else if (aba==='menor') { document.getElementById('nav-btn-menor').className="flex flex-col items-center gap-0.5 py-1 text-purple-400"; document.getElementById('icon-menor-tag').className="text-[9px] bg-purple-500/20 text-purple-400 font-black px-1 py-0.5 rounded border border-purple-500/40 font-logo"; recalcularExibicaoTotal(); }
-        else if (aba==='conhecimento') { document.getElementById('nav-btn-conhecimento').className="flex flex-col items-center gap-1 py-1 nav-active"; recalcularExibicaoTotal(); renderizarHologramas(); renderizarTrilhaEstudos(); }
+        else if (aba==='conhecimento') {
+            document.getElementById('nav-btn-conhecimento').className="flex flex-col items-center gap-1 py-1 nav-active";
+            localStorage.setItem('matias_visitou_edu', '1');
+            recalcularExibicaoTotal(); renderizarHologramas(); renderizarTrilhaEstudos();
+        }
         else if (aba==='duvidas') { document.getElementById('nav-btn-duvidas').className="flex flex-col items-center gap-1 py-1 nav-active"; renderizarDuvidas(); document.getElementById('valor-aporte-display').innerText="DÚVIDAS"; }
     }
 
@@ -1402,10 +1124,91 @@
         else { const v=obterValorNumerico(); document.getElementById('valor-aporte-display').innerText=v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
     }
 
+    /* ════ CONFIGURAÇÕES — sem coleta de dados pessoais ════ */
+    function salvarPreferencia(chave, valor) {
+        localStorage.setItem('matias_pref_' + chave, JSON.stringify(valor));
+    }
+
+    function carregarPreferencias() {
+        const avisosCvm = JSON.parse(localStorage.getItem('matias_pref_avisos_cvm') ?? 'true');
+        const mostrarGrafico = JSON.parse(localStorage.getItem('matias_pref_mostrar_grafico') ?? 'true');
+        const modoCompacto = JSON.parse(localStorage.getItem('matias_pref_modo_compacto') ?? 'false');
+        const abaInicial = localStorage.getItem('matias_pref_aba_inicial') || 'carteira';
+        const toggle1 = document.getElementById('toggle-avisos-cvm');
+        const toggle2 = document.getElementById('toggle-grafico');
+        const toggle3 = document.getElementById('toggle-compacto');
+        const selAba = document.getElementById('select-aba-inicial');
+        if (toggle1) toggle1.checked = avisosCvm;
+        if (toggle2) toggle2.checked = mostrarGrafico;
+        if (toggle3) toggle3.checked = modoCompacto;
+        if (selAba) selAba.value = abaInicial;
+    }
+
+    function atualizarConfiguracoes() {
+        carregarPreferencias();
+        // Progresso
+        let progresso = 20;
+        if (perfilInvestidor) progresso += 30;
+        if (obterValorNumerico() > 0) progresso += 25;
+        if (localStorage.getItem('matias_meta_valor')) progresso += 15;
+        if (localStorage.getItem('matias_visitou_edu')) progresso += 10;
+        document.getElementById('config-barra-progresso').style.width = progresso + '%';
+        document.getElementById('config-pct-progresso').innerText = progresso + '% explorado';
+        let nivel = 'ESTUDANTE';
+        if (progresso >= 50) nivel = 'PRACTITIONER';
+        if (progresso >= 90) nivel = 'ESTRATEGISTA';
+        document.getElementById('config-nivel-tag').innerText = nivel;
+        // Checklist
+        const chk = (ok) => ok ? '<span class="text-emerald-400 font-bold">✓ Sim</span>' : '<span class="text-slate-600">— Não</span>';
+        document.getElementById('status-quiz-config').innerHTML = chk(!!perfilInvestidor);
+        document.getElementById('status-valor-config').innerHTML = chk(obterValorNumerico() > 0);
+        document.getElementById('status-meta-config').innerHTML = chk(!!localStorage.getItem('matias_meta_valor'));
+        document.getElementById('status-edu-config').innerHTML = chk(!!localStorage.getItem('matias_visitou_edu'));
+        // Meta
+        const metaTipo = localStorage.getItem('matias_meta_tipo');
+        const metaValor = parseFloat(localStorage.getItem('matias_meta_valor')) || 0;
+        const aporteAtual = obterValorNumerico();
+        const metaContainer = document.getElementById('meta-visualizer');
+        if (metaValor > 0) {
+            metaContainer.classList.remove('hidden');
+            document.getElementById('lbl-meta-ativa').innerText = metaTipo || 'Meta Definida';
+            document.getElementById('lbl-meta-alvo').innerText = 'Alvo: ' + metaValor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+            document.getElementById('lbl-meta-atual').innerText = 'Simulado: ' + aporteAtual.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+            let pctMeta = Math.min((aporteAtual/metaValor)*100, 100);
+            document.getElementById('lbl-meta-porcentagem').innerText = pctMeta.toFixed(1) + '%';
+            document.getElementById('barra-meta-ativa').style.width = pctMeta + '%';
+            document.getElementById('meta-tipo').value = metaTipo || 'Construção Orçamentária Inicial';
+            document.getElementById('meta-valor').value = metaValor;
+        } else { metaContainer.classList.add('hidden'); }
+        // Debug de localStorage (sem mostrar dados sensíveis)
+        const chavesSalvas = Object.keys(localStorage).filter(k => k.startsWith('matias_'));
+        const debugEl = document.getElementById('ls-debug');
+        if (debugEl) {
+            if (chavesSalvas.length === 0) {
+                debugEl.innerText = 'Nenhum dado salvo';
+            } else {
+                debugEl.innerHTML = chavesSalvas.map(k => {
+                    const v = localStorage.getItem(k);
+                    const exibir = v && v.length > 30 ? v.substring(0,28) + '…' : v;
+                    return `<div class="flex justify-between gap-2"><span class="text-slate-500">${k.replace('matias_','')}</span><span class="text-cyan-700">${exibir}</span></div>`;
+                }).join('');
+            }
+        }
+    }
+
+    function salvarMeta() {
+        const tipo = document.getElementById('meta-tipo').value;
+        const valor = parseFloat(document.getElementById('meta-valor').value) || 0;
+        if (valor <= 0) { alert('Insira um valor hipotético válido.'); return; }
+        localStorage.setItem('matias_meta_tipo', tipo);
+        localStorage.setItem('matias_meta_valor', valor);
+        atualizarConfiguracoes();
+    }
+
     /* ════ DADOS DA CARTEIRA ════ */
     const perguntasQuiz = [
-        { texto: "Qual perfil de tolerância pessoal à volatilidade deseja simular neste estudo?", opcoes: [ { texto: "Preservação — foco em categorias de Renda Fixa", pontos: 1 }, { texto: "Crescimento Equilibrado — mistura de categorias com Multimercados", pontos: 3 }, { texto: "Exposição Completa — ver todas as categorias do estudo, incluindo Ações e Globais", pontos: 5 } ] },
-        { texto: "Qual horizonte de tempo hipotético deseja mapear matematicamente?", opcoes: [ { texto: "Curto prazo — categorias de Liquidez imediata", pontos: 1 }, { texto: "Médio prazo — categorias táticas combinadas", pontos: 3 }, { texto: "Longo prazo — exposição completa do estudo estrutural", pontos: 5 } ] }
+        { texto: "Qual perfil de tolerância pessoal à volatilidade deseja simular?", opcoes: [ { texto: "Preservação — foco em Renda Fixa", pontos: 1 }, { texto: "Crescimento Equilibrado — mistura com Multimercados", pontos: 3 }, { texto: "Exposição Completa — todas as categorias, incluindo Ações e Globais", pontos: 5 } ] },
+        { texto: "Qual horizonte de tempo hipotético deseja mapear?", opcoes: [ { texto: "Curto prazo — Liquidez imediata", pontos: 1 }, { texto: "Médio prazo — categorias táticas", pontos: 3 }, { texto: "Longo prazo — exposição estrutural completa", pontos: 5 } ] }
     ];
 
     let faseQuiz = -1;
@@ -1458,66 +1261,34 @@
         const valorTotal = obterValorKids();
         localStorage.setItem('matias_kids_valor_cru', document.getElementById('input-valor-kids').value);
         recalcularExibicaoTotal();
-        if (valorTotal<=0||!objetivoKidsSelecionado) { document.getElementById('lista-ativos-kids').innerHTML='<p class="text-xs text-slate-500 text-center py-8">Defina o modelo e insira um valor hipotético para simular a distribuição matemática.</p>'; return; }
+        if (valorTotal<=0||!objetivoKidsSelecionado) { document.getElementById('lista-ativos-kids').innerHTML='<p class="text-xs text-slate-500 text-center py-8">Defina o modelo e insira um valor hipotético.</p>'; return; }
         const distribuicaoAlvo = pesosKidsEstrategia[objetivoKidsSelecionado];
         let ativosSelecionados = selecionarAtivosElegiveis(carteiraCompleta.filter(a=>distribuicaoAlvo[a.categoria]>0), valorTotal, a=>distribuicaoAlvo[a.categoria]);
-        if (ativosSelecionados.length===0) { document.getElementById('lista-ativos-kids').innerHTML=`<div class="bg-slate-950 rounded-xl border border-amber-500/20 p-4 text-center space-y-2"><p class="text-xs text-amber-400 font-bold">⚠️ Valor abaixo do mínimo ilustrativo</p><p class="text-[11px] text-slate-400">Com R$ ${valorTotal.toLocaleString('pt-BR',{minimumFractionDigits:2})}, nenhuma categoria desta estratégia aparece neste exemplo. Tente a partir de <strong class="text-white">R$ 8,00</strong>.</p></div>`; return; }
+        if (ativosSelecionados.length===0) { document.getElementById('lista-ativos-kids').innerHTML=`<div class="bg-slate-950 rounded-xl border border-amber-500/20 p-4 text-center"><p class="text-xs text-amber-400 font-bold">⚠️ Valor abaixo do mínimo ilustrativo</p><p class="text-[11px] text-slate-400 mt-1">Tente a partir de <strong>R$ 8,00</strong>.</p></div>`; return; }
         let somaPesos = ativosSelecionados.reduce((s,a)=>s+distribuicaoAlvo[a.categoria],0);
         let html='', acumulado=0;
-        ativosSelecionados.forEach((ativo,idx)=>{ let pct=distribuicaoAlvo[ativo.categoria]/somaPesos; let valorAlocado=idx===ativosSelecionados.length-1?valorTotal-acumulado:valorTotal*pct; acumulado+=valorAlocado; html+=`<div class="bg-slate-950 rounded-xl border border-slate-900 p-4 hover:border-purple-900/40 transition"><div class="flex justify-between items-start mb-2"><div class="flex-1 pr-2"><h3 class="text-xs font-bold text-white uppercase tracking-wide mb-1">${ativo.nome}</h3><p class="text-[10px] text-slate-400 leading-snug">${ativo.descricao}</p><span class="inline-block text-[9px] uppercase font-black tracking-wider px-2 py-0.5 mt-1 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">${ativo.categoria}</span></div><div class="text-right shrink-0"><div class="text-sm font-black text-purple-400 font-logo">${(pct*100).toFixed(0)}%</div><div class="text-xs text-slate-300 font-bold mt-0.5">${valorAlocado.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div><div class="text-[9px] text-slate-500 mt-0.5">Mín. ilustrativo: R$ ${ativo.aplicacaoMinima}</div></div></div><div class="text-[10px] text-amber-400/80 mt-1.5 border-t border-slate-900 pt-2 bg-amber-500/5 rounded p-1.5">⚖️ Exemplo de categoria educacional. Menores só podem investir via responsável legal conforme o Código Civil e normas CVM.</div></div>`; });
+        ativosSelecionados.forEach((ativo,idx)=>{ let pct=distribuicaoAlvo[ativo.categoria]/somaPesos; let valorAlocado=idx===ativosSelecionados.length-1?valorTotal-acumulado:valorTotal*pct; acumulado+=valorAlocado; html+=`<div class="bg-slate-950 rounded-xl border border-slate-900 p-4"><div class="flex justify-between items-start mb-2"><div class="flex-1 pr-2"><h3 class="text-xs font-bold text-white uppercase tracking-wide mb-1">${ativo.nome}</h3><p class="text-[10px] text-slate-400 leading-snug">${ativo.descricao}</p><span class="inline-block text-[9px] uppercase font-black tracking-wider px-2 py-0.5 mt-1 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">${ativo.categoria}</span></div><div class="text-right shrink-0"><div class="text-sm font-black text-purple-400 font-logo">${(pct*100).toFixed(0)}%</div><div class="text-xs text-slate-300 font-bold mt-0.5">${valorAlocado.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div></div></div></div>`; });
         document.getElementById('lista-ativos-kids').innerHTML=html;
     }
-
-    function salvarDadosPerfil() {
-        const nome=document.getElementById('user-nome').value; const phone=document.getElementById('user-phone').value; const email=document.getElementById('user-email').value;
-        if (nome) document.getElementById('perfil-nome-titulo').innerText=nome;
-        localStorage.setItem('matias_nome',nome); localStorage.setItem('matias_phone',phone); localStorage.setItem('matias_email',email);
-        atualizarGamificacao(); alert('Configurações salvas localmente com sucesso!');
-    }
-
-    function salvarMeta() {
-        const tipo=document.getElementById('meta-tipo').value; const valor=parseFloat(document.getElementById('meta-valor').value)||0;
-        if (valor<=0){alert('Insira um valor hipotético válido.');return;}
-        localStorage.setItem('matias_meta_tipo',tipo); localStorage.setItem('matias_meta_valor',valor); atualizarGamificacao();
-    }
-
-    function atualizarGamificacao() {
-        let progresso=20;
-        const nome=localStorage.getItem('matias_nome')||""; const phone=localStorage.getItem('matias_phone')||""; const email=localStorage.getItem('matias_email')||"";
-        const metaTipo=localStorage.getItem('matias_meta_tipo'); const metaValor=parseFloat(localStorage.getItem('matias_meta_valor'))||0; const aporteAtual=obterValorNumerico();
-        if (nome) document.getElementById('user-nome').value=nome; if (phone) document.getElementById('user-phone').value=phone; if (email) document.getElementById('user-email').value=email;
-        if (nome||phone||email) progresso+=20; if (perfilInvestidor) progresso+=30; if (aporteAtual>0) progresso+=30;
-        document.getElementById('barra-progresso-perfil').style.width=`${progresso}%`; document.getElementById('txt-progresso-experiencia').innerText=`${progresso}% Concluído`;
-        let tagNivel="ESTUDANTE"; if (progresso>=50) tagNivel="PRACTITIONER"; if (progresso>=90) tagNivel="ESTRATEGISTA";
-        document.getElementById('perfil-nivel-tag').innerText=tagNivel;
-        if (nome) document.getElementById('perfil-nome-titulo').innerText=nome;
-        const metaContainer=document.getElementById('meta-visualizer');
-        if (metaValor>0) { metaContainer.classList.remove('hidden'); document.getElementById('lbl-meta-ativa').innerText=metaTipo; document.getElementById('lbl-meta-alvo').innerText=`Alvo: ${metaValor.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}`; document.getElementById('lbl-meta-atual').innerText=`Valor Simulado: ${aporteAtual.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}`; let pctMeta=Math.min((aporteAtual/metaValor)*100,100); document.getElementById('lbl-meta-porcentagem').innerText=`${pctMeta.toFixed(1)}%`; document.getElementById('barra-meta-ativa').style.width=`${pctMeta}%`; document.getElementById('meta-tipo').value=metaTipo; document.getElementById('meta-valor').value=metaValor; } else { metaContainer.classList.add('hidden'); }
-    }
-
-    document.getElementById('user-phone').addEventListener('input', function(e){
-        let x=e.target.value.replace(/\D/g,'').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
-        e.target.value=!x[2]?x[1]:'('+x[1]+') '+x[2]+(x[3]?'-'+x[3]:'');
-    });
 
     function renderizarQuiz() {
         if (faseQuiz===-1) {
             document.getElementById('progresso-quiz').innerText="Verificação Inicial";
-            document.getElementById('texto-pergunta').innerText="Antes de calibrar a visualização educacional, confirme sua faixa etária:";
-            document.getElementById('opcoes-quiz').innerHTML=`<button onclick="verificarMaioridade(true)" class="w-full text-left bg-slate-900 border border-slate-800 hover:border-cyan-500 hover:bg-cyan-500/5 p-2.5 rounded-lg text-xs font-bold text-slate-200 transition-all">👍 Sim, sou maior de idade (18+)</button><button onclick="verificarMaioridade(false)" class="w-full text-left bg-slate-900 border border-slate-800 hover:border-purple-500 hover:bg-purple-500/5 p-2.5 rounded-lg text-xs font-bold text-slate-200 transition-all">👎 Não, sou menor de idade (−18)</button>`;
+            document.getElementById('texto-pergunta').innerText="Confirme sua faixa etária para calibrar a visualização:";
+            document.getElementById('opcoes-quiz').innerHTML=`<button onclick="verificarMaioridade(true)" class="w-full text-left bg-slate-900 border border-slate-800 hover:border-cyan-500 p-2.5 rounded-lg text-xs font-bold text-slate-200 transition">👍 Sim, sou maior de idade (18+)</button><button onclick="verificarMaioridade(false)" class="w-full text-left bg-slate-900 border border-slate-800 hover:border-purple-500 p-2.5 rounded-lg text-xs font-bold text-slate-200 transition">👎 Não, sou menor de idade (−18)</button>`;
             return;
         }
         if (faseQuiz<perguntasQuiz.length) {
             const p=perguntasQuiz[faseQuiz];
             document.getElementById('progresso-quiz').innerText=`Calibragem ${faseQuiz+1} de ${perguntasQuiz.length}`;
             document.getElementById('texto-pergunta').innerText=p.texto;
-            document.getElementById('opcoes-quiz').innerHTML=p.opcoes.map(op=>`<button onclick="computarResposta(${op.pontos})" class="w-full text-left bg-slate-900 border border-slate-800 hover:border-cyan-500 hover:bg-cyan-500/5 p-2.5 rounded-lg text-xs font-medium text-slate-300 transition-all">${op.texto}</button>`).join('');
+            document.getElementById('opcoes-quiz').innerHTML=p.opcoes.map(op=>`<button onclick="computarResposta(${op.pontos})" class="w-full text-left bg-slate-900 border border-slate-800 hover:border-cyan-500 p-2.5 rounded-lg text-xs font-medium text-slate-300 transition">${op.texto}</button>`).join('');
         } else { definirPerfilFinal(); }
     }
 
     function verificarMaioridade(ehMaior) {
         if (ehMaior) { faseQuiz=0; localStorage.setItem('matias_fase_quiz',faseQuiz); renderizarQuiz(); }
-        else { document.getElementById('quiz-container').innerHTML=`<div class="bg-gradient-to-br from-purple-950/40 via-slate-950 to-black p-4 rounded-xl border-2 border-purple-500/50 space-y-3"><div class="flex items-center gap-1.5 text-purple-400 font-bold text-xs uppercase font-logo"><i data-lucide="alert-triangle" class="w-4 h-4"></i> Área Educacional de Menores</div><p class="text-xs text-slate-300 leading-relaxed">Acesse os modelos históricos de estudo do Matias quando tinha menos de 18 anos.</p><div class="bg-amber-500/10 border border-amber-500/20 p-2 rounded text-[10px] text-amber-300">⚖️ Menores de idade não podem investir de forma autônoma — qualquer alocação real requer representação dos responsáveis legais (Código Civil, arts. 3º e 4º).</div><button onclick="alternarAbas('menor')" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-logo font-black text-[11px] py-2 rounded-lg tracking-wider uppercase transition">Ver Painel Histórico Educacional ➔</button></div>`; lucide.createIcons(); }
+        else { document.getElementById('quiz-container').innerHTML=`<div class="bg-gradient-to-br from-purple-950/40 to-black p-4 rounded-xl border-2 border-purple-500/50 space-y-3"><div class="flex items-center gap-1.5 text-purple-400 font-bold text-xs uppercase"><i data-lucide="alert-triangle" class="w-4 h-4"></i> Área Educacional de Menores</div><p class="text-xs text-slate-300">Acesse os modelos históricos de estudo.</p><div class="bg-amber-500/10 border border-amber-500/20 p-2 rounded text-[10px] text-amber-300">⚖️ Menores não podem investir de forma autônoma — necessitam de representação dos responsáveis legais.</div><button onclick="alternarAbas('menor')" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-logo font-black text-[11px] py-2 rounded-lg tracking-wider uppercase">Ver Painel Histórico ➔</button></div>`; lucide.createIcons(); }
     }
 
     function computarResposta(pontos) { pontuacaoTotalQuiz+=pontos; faseQuiz++; localStorage.setItem('matias_fase_quiz',faseQuiz); localStorage.setItem('matias_pontos_quiz',pontuacaoTotalQuiz); renderizarQuiz(); }
@@ -1528,7 +1299,7 @@
         else if (pontuacaoTotalQuiz<=7) { perfilInvestidor='moderado'; badge.innerText='SIMULAÇÃO EQUILIBRADA'; badge.className="text-xs px-2 py-0.5 rounded font-bold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30"; }
         else { perfilInvestidor='arrojado'; badge.innerText='SIMULAÇÃO DINÂMICA COMPLETA'; badge.className="text-xs px-2 py-0.5 rounded font-bold bg-purple-500/20 text-purple-400 border border-purple-500/30"; }
         localStorage.setItem('matias_perfil_definido',perfilInvestidor);
-        document.getElementById('quiz-container').innerHTML=`<div class="text-xs text-slate-400 bg-slate-900/60 p-2 rounded border border-slate-800 text-center">Modelo calibrado para: <strong class="text-white uppercase">${perfilInvestidor}</strong>. Insira um valor hipotético para ver a divisão proporcional de categorias.</div><div class="text-[10px] text-amber-300/90 bg-amber-500/10 p-2 rounded border border-amber-500/20 text-center leading-relaxed">⚖️ <strong>Aviso CVM:</strong> Ferramenta exclusivamente educacional com categorias ilustrativas genéricas. NÃO é análise de valores mobiliários (Res. CVM 20/2021), NÃO é consultoria de investimentos (Res. CVM 19/2021) e NÃO constitui recomendação de compra ou venda de qualquer ativo.</div>`;
+        document.getElementById('quiz-container').innerHTML=`<div class="text-xs text-slate-400 bg-slate-900/60 p-2 rounded border border-slate-800 text-center">Modelo calibrado: <strong class="text-white uppercase">${perfilInvestidor}</strong>. Insira um valor hipotético para ver a divisão proporcional.</div><div class="text-[10px] text-amber-300/90 bg-amber-500/10 p-2 rounded border border-amber-500/20 text-center">⚖️ Ferramenta educacional com categorias genéricas. NÃO é análise ou recomendação de valores mobiliários.</div>`;
         containerAporte.classList.remove('opacity-40','pointer-events-none');
         document.getElementById('input-valor-total').removeAttribute('disabled');
         document.getElementById('input-valor-total').placeholder="0,00";
@@ -1544,7 +1315,7 @@
 
     function filtrarCategoria(cat, btn) {
         filtroAtual=cat;
-        document.querySelectorAll('.filtro-btn').forEach(b=>{b.className="filtro-btn px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap";});
+        document.querySelectorAll('.filtro-btn').forEach(b=>{ b.className="filtro-btn px-4 py-1.5 rounded-lg text-xs font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap"; });
         btn.className="filtro-btn active px-4 py-1.5 rounded-lg text-xs font-bold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 whitespace-nowrap";
         gerarCarteira();
     }
@@ -1566,19 +1337,19 @@
     function gerarCarteira() {
         const valorTotal=obterValorNumerico(); localStorage.setItem('matias_valor_cru',document.getElementById('input-valor-total').value); recalcularExibicaoTotal();
         const avisoLiq=document.getElementById('aviso-liquidez');
-        if (valorTotal<=0) { avisoLiq.classList.add('hidden'); document.getElementById('secao-grafico').classList.add('hidden'); document.getElementById('lista-ativos').innerHTML='<p class="text-xs text-slate-500 text-center py-8">Insira um valor hipotético para ver as proporções matemáticas ilustrativas.</p>'; return; }
+        if (valorTotal<=0) { avisoLiq.classList.add('hidden'); document.getElementById('secao-grafico').classList.add('hidden'); document.getElementById('lista-ativos').innerHTML='<p class="text-xs text-slate-500 text-center py-8">Insira um valor hipotético para ver as proporções.</p>'; return; }
         const valorReserva=valorTotal*PERCENTUAL_RESERVA_EMERGENCIA; const valorRestante=valorTotal-valorReserva;
         const nomeLiquidez=liquidezSelecionada==='porquinho'?'Conta Remunerada A (Exemplo)':'Conta Remunerada B (Exemplo)';
         avisoLiq.classList.remove('hidden');
-        avisoLiq.innerHTML=`🟢 <strong>Reserva de Liquidez (30% — Referência Educacional):</strong> Dos ${valorTotal.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})} hipotéticos, seria separado primeiro <strong>${valorReserva.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</strong> em <strong>${nomeLiquidez}</strong>. Os 70% restantes (${valorRestante.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}) são distribuídos pelas categorias abaixo, apenas a título de exemplo ilustrativo.`;
+        avisoLiq.innerHTML=`🟢 <strong>Reserva de Liquidez (30%):</strong> ${valorReserva.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})} em <strong>${nomeLiquidez}</strong>. Os 70% restantes (${valorRestante.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}) são distribuídos pelas categorias abaixo.`;
         document.getElementById('secao-grafico').classList.remove('hidden'); inicializarGrafico('1A');
-        if (filtroAtual==='Liquidez') { document.getElementById('lista-ativos').innerHTML=`<div class="bg-slate-950 rounded-xl border border-slate-900 p-4"><div class="flex justify-between items-start"><div><h3 class="text-xs font-bold text-white uppercase">${nomeLiquidez}</h3><p class="text-xs text-slate-400 mt-2">Categoria: reserva de liquidez imediata com referência de remuneração atrelada ao CDI. Sempre 30% do valor hipotético, separada antes de qualquer outra categoria — apenas exemplo educacional.</p></div><div class="text-right shrink-0 pl-2"><div class="text-sm font-black text-amber-400 font-logo">30%</div><div class="text-xs text-slate-300 font-bold mt-0.5">${valorReserva.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div></div></div></div>`; return; }
+        if (filtroAtual==='Liquidez') { document.getElementById('lista-ativos').innerHTML=`<div class="bg-slate-950 rounded-xl border border-slate-900 p-4"><div class="flex justify-between items-start"><div><h3 class="text-xs font-bold text-white uppercase">${nomeLiquidez}</h3><p class="text-xs text-slate-400 mt-2">Categoria educacional de reserva de liquidez imediata — 30% do valor hipotético.</p></div><div class="text-right shrink-0 pl-2"><div class="text-sm font-black text-amber-400 font-logo">30%</div><div class="text-xs text-slate-300 font-bold mt-0.5">${valorReserva.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div></div></div></div>`; return; }
         let candidatos=carteiraCompleta.filter(a=>{ const temPeso=a.pesosPerfil[perfilInvestidor]>0; const categoriaOk=filtroAtual==='todos'||a.categoria===filtroAtual; return temPeso&&categoriaOk; });
         let ativosFiltrados=selecionarAtivosElegiveis(candidatos,valorRestante,a=>a.pesosPerfil[perfilInvestidor]);
-        if (ativosFiltrados.length===0) { const minimoDisponivel=Math.min(...carteiraCompleta.filter(a=>a.pesosPerfil[perfilInvestidor]>0).map(a=>a.aplicacaoMinima)); document.getElementById('lista-ativos').innerHTML=`<div class="bg-slate-950 rounded-xl border border-amber-500/20 p-4 text-center space-y-2"><p class="text-xs text-amber-400 font-bold">⚠️ Valor abaixo do mínimo ilustrativo</p><p class="text-[11px] text-slate-400 leading-relaxed">Após separar 30% (${valorReserva.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}), restam <strong class="text-white">${valorRestante.toLocaleString('pt-BR',{minimumFractionDigits:2})}</strong> — insuficiente para o modelo <strong class="text-white uppercase">${perfilInvestidor}</strong> neste filtro.<br><br>O menor valor mínimo ilustrativo é <strong class="text-cyan-400">R$ ${minimoDisponivel}</strong>.</p></div>`; atualizarBarraComposicao(); return; }
+        if (ativosFiltrados.length===0) { const minimoDisponivel=Math.min(...carteiraCompleta.filter(a=>a.pesosPerfil[perfilInvestidor]>0).map(a=>a.aplicacaoMinima)); document.getElementById('lista-ativos').innerHTML=`<div class="bg-slate-950 rounded-xl border border-amber-500/20 p-4 text-center space-y-2"><p class="text-xs text-amber-400 font-bold">⚠️ Valor abaixo do mínimo ilustrativo</p><p class="text-[11px] text-slate-400">O menor mínimo é <strong class="text-cyan-400">R$ ${minimoDisponivel}</strong>.</p></div>`; atualizarBarraComposicao(); return; }
         let somaPesos=ativosFiltrados.reduce((s,a)=>s+a.pesosPerfil[perfilInvestidor],0)||1; let htmlAtivos='', acumulado=0;
-        ativosFiltrados.forEach((ativo,idx)=>{ let pct=ativo.pesosPerfil[perfilInvestidor]/somaPesos; let valorAlocado=idx===ativosFiltrados.length-1?valorRestante-acumulado:valorRestante*pct; acumulado+=valorAlocado; htmlAtivos+=`<div class="bg-slate-950 rounded-xl border border-slate-900 p-4 hover:border-cyan-900/30 transition"><div class="flex justify-between items-start"><div class="flex-1 pr-2"><h3 class="text-xs font-bold text-white uppercase tracking-wide mb-0.5">${ativo.nome}</h3><span class="inline-block text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 mt-1 rounded bg-slate-900 text-slate-400 border border-slate-800">${ativo.categoria}</span></div><div class="text-right shrink-0"><div class="text-sm font-black text-cyan-400 font-logo">${(pct*100).toFixed(0)}%</div><div class="text-xs text-slate-300 font-bold mt-0.5">${valorAlocado.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div><div class="text-[9px] text-slate-500 mt-0.5">Mín. ilustrativo: R$ ${ativo.aplicacaoMinima}</div></div></div><p class="text-[11px] text-slate-400 leading-normal mt-2 pt-2 border-t border-slate-900/60">${ativo.descricao}</p><div class="text-[10px] text-amber-400/70 mt-1.5 bg-amber-500/5 rounded p-1.5">⚖️ Categoria ilustrativa educacional — não é análise nem recomendação de compra de ativo específico (Res. CVM 20/2021).</div></div>`; });
-        const cardReserva=`<div class="bg-slate-950 rounded-xl border border-amber-500/20 p-4"><div class="flex justify-between items-start"><div class="flex-1 pr-2"><h3 class="text-xs font-bold text-white uppercase tracking-wide mb-0.5">${nomeLiquidez}</h3><p class="text-[10px] text-slate-400 leading-snug">Categoria educacional: reserva de liquidez imediata — 30% do valor hipotético.</p><span class="inline-block text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 mt-1 rounded bg-slate-900 text-slate-400 border border-slate-800">Liquidez</span></div><div class="text-right shrink-0"><div class="text-sm font-black text-amber-400 font-logo">30%</div><div class="text-xs text-slate-300 font-bold mt-0.5">${valorReserva.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div></div></div></div>`;
+        ativosFiltrados.forEach((ativo,idx)=>{ let pct=ativo.pesosPerfil[perfilInvestidor]/somaPesos; let valorAlocado=idx===ativosFiltrados.length-1?valorRestante-acumulado:valorRestante*pct; acumulado+=valorAlocado; htmlAtivos+=`<div class="bg-slate-950 rounded-xl border border-slate-900 p-4 hover:border-cyan-900/30 transition"><div class="flex justify-between items-start"><div class="flex-1 pr-2"><h3 class="text-xs font-bold text-white uppercase tracking-wide mb-0.5">${ativo.nome}</h3><span class="inline-block text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 mt-1 rounded bg-slate-900 text-slate-400 border border-slate-800">${ativo.categoria}</span></div><div class="text-right shrink-0"><div class="text-sm font-black text-cyan-400 font-logo">${(pct*100).toFixed(0)}%</div><div class="text-xs text-slate-300 font-bold mt-0.5">${valorAlocado.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div><div class="text-[9px] text-slate-500 mt-0.5">Mín. ilustrativo: R$ ${ativo.aplicacaoMinima}</div></div></div><p class="text-[11px] text-slate-400 leading-normal mt-2 pt-2 border-t border-slate-900/60">${ativo.descricao}</p><div class="text-[10px] text-amber-400/70 mt-1.5 bg-amber-500/5 rounded p-1.5">⚖️ Categoria ilustrativa — não é recomendação de compra (Res. CVM 20/2021).</div></div>`; });
+        const cardReserva=`<div class="bg-slate-950 rounded-xl border border-amber-500/20 p-4"><div class="flex justify-between items-start"><div class="flex-1 pr-2"><h3 class="text-xs font-bold text-white uppercase tracking-wide mb-0.5">${nomeLiquidez}</h3><p class="text-[10px] text-slate-400">30% do valor hipotético.</p><span class="inline-block text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 mt-1 rounded bg-slate-900 text-slate-400 border border-slate-800">Liquidez</span></div><div class="text-right shrink-0"><div class="text-sm font-black text-amber-400 font-logo">30%</div><div class="text-xs text-slate-300 font-bold mt-0.5">${valorReserva.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div></div></div></div>`;
         document.getElementById('lista-ativos').innerHTML=(filtroAtual==='todos'?cardReserva:'')+htmlAtivos;
         atualizarBarraComposicao();
     }
@@ -1591,7 +1362,7 @@
     }
 
     function atualizarPeriodoGrafico(periodo, btn) {
-        btn.parentNode.querySelectorAll('button').forEach(b=>{b.className="px-2 py-1 text-[10px] font-bold rounded text-slate-400 hover:text-white transition";});
+        btn.parentNode.querySelectorAll('button').forEach(b=>{ b.className="px-2 py-1 text-[10px] font-bold rounded text-slate-400 hover:text-white transition"; });
         btn.className="px-2 py-1 text-[10px] font-bold rounded bg-cyan-500 text-black transition"; inicializarGrafico(periodo);
     }
 
@@ -1623,23 +1394,31 @@
         const valorAtual=dadosMultiplicados[dadosMultiplicados.length-1]||0; const variacaoPct=serieBruta[serieBruta.length-1];
         document.getElementById('stat-valor-atual').innerText=valorAtual.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
         const elVariacao=document.getElementById('stat-variacao-periodo'); elVariacao.innerText=`▲ ${variacaoPct.toFixed(1)}%`; elVariacao.className='chart-stat-variacao text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 mb-1';
-        chartInstancia=new Chart(ctx,{ type:'line', data:{ labels:['Mês 1','Mês 2','Mês 3','Mês 4','Mês 5','Mês 6'], datasets:[{ label:'Projeção Hipotética — Não Garante Rentabilidade', data:dadosMultiplicados, borderWidth:2.5,fill:true,tension:0.4, borderColor:(context)=>{const{ctx:c,chartArea}=context.chart;if(!chartArea)return'#06b6d4';const g=c.createLinearGradient(chartArea.left,0,chartArea.right,0);g.addColorStop(0,'#0891b2');g.addColorStop(0.5,'#06b6d4');g.addColorStop(1,'#7dd3fc');return g;}, backgroundColor:(context)=>{const{ctx:c,chartArea}=context.chart;if(!chartArea)return'rgba(6,182,212,0.05)';const g=c.createLinearGradient(0,chartArea.top,0,chartArea.bottom);g.addColorStop(0,'rgba(6,182,212,0.45)');g.addColorStop(0.55,'rgba(6,182,212,0.10)');g.addColorStop(1,'rgba(6,182,212,0)');return g;}, pointRadius:0,pointHoverRadius:6,pointHitRadius:24,pointHoverBackgroundColor:'#22d3ee',pointHoverBorderColor:'#f0f9ff',pointHoverBorderWidth:2 }] }, options:{ responsive:true,maintainAspectRatio:false, interaction:{mode:'index',intersect:false}, animation:{duration:1100,easing:'easeOutQuart'}, plugins:{legend:{display:false},tooltip:{enabled:false,external:tooltipExternoGrafico}}, scales:{ y:{display:true,grid:{color:'rgba(30,41,59,0.6)'},border:{display:false},ticks:{color:'#475569',font:{size:9,family:"'Orbitron', sans-serif"},callback:(v)=>formatarCompacto(v)}}, x:{grid:{display:false},border:{display:false},ticks:{color:'#475569',font:{size:9}}} } }, plugins:[glowLinePlugin,crosshairPlugin] });
+        chartInstancia=new Chart(ctx,{ type:'line', data:{ labels:['Mês 1','Mês 2','Mês 3','Mês 4','Mês 5','Mês 6'], datasets:[{ label:'Projeção Hipotética', data:dadosMultiplicados, borderWidth:2.5,fill:true,tension:0.4, borderColor:(context)=>{const{ctx:c,chartArea}=context.chart;if(!chartArea)return'#06b6d4';const g=c.createLinearGradient(chartArea.left,0,chartArea.right,0);g.addColorStop(0,'#0891b2');g.addColorStop(0.5,'#06b6d4');g.addColorStop(1,'#7dd3fc');return g;}, backgroundColor:(context)=>{const{ctx:c,chartArea}=context.chart;if(!chartArea)return'rgba(6,182,212,0.05)';const g=c.createLinearGradient(0,chartArea.top,0,chartArea.bottom);g.addColorStop(0,'rgba(6,182,212,0.45)');g.addColorStop(0.55,'rgba(6,182,212,0.10)');g.addColorStop(1,'rgba(6,182,212,0)');return g;}, pointRadius:0,pointHoverRadius:6,pointHitRadius:24,pointHoverBackgroundColor:'#22d3ee',pointHoverBorderColor:'#f0f9ff',pointHoverBorderWidth:2 }] }, options:{ responsive:true,maintainAspectRatio:false, interaction:{mode:'index',intersect:false}, animation:{duration:1100,easing:'easeOutQuart'}, plugins:{legend:{display:false},tooltip:{enabled:false,external:tooltipExternoGrafico}}, scales:{ y:{display:true,grid:{color:'rgba(30,41,59,0.6)'},border:{display:false},ticks:{color:'#475569',font:{size:9,family:"'Orbitron', sans-serif"},callback:(v)=>formatarCompacto(v)}}, x:{grid:{display:false},border:{display:false},ticks:{color:'#475569',font:{size:9}}} } }, plugins:[glowLinePlugin,crosshairPlugin] });
     }
 
     async function carregarCryptoFeeds() {
         try {
+            // Apenas API pública, sem autenticação, sem chave exposta
             const res=await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=brl&include_24hr_change=true');
             const dados=await res.json(); let html='';
             topCryptos.forEach(c=>{ const info=dados[c.id]; if (info) { const preco=info.brl.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); const variacao=info.brl_24h_change; html+=`<div class="bg-slate-950 p-3 rounded-xl border border-slate-900"><div class="flex justify-between items-center mb-1"><span class="text-xs font-bold text-white">${c.name}</span><span class="text-[10px] px-1.5 rounded font-logo text-black" style="background:${c.color}">${c.symbol}</span></div><div class="text-xs font-black font-logo text-slate-200">${preco}</div><div class="text-[10px] font-bold ${variacao>=0?'text-emerald-400':'text-red-400'} mt-0.5">${variacao>=0?'▲':'▼'} ${variacao.toFixed(2)}% (24h)</div><div class="text-[9px] text-slate-600 mt-1">Cotação pública. Não é recomendação.</div></div>`; } });
             document.getElementById('crypto-grid').innerHTML=html;
-        } catch { document.getElementById('crypto-grid').innerHTML='<p class="text-[10px] text-slate-600 col-span-full text-center">Falha ao sincronizar dados externos públicos.</p>'; }
+        } catch { document.getElementById('crypto-grid').innerHTML='<p class="text-[10px] text-slate-600 col-span-full text-center">Falha ao carregar cotações públicas.</p>'; }
     }
 
-    function resetarPerfil() { localStorage.clear(); window.location.reload(); }
+    function resetarPerfil() {
+        if (confirm('Apagar todos os dados locais? Esta ação não pode ser desfeita.')) {
+            localStorage.clear();
+            window.location.reload();
+        }
+    }
 
     window.addEventListener('DOMContentLoaded', ()=>{
         lucide.createIcons();
         carregarCryptoFeeds();
+        carregarPreferencias();
+
         if (localStorage.getItem('matias_perfil_definido')) {
             perfilInvestidor=localStorage.getItem('matias_perfil_definido');
             pontuacaoTotalQuiz=parseInt(localStorage.getItem('matias_pontos_quiz'))||10;
@@ -1647,12 +1426,15 @@
             if (localStorage.getItem('matias_valor_cru')) document.getElementById('input-valor-total').value=localStorage.getItem('matias_valor_cru');
             definirPerfilFinal();
         } else { renderizarQuiz(); }
+
         if (localStorage.getItem('matias_kids_objetivo')) {
             if (localStorage.getItem('matias_kids_valor_cru')) document.getElementById('input-valor-kids').value=localStorage.getItem('matias_kids_valor_cru');
             definirObjetivoKids(localStorage.getItem('matias_kids_objetivo'));
         }
-        if (localStorage.getItem('matias_aba_ativa')) alternarAbas(localStorage.getItem('matias_aba_ativa'));
-        atualizarGamificacao();
+
+        // Carrega aba preferida ou a salva anteriormente
+        const abaInicial = localStorage.getItem('matias_pref_aba_inicial') || localStorage.getItem('matias_aba_ativa') || 'carteira';
+        alternarAbas(abaInicial);
     });
     </script>
 </body>
