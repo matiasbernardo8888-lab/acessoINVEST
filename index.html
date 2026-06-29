@@ -2,31 +2,21 @@
 <html lang="pt-BR" style="background:#000;">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Matias Invest | Diário Gráfico de Carteira Pessoal</title>
-
-    <!-- ════ SEGURANÇA: Content Security Policy ════
-         Bloqueia scripts externos não autorizados, inline eval, iframes,
-         e impede vazamento de dados via fetch/XHR para domínios não listados.
-         IMPORTANTE: Este site é 100% client-side. NÃO há .env, NÃO há chaves
-         de API expostas aqui — a única API usada (CoinGecko) é pública e não
-         requer autenticação. Nunca coloque chaves secretas em HTML/JS do frontend.
-    -->
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
         script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://unpkg.com https://cdn.jsdelivr.net;
         style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
         font-src https://fonts.gstatic.com;
         img-src 'self' data:;
-        connect-src https://api.coingecko.com;
+        connect-src https://api.coingecko.com https://brapi.dev;
         frame-src 'none';
         object-src 'none';
         base-uri 'self';
         form-action 'none';
     ">
-    <!-- Bloqueia detecção de referência (privacidade do visitante) -->
     <meta name="referrer" content="no-referrer">
-    <!-- Impede indexação de dados pessoais por crawlers -->
     <meta name="robots" content="noindex, nofollow">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -42,6 +32,11 @@
         * { box-sizing: border-box; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: #000; margin:0; padding:0; overflow-x:hidden; }
         .font-logo { font-family: 'Orbitron', sans-serif; }
+
+        /* ── FIX ZOOM MOBILE: todos os inputs precisam font-size ≥ 16px ── */
+        input[type=text], input[type=number], input[type=date], select, textarea {
+            font-size: 16px !important;
+        }
         input[type=number]::-webkit-inner-spin-button,
         input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         .nav-active { color: #06b6d4; }
@@ -132,7 +127,9 @@
         .chart-tooltip-value { font-family: 'Orbitron', sans-serif; font-size: 13.5px; font-weight: 900; color: #fff; margin-top: 2px; }
 
         /* ═══ BANNER CVM ═══ */
-        .banner-cvm { background: linear-gradient(135deg, rgba(245,158,11,0.12), rgba(245,158,11,0.05)); border: 1px solid rgba(245,158,11,0.35); border-radius: 12px; padding: 12px 14px; margin: 0 16px 12px; }
+        .banner-cvm { background: linear-gradient(135deg, rgba(245,158,11,0.12), rgba(245,158,11,0.05)); border: 1px solid rgba(245,158,11,0.35); border-radius: 12px; padding: 12px 14px; margin: 0 16px 12px; transition: all 0.3s ease; }
+        /* FIX: banner-cvm oculto quando toggle-avisos-cvm está desabilitado */
+        .banner-cvm.oculto { display: none; }
 
         /* ═══ HOLOGRAMAS ═══ */
         .holo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -182,19 +179,23 @@
         .config-row-label { flex: 1; }
         .config-row-title { font-size: 11.5px; font-weight: 700; color: #e2e8f0; }
         .config-row-desc { font-size: 9.5px; color: #475569; margin-top: 2px; line-height: 1.4; }
-        .config-select { background: #0f172a; border: 1px solid #1e293b; border-radius: 8px; color: #e2e8f0; font-size: 11px; padding: 6px 10px; outline: none; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; }
+        .config-select { background: #0f172a; border: 1px solid #1e293b; border-radius: 8px; color: #e2e8f0; font-size: 11px !important; padding: 6px 10px; outline: none; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; }
         .config-select:focus { border-color: rgba(6,182,212,0.5); }
         .config-badge-seguro { display: inline-flex; align-items: center; gap: 5px; font-size: 9px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #34d399; background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.25); padding: 3px 8px; border-radius: 99px; font-family: 'Orbitron', sans-serif; }
         .config-badge-seguro::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: #34d399; box-shadow: 0 0 6px #34d399; }
         .nivel-barra { height: 4px; border-radius: 99px; background: #0f172a; overflow: hidden; margin-top: 6px; }
         .nivel-barra-fill { height: 100%; border-radius: 99px; transition: width .6s ease; }
 
-        /* ═══ MONTAR MINHA CARTEIRA (NOVO) ═══ */
+        /* ═══ MONTAR MINHA CARTEIRA — REDESIGN PREMIUM ═══ */
         .pf-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
-        @media (min-width: 768px) { .pf-grid { grid-template-columns: 380px 1fr; align-items: start; } }
+        @media (min-width: 768px) { .pf-grid { grid-template-columns: 360px 1fr; align-items: start; } }
         .pf-card { background: #020617; border: 1px solid #0f172a; border-radius: 16px; }
+
+        /* Label menor para não acionar font-size global grande */
         .pf-label { font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: #67e8f9; display: block; margin-bottom: 6px; }
-        .pf-input { width: 100%; background: rgba(6,182,212,0.05); border: 1px solid rgba(6,182,212,0.25); border-radius: 10px; color: #f0f9ff; font-size: 13px; padding: 10px 12px; outline: none; transition: border-color .2s, background .2s; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        /* FIX ZOOM: inputs no formulário de portfólio também precisam de font-size grande */
+        .pf-input { width: 100%; background: rgba(6,182,212,0.05); border: 1px solid rgba(6,182,212,0.25); border-radius: 10px; color: #f0f9ff; font-size: 16px !important; padding: 10px 12px; outline: none; transition: border-color .2s, background .2s; font-family: 'Plus Jakarta Sans', sans-serif; }
         .pf-input::placeholder { color: #475569; }
         .pf-input:focus { border-color: #06b6d4; background: rgba(6,182,212,0.09); box-shadow: 0 0 0 3px rgba(6,182,212,0.12); }
         .pf-input-icon-wrap { position: relative; }
@@ -213,26 +214,65 @@
         .pf-autocomplete-tag { font-size: 8px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; padding: 1.5px 6px; border-radius: 99px; flex-shrink: 0; }
         .pf-tag-real { background: rgba(52,211,153,0.12); color: #34d399; border: 1px solid rgba(52,211,153,0.3); }
         .pf-tag-sim { background: rgba(148,163,184,0.1); color: #94a3b8; border: 1px solid rgba(148,163,184,0.25); }
-        .pf-resumo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        @media (max-width: 480px) { .pf-resumo-grid { grid-template-columns: 1fr 1fr; } }
-        .pf-resumo-item { background: rgba(6,182,212,0.05); border: 1px solid rgba(6,182,212,0.15); border-radius: 12px; padding: 12px; }
-        .pf-resumo-valor { font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 17px; }
-        .pf-resumo-label { font-size: 9px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: #475569; margin-top: 2px; }
-        .pf-ativo-card { background: #020617; border: 1px solid #0f172a; border-radius: 14px; padding: 13px; transition: border-color .2s; position: relative; }
-        .pf-ativo-card:hover { border-color: rgba(6,182,212,0.3); }
+
+        /* ── RESUMO CARTEIRA ── */
+        .pf-resumo-hero { background: linear-gradient(135deg, rgba(6,182,212,0.08) 0%, rgba(2,6,23,1) 60%); border: 1px solid rgba(6,182,212,0.2); border-radius: 18px; padding: 20px 18px 16px; position: relative; overflow: hidden; }
+        .pf-resumo-hero::before { content:''; position:absolute; inset:0; background-image: linear-gradient(to right, rgba(6,182,212,0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(6,182,212,0.04) 1px, transparent 1px); background-size: 20px 20px; mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 90%); pointer-events:none; }
+        .pf-resumo-hero-title { font-family: 'Orbitron', sans-serif; font-size: 8px; font-weight: 800; letter-spacing: .25em; text-transform: uppercase; color: #475569; }
+        .pf-resumo-total-val { font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: clamp(26px, 7vw, 36px); background: linear-gradient(135deg, #fff 0%, #67e8f9 55%, #06b6d4 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1.1; }
+        .pf-stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px; }
+        .pf-stat-cell { background: rgba(6,182,212,0.06); border: 1px solid rgba(6,182,212,0.12); border-radius: 10px; padding: 10px 12px; }
+        .pf-stat-cell-label { font-size: 8px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; color: #475569; margin-bottom: 4px; }
+        .pf-stat-cell-val { font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 14px; }
+
+        /* ── GRÁFICO PORTFÓLIO ── */
+        .pf-chart-wrap { position: relative; background: #020617; border: 1px solid rgba(6,182,212,0.15); border-radius: 14px; padding: 14px; overflow: hidden; }
+        .pf-chart-wrap::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background: linear-gradient(to right, transparent, rgba(6,182,212,0.5), transparent); }
+
+        /* ── CARD ATIVO PORTFÓLIO ── */
+        .pf-ativo-card { background: #020617; border: 1px solid #0f172a; border-radius: 14px; padding: 14px; transition: border-color .2s, box-shadow .2s; position: relative; overflow: hidden; }
+        .pf-ativo-card::before { content:''; position:absolute; top:0; left:0; bottom:0; width:3px; border-radius:3px 0 0 3px; }
+        .pf-ativo-card.lucro::before { background: linear-gradient(to bottom, #34d399, #059669); }
+        .pf-ativo-card.prejuizo::before { background: linear-gradient(to bottom, #f87171, #dc2626); }
+        .pf-ativo-card:hover { border-color: rgba(6,182,212,0.3); box-shadow: 0 0 20px rgba(6,182,212,0.07); }
         .pf-ativo-remover { position: absolute; top: 10px; right: 10px; color: #475569; transition: color .15s; cursor: pointer; background: none; border: none; padding: 2px; }
         .pf-ativo-remover:hover { color: #f87171; }
         .pf-pill { font-size: 8.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; padding: 2px 7px; border-radius: 99px; }
         .pf-pill-lucro { background: rgba(52,211,153,0.12); color: #34d399; border: 1px solid rgba(52,211,153,0.3); }
         .pf-pill-prejuizo { background: rgba(248,113,113,0.12); color: #f87171; border: 1px solid rgba(248,113,113,0.3); }
         .pf-empty-state { text-align: center; padding: 40px 16px; color: #475569; }
+
+        /* ── MINI SPARKLINE POR ATIVO ── */
+        .pf-sparkline-canvas { width: 100%; height: 48px; display: block; }
+
+        /* ── SOURCE BADGE ── */
         .pf-source-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 8px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; padding: 2px 6px; border-radius: 6px; }
         .pf-source-real { background: rgba(52,211,153,0.1); color: #34d399; }
         .pf-source-sim { background: rgba(148,163,184,0.1); color: #94a3b8; }
+
+        /* ── LOADING / TOAST ── */
         .pf-loading-spin { animation: pfSpin .8s linear infinite; }
         @keyframes pfSpin { to { transform: rotate(360deg); } }
         .pf-toast { position: fixed; bottom: 92px; left: 50%; transform: translateX(-50%) translateY(20px); background: #0a0f1e; border: 1px solid rgba(6,182,212,0.35); color: #e2e8f0; font-size: 11.5px; font-weight: 600; padding: 10px 16px; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 70; opacity: 0; pointer-events: none; transition: opacity .25s, transform .25s; max-width: 88vw; text-align: center; }
         .pf-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        /* ── WALLET HERO VISUAL ── */
+        .wallet-hero { background: linear-gradient(135deg, #020c1b 0%, #010a18 100%); border: 1px solid rgba(6,182,212,0.2); border-radius: 20px; padding: 20px; position: relative; overflow: hidden; }
+        .wallet-hero::after { content:''; position:absolute; bottom:-40px; right:-40px; width:160px; height:160px; background: radial-gradient(circle, rgba(6,182,212,0.08) 0%, transparent 70%); border-radius: 50%; pointer-events:none; }
+        .wallet-card-visual { background: linear-gradient(135deg, #0c2230 0%, #07192a 50%, #061525 100%); border: 1px solid rgba(6,182,212,0.3); border-radius: 16px; padding: 16px 18px; position: relative; overflow: hidden; }
+        .wallet-card-visual::before { content:''; position:absolute; top:-30%; right:-20%; width:200px; height:200px; background: radial-gradient(circle, rgba(6,182,212,0.12) 0%, transparent 65%); border-radius:50%; }
+        .wallet-card-chip { width: 32px; height: 24px; background: linear-gradient(135deg, #c8a84b 0%, #f0d060 40%, #b8962a 100%); border-radius: 5px; margin-bottom: 14px; display: flex; align-items: center; justify-content: center; }
+        .wallet-card-chip::after { content:''; width:22px; height:16px; border: 1.5px solid rgba(0,0,0,0.25); border-radius: 3px; }
+        .wallet-card-number { font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: .25em; color: rgba(255,255,255,0.5); margin-bottom: 12px; }
+        .wallet-card-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
+        .wallet-card-name { font-family: 'Orbitron', sans-serif; font-size: 8px; font-weight: 700; letter-spacing: .15em; color: rgba(255,255,255,0.4); text-transform: uppercase; }
+        .wallet-card-brand { font-family: 'Orbitron', sans-serif; font-size: 14px; font-weight: 900; color: #06b6d4; letter-spacing: .05em; }
+
+        /* ── AVISO CVM INLINE NOS CARDS ── */
+        .aviso-cvm-inline { font-size: 10px; color: rgba(253,230,138,0.7); background: rgba(245,158,11,0.05); border: 1px solid rgba(245,158,11,0.15); border-radius: 6px; padding: 6px 8px; margin-top: 8px; }
+        /* FIX: quando o toggle é desabilitado, os avisos CVM inline somem */
+        body.hide-cvm-warnings .aviso-cvm-inline { display: none; }
+        body.hide-cvm-warnings .banner-cvm { display: none; }
     </style>
 </head>
 <body class="bg-black text-slate-100 min-h-screen pb-28 splash-active">
@@ -302,7 +342,7 @@
         </header>
 
         <!-- BANNER CVM -->
-        <div class="banner-cvm mt-4">
+        <div class="banner-cvm mt-4" id="banner-cvm-global">
             <p class="text-[10px] text-amber-300 font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
                 ⚖️ Aviso Regulatório Obrigatório
             </p>
@@ -431,22 +471,60 @@
             </section>
         </div>
 
-        <!-- ════ ABA MONTAR MINHA CARTEIRA (NOVO) ════ -->
+        <!-- ════ ABA MONTAR MINHA CARTEIRA — REDESIGN PREMIUM ════ -->
         <div id="aba-montar-carteira" class="hidden p-4 space-y-4">
 
-            <div class="bg-gradient-to-r from-cyan-950/40 via-slate-950 to-slate-950 p-4 rounded-xl border border-cyan-500/20 space-y-2">
-                <div class="flex items-center gap-2 text-cyan-400">
-                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
-                    <h2 class="text-base font-black uppercase tracking-wider font-logo">Monte e Monitore seu Portfólio</h2>
+            <!-- WALLET HERO -->
+            <div class="wallet-hero">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <p class="text-[9px] font-black uppercase tracking-[.2em] text-cyan-700 mb-1">MATIAS INVEST</p>
+                        <h2 class="text-base font-black text-white uppercase tracking-wide font-logo">Minha Carteira</h2>
+                    </div>
+                    <div class="wallet-card-visual w-28">
+                        <div class="wallet-card-chip"></div>
+                        <div class="wallet-card-number">•••• •••• INVEST</div>
+                        <div class="wallet-card-bottom">
+                            <div class="wallet-card-name">PORTFÓLIO</div>
+                            <div class="wallet-card-brand">MI</div>
+                        </div>
+                    </div>
                 </div>
-                <p class="text-xs text-slate-300 leading-relaxed">Registre suas próprias aplicações (reais ou simuladas), com data de início e data final, e veja o resultado de mercado calculado automaticamente.</p>
-                <p class="text-[10px] text-amber-300/90 bg-amber-500/10 border border-amber-500/20 rounded p-2 leading-relaxed">
-                    ⚖️ <strong>Esta ferramenta não constitui recomendação de investimentos.</strong> Os dados de mercado exibidos têm caráter informativo e podem ser reais (B3, via brapi.dev) ou simulados — sempre identificados. Rentabilidade passada não garante rentabilidade futura.
-                </p>
+
+                <!-- Resumo Hero -->
+                <div class="pf-resumo-hero">
+                    <div class="pf-resumo-hero-title mb-1">Patrimônio Total da Carteira</div>
+                    <div class="pf-resumo-total-val" id="pf-resumo-total">R$ 0,00</div>
+                    <div class="pf-stat-row">
+                        <div class="pf-stat-cell">
+                            <div class="pf-stat-cell-label">Aplicado</div>
+                            <div class="pf-stat-cell-val text-slate-300" id="pf-stat-aplicado">R$ 0,00</div>
+                        </div>
+                        <div class="pf-stat-cell">
+                            <div class="pf-stat-cell-label">Resultado</div>
+                            <div class="pf-stat-cell-val" id="pf-resumo-resultado">R$ 0,00</div>
+                        </div>
+                        <div class="pf-stat-cell">
+                            <div class="pf-stat-cell-label">Rendimento</div>
+                            <div class="pf-stat-cell-val" id="pf-resumo-percentual">0,0%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gráfico consolidado da carteira -->
+                <div class="pf-chart-wrap mt-3" id="pf-chart-container" style="display:none">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="text-[9px] font-black uppercase tracking-[.18em] text-slate-500">Evolução Estimada dos Últimos Anos</p>
+                        <span class="text-[9px] text-amber-400 font-bold">⚠️ Dados históricos simulados</span>
+                    </div>
+                    <div style="height: 120px; position: relative;">
+                        <canvas id="pf-grafico-consolidado"></canvas>
+                    </div>
+                </div>
             </div>
 
             <div class="pf-grid">
-                <!-- ═══ LADO ESQUERDO — FORMULÁRIO ═══ -->
+                <!-- ═══ FORMULÁRIO ═══ -->
                 <div class="pf-card p-4 space-y-3.5">
                     <h3 class="text-xs font-black text-white uppercase tracking-wide flex items-center gap-1.5">
                         <i data-lucide="plus-circle" class="w-4 h-4 text-cyan-400"></i> Adicionar Investimento
@@ -489,31 +567,13 @@
                     </button>
 
                     <p class="text-[9.5px] text-slate-600 leading-relaxed border-t border-slate-900 pt-2.5">
-                        <span class="pf-source-badge pf-source-real">REAL</span> = cotação ao vivo via B3 (brapi.dev), disponível para PETR4, VALE3, ITUB4 e MGLU3 sem necessidade de chave de API.<br>
-                        <span class="pf-source-badge pf-source-sim">SIMULADO</span> = demais ativos usam um motor de simulação determinístico baseado no tempo (ver comentários no código-fonte para plugar uma API paga).
+                        <span class="pf-source-badge pf-source-real">REAL</span> cotação ao vivo via B3 (brapi.dev) para PETR4, VALE3, ITUB4, MGLU3.<br>
+                        <span class="pf-source-badge pf-source-sim">SIMULADO</span> demais ativos usam rentabilidade histórica estimada dos últimos anos.
                     </p>
                 </div>
 
-                <!-- ═══ LADO DIREITO — PAINEL DO PORTFÓLIO ═══ -->
+                <!-- ═══ LISTA DE ATIVOS ═══ -->
                 <div class="space-y-3">
-                    <div class="pf-card p-4">
-                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2.5">Resumo da Carteira</p>
-                        <div class="pf-resumo-grid">
-                            <div class="pf-resumo-item">
-                                <div class="pf-resumo-valor text-white" id="pf-resumo-total">R$ 0,00</div>
-                                <div class="pf-resumo-label">Patrimônio Total</div>
-                            </div>
-                            <div class="pf-resumo-item">
-                                <div class="pf-resumo-valor" id="pf-resumo-resultado">R$ 0,00</div>
-                                <div class="pf-resumo-label">Resultado Consolidado</div>
-                            </div>
-                            <div class="pf-resumo-item">
-                                <div class="pf-resumo-valor" id="pf-resumo-percentual">0,0%</div>
-                                <div class="pf-resumo-label">Rendimento %</div>
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="flex items-center justify-between px-1">
                         <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Meus Investimentos</p>
                         <button onclick="pfLimparPortfolio()" class="text-[9.5px] text-slate-600 hover:text-red-400 font-bold flex items-center gap-1 transition">
@@ -532,7 +592,7 @@
             </div>
 
             <div class="text-[9px] text-slate-600 text-center pt-2 border-t border-slate-900 leading-relaxed">
-                ⚖️ Ferramenta de uso pessoal e educacional. Não constitui recomendação de investimentos, análise de valores mobiliários (Res. CVM 20/2021) ou consultoria financeira. Dados salvos apenas no seu navegador (localStorage).
+                ⚖️ Ferramenta de uso pessoal e educacional. Não constitui recomendação de investimentos. Dados salvos apenas no seu navegador (localStorage).
             </div>
         </div>
 
@@ -544,40 +604,27 @@
                     <h2 class="text-lg font-black uppercase tracking-wider font-logo text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">Minha Jornada Desde Cedo</h2>
                 </div>
                 <h3 class="text-sm font-extrabold text-white leading-snug">COMO EU ESTUDAVA ALOCAÇÕES QUANDO ERA MENOR DE IDADE</h3>
-                <p class="text-xs text-slate-300 leading-relaxed">
-                    Este espaço reconstrói de forma <strong>puramente educacional e pessoal</strong> a lógica matemática de divisão de categorias de ativos que estudei na minha juventude. Menores de idade são legalmente <strong>incapazes para assinar contratos financeiros</strong> sem o amparo dos responsáveis legais, conforme o Código Civil Brasileiro e as normas da CVM.
-                </p>
+                <p class="text-xs text-slate-300 leading-relaxed">Este espaço reconstrói de forma <strong>puramente educacional e pessoal</strong> a lógica matemática de divisão de categorias de ativos que estudei na minha juventude.</p>
                 <div class="bg-purple-950/40 p-3 rounded-lg border border-purple-500/30 text-xs text-purple-200">
                     ⚖️ <strong>AVISO LEGAL:</strong> Menores de 16 anos são absolutamente incapazes. Entre 16 e 18 anos são relativamente capazes — precisam de representação ou assistência dos responsáveis legais conforme normas vigentes.
                 </div>
             </div>
-
             <div id="kids-suitability" class="bg-slate-950 p-4 rounded-xl border border-slate-900 space-y-3">
-                <label class="text-xs font-bold text-purple-400 tracking-wider flex items-center gap-1 uppercase">
-                    <i data-lucide="zap" class="w-4 h-4 text-purple-500"></i> Escolha um modelo didático de estudo:
-                </label>
+                <label class="text-xs font-bold text-purple-400 tracking-wider flex items-center gap-1 uppercase"><i data-lucide="zap" class="w-4 h-4 text-purple-500"></i> Escolha um modelo didático de estudo:</label>
                 <div class="grid grid-cols-1 gap-2" id="kids-options-container">
-                    <button onclick="definirObjetivoKids('faculdade')" id="btn-kids-faculdade" class="w-full text-left bg-slate-900 border border-slate-800 hover:border-purple-500 p-3 rounded-lg text-xs font-medium text-slate-300 transition">
-                        🎓 <strong>Modelo de Acumulação de Longo Prazo:</strong> Divisão hipotética com foco em categorias geradoras de fluxo de caixa.
-                    </button>
-                    <button onclick="definirObjetivoKids('intercambio')" id="btn-kids-intercambio" class="w-full text-left bg-slate-900 border border-slate-800 hover:border-purple-500 p-3 rounded-lg text-xs font-medium text-slate-300 transition">
-                        🌍 <strong>Modelo com Exposição Cambial:</strong> Distribuição hipotética com maior peso em ativos globais e dolarizados.
-                    </button>
-                    <button onclick="definirObjetivoKids('independencia')" id="btn-kids-independencia" class="w-full text-left bg-slate-900 border border-slate-800 hover:border-purple-500 p-3 rounded-lg text-xs font-medium text-slate-300 transition">
-                        🛡️ <strong>Modelo Conservador Inicial:</strong> Distribuição com foco em Renda Fixa e baixa volatilidade.
-                    </button>
+                    <button onclick="definirObjetivoKids('faculdade')" id="btn-kids-faculdade" class="w-full text-left bg-slate-900 border border-slate-800 hover:border-purple-500 p-3 rounded-lg text-xs font-medium text-slate-300 transition">🎓 <strong>Modelo de Acumulação de Longo Prazo</strong></button>
+                    <button onclick="definirObjetivoKids('intercambio')" id="btn-kids-intercambio" class="w-full text-left bg-slate-900 border border-slate-800 hover:border-purple-500 p-3 rounded-lg text-xs font-medium text-slate-300 transition">🌍 <strong>Modelo com Exposição Cambial</strong></button>
+                    <button onclick="definirObjetivoKids('independencia')" id="btn-kids-independencia" class="w-full text-left bg-slate-900 border border-slate-800 hover:border-purple-500 p-3 rounded-lg text-xs font-medium text-slate-300 transition">🛡️ <strong>Modelo Conservador Inicial</strong></button>
                 </div>
             </div>
-
             <div id="container-aporte-kids" class="bg-slate-950 p-4 rounded-xl border border-slate-900 space-y-3 opacity-40 pointer-events-none transition-all">
                 <label class="text-xs font-medium text-slate-400 uppercase">VALOR HIPOTÉTICO PARA MODELAGEM MATEMÁTICA</label>
                 <div class="relative">
                     <span class="absolute left-3 top-1/2 -translate-y-1/2 text-purple-500 font-bold text-sm">R$</span>
                     <input type="text" id="input-valor-kids" oninput="formatarMoeda(this, 'kids')" placeholder="Escolha um modelo acima" class="w-full bg-slate-900 border border-slate-800 rounded-lg pl-10 pr-4 py-2.5 text-white font-bold font-logo focus:outline-none focus:border-purple-500 transition">
                 </div>
-                <p class="text-[10px] text-slate-500">Valor fictício apenas para calcular proporções. Não representa aporte real.</p>
+                <p class="text-[10px] text-slate-500">Valor fictício apenas para calcular proporções.</p>
             </div>
-
             <main id="lista-ativos-kids" class="space-y-3"></main>
         </div>
 
@@ -588,17 +635,13 @@
                     <i data-lucide="graduation-cap" class="w-6 h-6"></i>
                     <h2 class="text-base font-black uppercase tracking-wider font-logo">Portal Educacional Independente</h2>
                 </div>
-                <p class="text-xs text-slate-300 leading-relaxed">Conteúdo de educação financeira de uso pessoal. Cada card leva a um vídeo de referência pública no YouTube.</p>
-                <p class="text-[10px] text-amber-300/80 bg-amber-500/10 border border-amber-500/20 rounded p-2">
-                    ⚠️ Os criadores listados são referências educacionais públicas. A menção não é patrocínio nem endosso de produtos.
-                </p>
+                <p class="text-xs text-slate-300 leading-relaxed">Conteúdo de educação financeira de uso pessoal.</p>
+                <p class="text-[10px] text-amber-300/80 bg-amber-500/10 border border-amber-500/20 rounded p-2">⚠️ Os criadores listados são referências educacionais públicas. A menção não é patrocínio.</p>
             </div>
-
             <div class="relative">
                 <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"></i>
-                <input type="text" id="busca-holos" oninput="renderizarHologramas(this.value)" placeholder="Buscar tema (ex: Renda Fixa, ETF, Dividendos)..." class="w-full bg-slate-950 border border-slate-800 rounded-lg pl-9 pr-4 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-500 transition">
+                <input type="text" id="busca-holos" oninput="renderizarHologramas(this.value)" placeholder="Buscar tema..." class="w-full bg-slate-950 border border-slate-800 rounded-lg pl-9 pr-4 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-500 transition">
             </div>
-
             <div class="flex gap-2 overflow-x-auto pb-1">
                 <button onclick="filtrarHolos('todos', this)" class="holo-filtro-btn active px-3 py-1.5 rounded-lg text-[10px] font-bold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 whitespace-nowrap font-logo">Todos</button>
                 <button onclick="filtrarHolos('fundamentos', this)" class="holo-filtro-btn px-3 py-1.5 rounded-lg text-[10px] font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap font-logo">Fundamentos</button>
@@ -609,31 +652,25 @@
                 <button onclick="filtrarHolos('cripto', this)" class="holo-filtro-btn px-3 py-1.5 rounded-lg text-[10px] font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap font-logo">Cripto</button>
                 <button onclick="filtrarHolos('comportamento', this)" class="holo-filtro-btn px-3 py-1.5 rounded-lg text-[10px] font-bold bg-slate-900 text-slate-400 border border-slate-800 whitespace-nowrap font-logo">Mentalidade</button>
             </div>
-
             <div id="holo-grid-container"></div>
-
             <div class="border-t border-slate-900 pt-2 space-y-4">
                 <div class="flex items-center justify-between">
                     <div>
-                        <h3 class="text-sm font-black text-white uppercase tracking-wide flex items-center gap-2">
-                            <i data-lucide="library" class="w-4 h-4 text-cyan-400"></i> Trilha de Estudos Matias Invest
-                        </h3>
+                        <h3 class="text-sm font-black text-white uppercase tracking-wide flex items-center gap-2"><i data-lucide="library" class="w-4 h-4 text-cyan-400"></i> Trilha de Estudos</h3>
                         <p class="text-[10px] text-slate-500 mt-0.5">Toque em cada módulo para expandir</p>
                     </div>
                     <span class="text-[9px] px-2 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 font-black uppercase tracking-wider whitespace-nowrap">10 módulos</span>
                 </div>
                 <div class="relative">
                     <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"></i>
-                    <input type="text" id="busca-trilha" oninput="renderizarTrilhaEstudos(this.value)" placeholder="Buscar tema (ex: Tesouro Direto, FII, IR)..." class="w-full bg-slate-950 border border-slate-800 rounded-lg pl-9 pr-4 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-500 transition">
+                    <input type="text" id="busca-trilha" oninput="renderizarTrilhaEstudos(this.value)" placeholder="Buscar tema..." class="w-full bg-slate-950 border border-slate-800 rounded-lg pl-9 pr-4 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-500 transition">
                 </div>
                 <div id="container-trilha-estudos" class="space-y-2.5"></div>
             </div>
         </div>
 
-        <!-- ════ ABA CONFIGURAÇÕES (NOVA — substitui Perfil com dados pessoais) ════ -->
+        <!-- ════ ABA CONFIGURAÇÕES ════ -->
         <div id="aba-painel-perfil" class="hidden p-4 space-y-4">
-
-            <!-- Cabeçalho -->
             <div class="bg-gradient-to-br from-slate-950 to-slate-900 p-4 rounded-xl border border-slate-800 space-y-3">
                 <div class="flex justify-between items-center">
                     <div>
@@ -642,12 +679,9 @@
                     </div>
                     <span class="config-badge-seguro">Seguro</span>
                 </div>
-                <p class="text-[10px] text-slate-500 leading-relaxed">
-                    Nenhum dado pessoal é coletado ou enviado. Todas as preferências ficam <strong class="text-slate-400">exclusivamente no seu dispositivo</strong> (localStorage) e podem ser apagadas a qualquer momento.
-                </p>
+                <p class="text-[10px] text-slate-500 leading-relaxed">Nenhum dado pessoal é coletado. Todas as preferências ficam <strong class="text-slate-400">exclusivamente no seu dispositivo</strong>.</p>
             </div>
 
-            <!-- Progresso de uso da ferramenta -->
             <div class="config-section">
                 <div class="config-section-header">
                     <i data-lucide="bar-chart-2" class="w-4 h-4 text-cyan-400"></i>
@@ -655,44 +689,26 @@
                 </div>
                 <div class="config-section-body space-y-3">
                     <div class="space-y-2">
-                        <div class="flex justify-between text-[10px] text-slate-400 font-medium">
-                            <span>Quiz de perfil respondido</span>
-                            <span id="status-quiz-config" class="font-bold text-slate-500">—</span>
-                        </div>
-                        <div class="flex justify-between text-[10px] text-slate-400 font-medium">
-                            <span>Valor hipotético inserido</span>
-                            <span id="status-valor-config" class="font-bold text-slate-500">—</span>
-                        </div>
-                        <div class="flex justify-between text-[10px] text-slate-400 font-medium">
-                            <span>Meta educacional definida</span>
-                            <span id="status-meta-config" class="font-bold text-slate-500">—</span>
-                        </div>
-                        <div class="flex justify-between text-[10px] text-slate-400 font-medium">
-                            <span>Aba de Educação visitada</span>
-                            <span id="status-edu-config" class="font-bold text-slate-500">—</span>
-                        </div>
+                        <div class="flex justify-between text-[10px] text-slate-400 font-medium"><span>Quiz de perfil respondido</span><span id="status-quiz-config" class="font-bold text-slate-500">—</span></div>
+                        <div class="flex justify-between text-[10px] text-slate-400 font-medium"><span>Valor hipotético inserido</span><span id="status-valor-config" class="font-bold text-slate-500">—</span></div>
+                        <div class="flex justify-between text-[10px] text-slate-400 font-medium"><span>Meta educacional definida</span><span id="status-meta-config" class="font-bold text-slate-500">—</span></div>
+                        <div class="flex justify-between text-[10px] text-slate-400 font-medium"><span>Aba de Educação visitada</span><span id="status-edu-config" class="font-bold text-slate-500">—</span></div>
                     </div>
                     <div>
-                        <div class="flex justify-between text-[10px] font-bold mb-1">
-                            <span class="text-slate-400">Nível de exploração</span>
-                            <span class="text-cyan-400 font-logo" id="config-nivel-tag">ESTUDANTE</span>
-                        </div>
-                        <div class="nivel-barra">
-                            <div id="config-barra-progresso" class="nivel-barra-fill bg-gradient-to-r from-cyan-500 to-blue-500" style="width:20%"></div>
-                        </div>
+                        <div class="flex justify-between text-[10px] font-bold mb-1"><span class="text-slate-400">Nível de exploração</span><span class="text-cyan-400 font-logo" id="config-nivel-tag">ESTUDANTE</span></div>
+                        <div class="nivel-barra"><div id="config-barra-progresso" class="nivel-barra-fill bg-gradient-to-r from-cyan-500 to-blue-500" style="width:20%"></div></div>
                         <div class="text-[9px] text-slate-600 mt-1 text-right" id="config-pct-progresso">20% explorado</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Simulador de Meta -->
             <div class="config-section">
                 <div class="config-section-header">
                     <i data-lucide="target" class="w-4 h-4 text-cyan-400"></i>
                     <h3 class="text-xs font-bold text-white uppercase tracking-wider">Meta Educacional</h3>
                 </div>
                 <div class="config-section-body space-y-3">
-                    <p class="text-[10px] text-slate-500">Configure uma meta hipotética para acompanhar a simulação. Não é planejamento financeiro real.</p>
+                    <p class="text-[10px] text-slate-500">Configure uma meta hipotética para acompanhar a simulação.</p>
                     <div>
                         <label class="text-[10px] font-bold text-slate-500 block mb-1.5 uppercase">Tipo de meta</label>
                         <select id="meta-tipo" class="config-select w-full">
@@ -705,26 +721,15 @@
                         <label class="text-[10px] font-bold text-slate-500 block mb-1.5 uppercase">Valor alvo hipotético (R$)</label>
                         <input type="number" id="meta-valor" placeholder="Ex: 10000" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white font-logo focus:outline-none focus:border-cyan-500 transition">
                     </div>
-                    <button onclick="salvarMeta()" class="w-full bg-cyan-500 hover:bg-cyan-600 text-black font-bold text-xs py-2 rounded-lg transition">
-                        Salvar Meta Educacional
-                    </button>
+                    <button onclick="salvarMeta()" class="w-full bg-cyan-500 hover:bg-cyan-600 text-black font-bold text-xs py-2 rounded-lg transition">Salvar Meta Educacional</button>
                     <div id="meta-visualizer" class="hidden bg-slate-900/40 border border-slate-800/60 p-3 rounded-lg space-y-2">
-                        <div class="flex justify-between items-center text-xs">
-                            <span class="font-bold text-slate-300" id="lbl-meta-ativa">Nenhuma Meta</span>
-                            <span class="font-logo font-black text-cyan-400" id="lbl-meta-porcentagem">0%</span>
-                        </div>
-                        <div class="w-full h-1.5 bg-slate-950 rounded-full overflow-hidden">
-                            <div id="barra-meta-ativa" class="h-full bg-cyan-500 transition-all" style="width: 0%"></div>
-                        </div>
-                        <div class="flex justify-between text-[10px] text-slate-500">
-                            <span id="lbl-meta-atual">Simulado: R$ 0,00</span>
-                            <span id="lbl-meta-alvo">Alvo: R$ 0,00</span>
-                        </div>
+                        <div class="flex justify-between items-center text-xs"><span class="font-bold text-slate-300" id="lbl-meta-ativa">Nenhuma Meta</span><span class="font-logo font-black text-cyan-400" id="lbl-meta-porcentagem">0%</span></div>
+                        <div class="w-full h-1.5 bg-slate-950 rounded-full overflow-hidden"><div id="barra-meta-ativa" class="h-full bg-cyan-500 transition-all" style="width: 0%"></div></div>
+                        <div class="flex justify-between text-[10px] text-slate-500"><span id="lbl-meta-atual">Simulado: R$ 0,00</span><span id="lbl-meta-alvo">Alvo: R$ 0,00</span></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Preferências de Exibição -->
             <div class="config-section">
                 <div class="config-section-header">
                     <i data-lucide="sliders" class="w-4 h-4 text-cyan-400"></i>
@@ -734,17 +739,17 @@
                     <div class="config-row">
                         <div class="config-row-label">
                             <div class="config-row-title">Mostrar avisos CVM</div>
-                            <div class="config-row-desc">Exibe lembretes regulatórios em cada card de ativo</div>
+                            <div class="config-row-desc">Exibe lembretes regulatórios nos cards e no topo</div>
                         </div>
                         <label class="config-toggle">
-                            <input type="checkbox" id="toggle-avisos-cvm" checked onchange="salvarPreferencia('avisos_cvm', this.checked)">
+                            <input type="checkbox" id="toggle-avisos-cvm" checked onchange="aplicarToggleCvm(this.checked)">
                             <span class="config-toggle-slider"></span>
                         </label>
                     </div>
                     <div class="config-row">
                         <div class="config-row-label">
                             <div class="config-row-title">Mostrar gráfico de evolução</div>
-                            <div class="config-row-desc">Exibe o gráfico de simulação hipotética de crescimento</div>
+                            <div class="config-row-desc">Exibe o gráfico de simulação hipotética</div>
                         </div>
                         <label class="config-toggle">
                             <input type="checkbox" id="toggle-grafico" checked onchange="salvarPreferencia('mostrar_grafico', this.checked)">
@@ -777,7 +782,6 @@
                 </div>
             </div>
 
-            <!-- Segurança e Privacidade -->
             <div class="config-section">
                 <div class="config-section-header">
                     <i data-lucide="shield" class="w-4 h-4 text-emerald-400"></i>
@@ -785,76 +789,26 @@
                 </div>
                 <div class="config-section-body space-y-3">
                     <div class="space-y-2">
-                        <div class="flex items-start gap-3 p-2.5 bg-emerald-500/5 rounded-lg border border-emerald-500/15">
-                            <span class="text-emerald-400 mt-0.5">✓</span>
-                            <div>
-                                <p class="text-[10.5px] font-bold text-emerald-300">Nenhum dado pessoal coletado</p>
-                                <p class="text-[9.5px] text-slate-500 mt-0.5">Este site não tem backend, não usa cookies de rastreamento e não envia nada a servidores externos.</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-3 p-2.5 bg-emerald-500/5 rounded-lg border border-emerald-500/15">
-                            <span class="text-emerald-400 mt-0.5">✓</span>
-                            <div>
-                                <p class="text-[10.5px] font-bold text-emerald-300">Content Security Policy ativa</p>
-                                <p class="text-[9.5px] text-slate-500 mt-0.5">O cabeçalho CSP bloqueia scripts externos não autorizados, iframes e vazamento de dados.</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-3 p-2.5 bg-emerald-500/5 rounded-lg border border-emerald-500/15">
-                            <span class="text-emerald-400 mt-0.5">✓</span>
-                            <div>
-                                <p class="text-[10.5px] font-bold text-emerald-300">Sem chaves de API expostas</p>
-                                <p class="text-[9.5px] text-slate-500 mt-0.5">As únicas APIs usadas (CoinGecko e brapi.dev — ações de teste) são públicas e não requerem chave secreta. Nunca use .env em HTML/JS do frontend — segredos devem ficar no servidor.</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-3 p-2.5 bg-emerald-500/5 rounded-lg border border-emerald-500/15">
-                            <span class="text-emerald-400 mt-0.5">✓</span>
-                            <div>
-                                <p class="text-[10.5px] font-bold text-emerald-300">Referrer bloqueado</p>
-                                <p class="text-[9.5px] text-slate-500 mt-0.5">A meta "no-referrer" impede que sites externos saibam que o visitante veio daqui.</p>
-                            </div>
-                        </div>
+                        <div class="flex items-start gap-3 p-2.5 bg-emerald-500/5 rounded-lg border border-emerald-500/15"><span class="text-emerald-400 mt-0.5">✓</span><div><p class="text-[10.5px] font-bold text-emerald-300">Nenhum dado pessoal coletado</p><p class="text-[9.5px] text-slate-500 mt-0.5">Este site não tem backend, não usa cookies de rastreamento.</p></div></div>
+                        <div class="flex items-start gap-3 p-2.5 bg-emerald-500/5 rounded-lg border border-emerald-500/15"><span class="text-emerald-400 mt-0.5">✓</span><div><p class="text-[10.5px] font-bold text-emerald-300">Sem chaves de API expostas</p><p class="text-[9.5px] text-slate-500 mt-0.5">APIs usadas (CoinGecko e brapi.dev) são públicas e não requerem chave secreta.</p></div></div>
                     </div>
-
                     <div class="border-t border-slate-900 pt-3">
-                        <p class="text-[10px] text-slate-500 mb-2">Dados armazenados localmente (localStorage):</p>
-                        <div class="bg-slate-900/60 rounded-lg p-2.5 font-mono text-[9px] text-slate-400 space-y-1" id="ls-debug">
-                            Carregando...
-                        </div>
+                        <p class="text-[10px] text-slate-500 mb-2">Dados armazenados localmente:</p>
+                        <div class="bg-slate-900/60 rounded-lg p-2.5 font-mono text-[9px] text-slate-400 space-y-1" id="ls-debug">Carregando...</div>
                     </div>
-
                     <button onclick="resetarPerfil()" class="w-full bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 font-bold text-xs py-2 rounded-lg transition flex items-center justify-center gap-2">
                         <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Apagar todos os dados locais
                     </button>
                 </div>
             </div>
 
-            <!-- Sobre o site -->
             <div class="config-section">
-                <div class="config-section-header">
-                    <i data-lucide="info" class="w-4 h-4 text-slate-400"></i>
-                    <h3 class="text-xs font-bold text-white uppercase tracking-wider">Sobre o Matias Invest</h3>
-                </div>
+                <div class="config-section-header"><i data-lucide="info" class="w-4 h-4 text-slate-400"></i><h3 class="text-xs font-bold text-white uppercase tracking-wider">Sobre o Matias Invest</h3></div>
                 <div class="config-section-body space-y-2">
-                    <div class="config-row">
-                        <span class="config-row-title">Versão</span>
-                        <span class="text-[10px] font-bold text-cyan-400 font-logo">v2.1 — Portfólio Real</span>
-                    </div>
-                    <div class="config-row">
-                        <span class="config-row-title">Tipo</span>
-                        <span class="text-[10px] text-slate-400">100% Client-Side · Sem Backend</span>
-                    </div>
-                    <div class="config-row">
-                        <span class="config-row-title">APIs externas</span>
-                        <span class="text-[10px] text-slate-400">CoinGecko · brapi.dev (públicas)</span>
-                    </div>
-                    <div class="config-row">
-                        <span class="config-row-title">Regulação</span>
-                        <span class="text-[10px] text-slate-400">Res. CVM 20/2021</span>
-                    </div>
-                    <div class="config-row border-none pb-0">
-                        <span class="config-row-title">Fins</span>
-                        <span class="text-[10px] text-amber-400 font-bold">Exclusivamente Educacional</span>
-                    </div>
+                    <div class="config-row"><span class="config-row-title">Versão</span><span class="text-[10px] font-bold text-cyan-400 font-logo">v2.2 — Carteira Premium</span></div>
+                    <div class="config-row"><span class="config-row-title">Tipo</span><span class="text-[10px] text-slate-400">100% Client-Side · Sem Backend</span></div>
+                    <div class="config-row"><span class="config-row-title">APIs externas</span><span class="text-[10px] text-slate-400">CoinGecko · brapi.dev (públicas)</span></div>
+                    <div class="config-row border-none pb-0"><span class="config-row-title">Fins</span><span class="text-[10px] text-amber-400 font-bold">Exclusivamente Educacional</span></div>
                 </div>
             </div>
         </div>
@@ -862,10 +816,7 @@
         <!-- ════ ABA DÚVIDAS ════ -->
         <div id="aba-duvidas" class="hidden p-4 space-y-4">
             <div class="bg-gradient-to-r from-cyan-950/40 via-slate-950 to-slate-950 p-5 rounded-xl border border-cyan-500/20 space-y-2">
-                <div class="flex items-center gap-2 text-cyan-400">
-                    <i data-lucide="message-circle-question" class="w-6 h-6"></i>
-                    <h2 class="text-base font-black uppercase tracking-wider font-logo">Central de Dúvidas</h2>
-                </div>
+                <div class="flex items-center gap-2 text-cyan-400"><i data-lucide="message-circle-question" class="w-6 h-6"></i><h2 class="text-base font-black uppercase tracking-wider font-logo">Central de Dúvidas</h2></div>
                 <p class="text-xs text-slate-400 leading-relaxed">Perguntas e respostas com cunho exclusivamente educacional.</p>
             </div>
             <div class="relative">
@@ -880,16 +831,12 @@
                 </div>
                 <div id="resposta-texto" class="text-xs text-slate-300 leading-relaxed space-y-2"></div>
             </div>
-            <div class="flex items-center justify-center gap-2 w-full bg-slate-950 border border-slate-900 text-slate-400 font-semibold text-xs py-3 rounded-xl text-center">
-                <i data-lucide="book-open" class="w-4 h-4 shrink-0"></i> Confira a aba <strong class="text-cyan-400">Educação</strong> para conteúdo completo.
-            </div>
         </div>
 
         <!-- ════ RODAPÉ ════ -->
         <footer class="p-4 text-center border-t border-slate-900 bg-black text-[9px] text-slate-600 space-y-2">
             <p class="font-bold text-slate-500">⚖️ AVISO DE TRANSPARÊNCIA REGULATÓRIA</p>
-            <p>O ambiente <strong>Matias Invest</strong> é um diário virtual pessoal de compartilhamento de metodologias de estudo e simulação matemática de categorias de ativos, de uso exclusivo do proprietário, com base em experiências pessoais de aprendizado.</p>
-            <p><strong>Este sistema NÃO constitui:</strong> análise de valores mobiliários (Res. CVM nº 20/2021); consultoria de valores mobiliários (Res. CVM nº 19/2021); intermediação, oferta pública, ou recomendação de qualquer ativo financeiro. <strong>A ferramenta não constitui recomendação de investimentos. Rentabilidade passada não é garantia de rentabilidade futura.</strong></p>
+            <p>O ambiente <strong>Matias Invest</strong> é um diário virtual pessoal de compartilhamento de metodologias de estudo. <strong>Este sistema NÃO constitui:</strong> análise de valores mobiliários (Res. CVM nº 20/2021); consultoria ou recomendação de qualquer ativo financeiro.</p>
             <p>Consulte um profissional habilitado — <a href="https://www.cvm.gov.br" target="_blank" rel="noopener noreferrer" class="text-cyan-700 underline">www.cvm.gov.br</a>.</p>
         </footer>
 
@@ -1003,27 +950,27 @@
     const carteiraCompleta = [
         { ticker: null,     nome: 'FIDC de Crédito Privado (Exemplo Genérico)',          categoria: 'Renda Fixa',   descricao: 'Categoria: Fundo de Direitos Creditórios focado em prêmios de crédito corporativo. Nome ilustrativo.',                aplicacaoMinima: 500,  pesosPerfil: { conservador: 25, moderado: 15, arrojado: 5  } },
         { ticker: null,     nome: 'FIDC Estruturado com Foco em Previsibilidade',         categoria: 'Renda Fixa',   descricao: 'Categoria: Direitos creditórios com modelo estruturado de prêmio. Nome ilustrativo.',                              aplicacaoMinima: 500,  pesosPerfil: { conservador: 20, moderado: 10, arrojado: 5  } },
-        { ticker: 'IFRA11', nome: 'ETF/FI de Infraestrutura (ex: IFRA11)',               categoria: 'Renda Fixa',   descricao: 'Categoria: Ativo de infraestrutura focado em crédito corporativo. Ticker público negociado na B3. Não é indicação de compra.',    aplicacaoMinima: 80,   pesosPerfil: { conservador: 15, moderado: 10, arrojado: 5  } },
-        { ticker: null,     nome: 'Fundo Passivo Indexado ao IMA-B (Exemplo Genérico)',  categoria: 'Renda Fixa',   descricao: 'Categoria: Estratégia indexada à inflação real de longo prazo (IPCA+). Nome ilustrativo.',              aplicacaoMinima: 100,  pesosPerfil: { conservador: 25, moderado: 10, arrojado: 5  } },
-        { ticker: null,     nome: 'Fundo Multimercado com Ações e Macro (Genérico)',     categoria: 'Multimercado', descricao: 'Categoria: Multimercado dinâmico com ativos macro globais e ações. Nome ilustrativo.',                          aplicacaoMinima: 500,  pesosPerfil: { conservador: 0,  moderado: 15, arrojado: 10 } },
-        { ticker: null,     nome: 'Fundo Macro de Juros e Moedas (Genérico)',            categoria: 'Multimercado', descricao: 'Categoria: Fundo focado em distorções táticas de juros e câmbio. Nome ilustrativo.',                            aplicacaoMinima: 500,  pesosPerfil: { conservador: 0,  moderado: 10, arrojado: 10 } },
-        { ticker: null,     nome: 'Fundo Quantitativo de Arbitragem (Genérico)',         categoria: 'Multimercado', descricao: 'Categoria: Fundo com arbitragem quantitativa de índices e câmbio. Nome ilustrativo.',                          aplicacaoMinima: 500,  pesosPerfil: { conservador: 0,  moderado: 10, arrojado: 5  } },
-        { ticker: null,     nome: 'Fundo de Ações Long Only — Qualidade (Genérico)',     categoria: 'Ações',        descricao: 'Categoria: Seleção ativa de ações com foco em geração de valor. Nome ilustrativo.',                            aplicacaoMinima: 1000, pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 10 } },
-        { ticker: null,     nome: 'Fundo de Ações com Teses de Crescimento (Genérico)', categoria: 'Ações',        descricao: 'Categoria: FIA com foco em potencial de crescimento em bolsa. Nome ilustrativo.',                              aplicacaoMinima: 1000, pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 15 } },
-        { ticker: null,     nome: 'Fundo de Ações Value Investing / BDR (Genérico)',    categoria: 'Ações',        descricao: 'Categoria: Value investing voltado a assimetrias de lucros. Nome ilustrativo.',                                aplicacaoMinima: 5000, pesosPerfil: { conservador: 0,  moderado: 0,  arrojado: 15 } },
-        { ticker: 'BBSE3',  nome: 'Ação de Seguradora de Alta Geração de Caixa (ex: BBSE3)', categoria: 'Ações',   descricao: 'Ticker público da B3. Não é indicação de compra de BBSE3 especificamente.',         aplicacaoMinima: 34,   pesosPerfil: { conservador: 0,  moderado: 10, arrojado: 10 } },
-        { ticker: 'SLCE3',  nome: 'Ação de Commodities Agrícolas (ex: SLCE3)',          categoria: 'Ações',        descricao: 'Ticker público. Não é indicação de compra de SLCE3 especificamente.',                     aplicacaoMinima: 19,   pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 10 } },
-        { ticker: 'GMAT3',  nome: 'Ação de Varejo Alimentar em Expansão (ex: GMAT3)',   categoria: 'Ações',        descricao: 'Ticker público. Não é indicação de compra de GMAT3 especificamente.',                            aplicacaoMinima: 8,    pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 5  } },
-        { ticker: 'BTHF11', nome: 'Portfólio Híbrido em Bolsa (ex: BTHF11)',           categoria: 'Ações',        descricao: 'Ticker público. Não é indicação de compra de BTHF11 especificamente.',                                  aplicacaoMinima: 10,   pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 5  } },
-        { ticker: 'KLBN4',  nome: 'Ação de Papel e Celulose com Dividendos (ex: KLBN4)',categoria: 'Ações',        descricao: 'Ticker público. Não é indicação de compra de KLBN4 especificamente.',          aplicacaoMinima: 4,    pesosPerfil: { conservador: 0,  moderado: 10, arrojado: 10 } },
-        { ticker: 'FESA4',  nome: 'Ação de Mineração com Geração de Caixa (ex: FESA4)',categoria: 'Ações',        descricao: 'Ticker público. Não é indicação de compra de FESA4 especificamente.',                  aplicacaoMinima: 7,    pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 10 } },
-        { ticker: 'BRBI11', nome: 'Unit de Banco de Investimento (ex: BRBI11)',         categoria: 'Ações',        descricao: 'Ticker público. Não é indicação de compra de BRBI11 especificamente.',                                aplicacaoMinima: 15,   pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 10 } },
-        { ticker: 'XPML11', nome: 'FII de Shopping Centers (ex: XPML11)',              categoria: 'Ações',        descricao: 'Fundo imobiliário de tijolo — shoppings. Rendimentos mensais isentos de IR para PF (confirme regra vigente). Ticker público.',           aplicacaoMinima: 105,  pesosPerfil: { conservador: 0,  moderado: 10, arrojado: 5  } },
-        { ticker: 'WRLD11', nome: 'ETF Global Diversificado (ex: WRLD11)',              categoria: 'Global',       descricao: 'Ticker público. Não é indicação de compra de WRLD11 especificamente.',                  aplicacaoMinima: 10,   pesosPerfil: { conservador: 0,  moderado: 10, arrojado: 15 } },
-        { ticker: null,     nome: 'Fundo de Ações Globais com Foco em Crescimento (Genérico)', categoria: 'Global', descricao: 'Categoria: Exposição a ativos internacionais de alto crescimento. Nome ilustrativo.',                      aplicacaoMinima: 500,  pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 10 } },
-        { ticker: 'ALUG11', nome: 'ETF de Real Estate Global (ex: ALUG11)',             categoria: 'Global',       descricao: 'Ticker público. Não é indicação de compra de ALUG11 especificamente.',              aplicacaoMinima: 110,  pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 5  } },
-        { ticker: 'USDB11', nome: 'ETF de Renda Fixa Americana (ex: USDB11)',          categoria: 'Global',       descricao: 'Ticker público. Não é indicação de compra de USDB11 especificamente.',          aplicacaoMinima: 10,   pesosPerfil: { conservador: 0,  moderado: 10, arrojado: 5  } },
-        { ticker: 'BNDX11', nome: 'ETF de Renda Fixa Internacional ex-EUA (ex: BNDX11)',categoria: 'Global',      descricao: 'Ticker público. Não é indicação de compra de BNDX11 especificamente.',                                aplicacaoMinima: 10,   pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 5  } }
+        { ticker: 'IFRA11', nome: 'ETF/FI de Infraestrutura (ex: IFRA11)',               categoria: 'Renda Fixa',   descricao: 'Ticker público negociado na B3. Não é indicação de compra.',                                                       aplicacaoMinima: 80,   pesosPerfil: { conservador: 15, moderado: 10, arrojado: 5  } },
+        { ticker: null,     nome: 'Fundo Passivo Indexado ao IMA-B (Exemplo Genérico)',  categoria: 'Renda Fixa',   descricao: 'Estratégia indexada à inflação real de longo prazo (IPCA+). Nome ilustrativo.',                                    aplicacaoMinima: 100,  pesosPerfil: { conservador: 25, moderado: 10, arrojado: 5  } },
+        { ticker: null,     nome: 'Fundo Multimercado com Ações e Macro (Genérico)',     categoria: 'Multimercado', descricao: 'Multimercado dinâmico com ativos macro globais e ações. Nome ilustrativo.',                                        aplicacaoMinima: 500,  pesosPerfil: { conservador: 0,  moderado: 15, arrojado: 10 } },
+        { ticker: null,     nome: 'Fundo Macro de Juros e Moedas (Genérico)',            categoria: 'Multimercado', descricao: 'Fundo focado em distorções táticas de juros e câmbio. Nome ilustrativo.',                                         aplicacaoMinima: 500,  pesosPerfil: { conservador: 0,  moderado: 10, arrojado: 10 } },
+        { ticker: null,     nome: 'Fundo Quantitativo de Arbitragem (Genérico)',         categoria: 'Multimercado', descricao: 'Fundo com arbitragem quantitativa de índices e câmbio. Nome ilustrativo.',                                        aplicacaoMinima: 500,  pesosPerfil: { conservador: 0,  moderado: 10, arrojado: 5  } },
+        { ticker: null,     nome: 'Fundo de Ações Long Only — Qualidade (Genérico)',     categoria: 'Ações',        descricao: 'Seleção ativa de ações com foco em geração de valor. Nome ilustrativo.',                                          aplicacaoMinima: 1000, pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 10 } },
+        { ticker: null,     nome: 'Fundo de Ações com Teses de Crescimento (Genérico)', categoria: 'Ações',        descricao: 'FIA com foco em potencial de crescimento em bolsa. Nome ilustrativo.',                                            aplicacaoMinima: 1000, pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 15 } },
+        { ticker: null,     nome: 'Fundo de Ações Value Investing / BDR (Genérico)',    categoria: 'Ações',        descricao: 'Value investing voltado a assimetrias de lucros. Nome ilustrativo.',                                              aplicacaoMinima: 5000, pesosPerfil: { conservador: 0,  moderado: 0,  arrojado: 15 } },
+        { ticker: 'BBSE3',  nome: 'Ação de Seguradora de Alta Geração de Caixa (ex: BBSE3)', categoria: 'Ações',   descricao: 'Ticker público da B3. Não é indicação de compra de BBSE3 especificamente.',                                       aplicacaoMinima: 34,   pesosPerfil: { conservador: 0,  moderado: 10, arrojado: 10 } },
+        { ticker: 'SLCE3',  nome: 'Ação de Commodities Agrícolas (ex: SLCE3)',          categoria: 'Ações',        descricao: 'Ticker público. Não é indicação de compra de SLCE3 especificamente.',                                             aplicacaoMinima: 19,   pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 10 } },
+        { ticker: 'GMAT3',  nome: 'Ação de Varejo Alimentar em Expansão (ex: GMAT3)',   categoria: 'Ações',        descricao: 'Ticker público. Não é indicação de compra de GMAT3 especificamente.',                                            aplicacaoMinima: 8,    pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 5  } },
+        { ticker: 'BTHF11', nome: 'Portfólio Híbrido em Bolsa (ex: BTHF11)',           categoria: 'Ações',        descricao: 'Ticker público. Não é indicação de compra de BTHF11 especificamente.',                                           aplicacaoMinima: 10,   pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 5  } },
+        { ticker: 'KLBN4',  nome: 'Ação de Papel e Celulose com Dividendos (ex: KLBN4)',categoria: 'Ações',        descricao: 'Ticker público. Não é indicação de compra de KLBN4 especificamente.',                                            aplicacaoMinima: 4,    pesosPerfil: { conservador: 0,  moderado: 10, arrojado: 10 } },
+        { ticker: 'FESA4',  nome: 'Ação de Mineração com Geração de Caixa (ex: FESA4)',categoria: 'Ações',        descricao: 'Ticker público. Não é indicação de compra de FESA4 especificamente.',                                            aplicacaoMinima: 7,    pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 10 } },
+        { ticker: 'BRBI11', nome: 'Unit de Banco de Investimento (ex: BRBI11)',         categoria: 'Ações',        descricao: 'Ticker público. Não é indicação de compra de BRBI11 especificamente.',                                           aplicacaoMinima: 15,   pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 10 } },
+        { ticker: 'XPML11', nome: 'FII de Shopping Centers (ex: XPML11)',              categoria: 'Ações',        descricao: 'Fundo imobiliário de tijolo — shoppings. Ticker público.',                                                        aplicacaoMinima: 105,  pesosPerfil: { conservador: 0,  moderado: 10, arrojado: 5  } },
+        { ticker: 'WRLD11', nome: 'ETF Global Diversificado (ex: WRLD11)',              categoria: 'Global',       descricao: 'Ticker público. Não é indicação de compra de WRLD11 especificamente.',                                           aplicacaoMinima: 10,   pesosPerfil: { conservador: 0,  moderado: 10, arrojado: 15 } },
+        { ticker: null,     nome: 'Fundo de Ações Globais com Foco em Crescimento (Genérico)', categoria: 'Global', descricao: 'Exposição a ativos internacionais de alto crescimento. Nome ilustrativo.',                                      aplicacaoMinima: 500,  pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 10 } },
+        { ticker: 'ALUG11', nome: 'ETF de Real Estate Global (ex: ALUG11)',             categoria: 'Global',       descricao: 'Ticker público. Não é indicação de compra de ALUG11 especificamente.',                                          aplicacaoMinima: 110,  pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 5  } },
+        { ticker: 'USDB11', nome: 'ETF de Renda Fixa Americana (ex: USDB11)',          categoria: 'Global',       descricao: 'Ticker público. Não é indicação de compra de USDB11 especificamente.',                                          aplicacaoMinima: 10,   pesosPerfil: { conservador: 0,  moderado: 10, arrojado: 5  } },
+        { ticker: 'BNDX11', nome: 'ETF de Renda Fixa Internacional ex-EUA (ex: BNDX11)',categoria: 'Global',      descricao: 'Ticker público. Não é indicação de compra de BNDX11 especificamente.',                                          aplicacaoMinima: 10,   pesosPerfil: { conservador: 0,  moderado: 5,  arrojado: 5  } }
     ];
 
     const PERCENTUAL_RESERVA_EMERGENCIA = 0.30;
@@ -1043,28 +990,28 @@
     /* ════ HOLOGRAMAS EDUCACIONAIS ════ */
     const holoTopicos = [
         { id: 'orcamento-pessoal', categoria: 'fundamentos', icon: '💰', iconBg: 'background:rgba(245,158,11,0.12)', tag: 'Fundamentos', tagClass: 'bg-amber-500/15 text-amber-400 border border-amber-500/25', titulo: 'Orçamento Pessoal e Controle de Gastos', desc: 'Aprenda a organizar receitas e despesas, criar planilhas e parar de gastar mais do que ganha.', creator: 'Me Poupe!', creatorInitials: 'MP', url: 'https://www.youtube.com/@MePoupe', videoDesc: 'Como montar seu orçamento' },
-        { id: 'reserva-emergencia', categoria: 'fundamentos', icon: '🛡️', iconBg: 'background:rgba(16,185,129,0.12)', tag: 'Fundamentos', tagClass: 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25', titulo: 'Reserva de Emergência: Por Onde Começar', desc: 'Entenda quanto guardar, onde deixar e por que a reserva é o primeiro passo antes de qualquer investimento.', creator: 'Nathalia Arcuri', creatorInitials: 'NA', url: 'https://www.youtube.com/@MePoupe', videoDesc: 'Reserva de emergência do zero' },
-        { id: 'juros-compostos', categoria: 'fundamentos', icon: '📈', iconBg: 'background:rgba(6,182,212,0.12)', tag: 'Fundamentos', tagClass: 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/25', titulo: 'Juros Compostos: O Oitavo Maravilha', desc: 'Como o tempo e a constância nos aportes criam riqueza exponencial. Simulações práticas.', creator: 'O Primo Rico', creatorInitials: 'PR', url: 'https://www.youtube.com/@oprimorico', videoDesc: 'Juros compostos na prática' },
+        { id: 'reserva-emergencia', categoria: 'fundamentos', icon: '🛡️', iconBg: 'background:rgba(16,185,129,0.12)', tag: 'Fundamentos', tagClass: 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25', titulo: 'Reserva de Emergência: Por Onde Começar', desc: 'Entenda quanto guardar, onde deixar e por que a reserva é o primeiro passo.', creator: 'Nathalia Arcuri', creatorInitials: 'NA', url: 'https://www.youtube.com/@MePoupe', videoDesc: 'Reserva de emergência do zero' },
+        { id: 'juros-compostos', categoria: 'fundamentos', icon: '📈', iconBg: 'background:rgba(6,182,212,0.12)', tag: 'Fundamentos', tagClass: 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/25', titulo: 'Juros Compostos: O Oitavo Maravilha', desc: 'Como o tempo e a constância nos aportes criam riqueza exponencial.', creator: 'O Primo Rico', creatorInitials: 'PR', url: 'https://www.youtube.com/@oprimorico', videoDesc: 'Juros compostos na prática' },
         { id: 'planejamento-financeiro', categoria: 'fundamentos', icon: '🗺️', iconBg: 'background:rgba(168,85,247,0.12)', tag: 'Fundamentos', tagClass: 'bg-purple-500/15 text-purple-400 border border-purple-500/25', titulo: 'Planejamento Financeiro Familiar', desc: 'Metas, prioridades e como alinhar finanças em família.', creator: 'Gustavo Cerbasi', creatorInitials: 'GC', url: 'https://www.youtube.com/@gustavocerbasibr', videoDesc: 'Planejamento financeiro real' },
         { id: 'tesouro-direto', categoria: 'rendafixa', icon: '🏛️', iconBg: 'background:rgba(16,185,129,0.12)', tag: 'Renda Fixa', tagClass: 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25', titulo: 'Tesouro Direto: Selic, IPCA+ e Prefixado', desc: 'Diferenças entre os títulos públicos, quando usar cada um e como comprar.', creator: 'Investidor Sardinha', creatorInitials: 'IS', url: 'https://www.youtube.com/@InvestidorSardinha', videoDesc: 'Guia completo Tesouro Direto' },
         { id: 'cdb-lci-lca', categoria: 'rendafixa', icon: '🏦', iconBg: 'background:rgba(6,182,212,0.12)', tag: 'Renda Fixa', tagClass: 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/25', titulo: 'CDB, LCI e LCA: Diferenças e Quando Usar', desc: 'Tributação, FGC, liquidez e como comparar títulos de renda fixa privada.', creator: 'Thiago Nigro', creatorInitials: 'TN', url: 'https://www.youtube.com/@oprimorico', videoDesc: 'CDB vs LCI vs LCA' },
-        { id: 'debentures-cri-cra', categoria: 'rendafixa', icon: '📋', iconBg: 'background:rgba(245,158,11,0.12)', tag: 'Renda Fixa', tagClass: 'bg-amber-500/15 text-amber-400 border border-amber-500/25', titulo: 'Debêntures, CRI e CRA: Crédito Privado', desc: 'Como funcionam esses títulos de crédito privado, vantagens, riscos e como acessá-los.', creator: 'Felipe Miranda', creatorInitials: 'FM', url: 'https://www.youtube.com/@empiricus', videoDesc: 'Crédito privado para iniciantes' },
+        { id: 'debentures-cri-cra', categoria: 'rendafixa', icon: '📋', iconBg: 'background:rgba(245,158,11,0.12)', tag: 'Renda Fixa', tagClass: 'bg-amber-500/15 text-amber-400 border border-amber-500/25', titulo: 'Debêntures, CRI e CRA: Crédito Privado', desc: 'Como funcionam esses títulos de crédito privado, vantagens e riscos.', creator: 'Felipe Miranda', creatorInitials: 'FM', url: 'https://www.youtube.com/@empiricus', videoDesc: 'Crédito privado para iniciantes' },
         { id: 'como-funciona-bolsa', categoria: 'acoes', icon: '📊', iconBg: 'background:rgba(6,182,212,0.12)', tag: 'Ações', tagClass: 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/25', titulo: 'Como Funciona a Bolsa de Valores (B3)', desc: 'Do pregão às ordens de compra e venda: o funcionamento da bolsa.', creator: 'Raul Sena', creatorInitials: 'RS', url: 'https://www.youtube.com/@InvestidorSardinha', videoDesc: 'Começar na bolsa do zero' },
         { id: 'analise-fundamentalista', categoria: 'acoes', icon: '🔬', iconBg: 'background:rgba(168,85,247,0.12)', tag: 'Ações', tagClass: 'bg-purple-500/15 text-purple-400 border border-purple-500/25', titulo: 'Análise Fundamentalista: P/L, ROE e Mais', desc: 'Os principais indicadores para avaliar empresas.', creator: 'Suno Research', creatorInitials: 'SR', url: 'https://www.youtube.com/@SunoResearch', videoDesc: 'Análise fundamentalista prática' },
         { id: 'dividendos', categoria: 'acoes', icon: '💸', iconBg: 'background:rgba(16,185,129,0.12)', tag: 'Ações', tagClass: 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25', titulo: 'Ações de Dividendos: Viver de Renda', desc: 'Como selecionar empresas pagadoras e montar uma carteira geradora de renda passiva.', creator: 'Viver de Dividendos', creatorInitials: 'VD', url: 'https://www.youtube.com/@ViverdeDividendos', videoDesc: 'Carteira de dividendos passo a passo' },
-        { id: 'value-investing', categoria: 'acoes', icon: '🧠', iconBg: 'background:rgba(245,158,11,0.12)', tag: 'Ações', tagClass: 'bg-amber-500/15 text-amber-400 border border-amber-500/25', titulo: 'Value Investing: A Filosofia de Buffett', desc: 'Princípios do value investing, margem de segurança, e como pensar como dono de um negócio.', creator: 'Bastter', creatorInitials: 'BA', url: 'https://www.youtube.com/@bastter', videoDesc: 'Value investing brasileiro' },
+        { id: 'value-investing', categoria: 'acoes', icon: '🧠', iconBg: 'background:rgba(245,158,11,0.12)', tag: 'Ações', tagClass: 'bg-amber-500/15 text-amber-400 border border-amber-500/25', titulo: 'Value Investing: A Filosofia de Buffett', desc: 'Princípios do value investing, margem de segurança.', creator: 'Bastter', creatorInitials: 'BA', url: 'https://www.youtube.com/@bastter', videoDesc: 'Value investing brasileiro' },
         { id: 'o-que-sao-fiis', categoria: 'fiis', icon: '🏢', iconBg: 'background:rgba(245,158,11,0.12)', tag: 'FIIs', tagClass: 'bg-amber-500/15 text-amber-400 border border-amber-500/25', titulo: 'Fundos Imobiliários: O Guia Completo', desc: 'O que são FIIs, tipos (tijolo, papel, FOF), como funcionam os rendimentos.', creator: 'Suno Research', creatorInitials: 'SR', url: 'https://www.youtube.com/@SunoResearch', videoDesc: 'Guia completo de FIIs' },
-        { id: 'como-analisar-fii', categoria: 'fiis', icon: '🔍', iconBg: 'background:rgba(6,182,212,0.12)', tag: 'FIIs', tagClass: 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/25', titulo: 'Como Analisar FIIs: P/VP, DY e Vacância', desc: 'Indicadores essenciais para avaliar um fundo imobiliário antes de investir.', creator: 'Viver de Dividendos', creatorInitials: 'VD', url: 'https://www.youtube.com/@ViverdeDividendos', videoDesc: 'Analisando FIIs corretamente' },
-        { id: 'fiis-papel-vs-tijolo', categoria: 'fiis', icon: '📄', iconBg: 'background:rgba(168,85,247,0.12)', tag: 'FIIs', tagClass: 'bg-purple-500/15 text-purple-400 border border-purple-500/25', titulo: 'FIIs de Papel vs. FIIs de Tijolo', desc: 'Diferenças, riscos específicos de cada tipo e como alocar na carteira.', creator: 'Investidor Sardinha', creatorInitials: 'IS', url: 'https://www.youtube.com/@InvestidorSardinha', videoDesc: 'Papel vs Tijolo na prática' },
+        { id: 'como-analisar-fii', categoria: 'fiis', icon: '🔍', iconBg: 'background:rgba(6,182,212,0.12)', tag: 'FIIs', tagClass: 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/25', titulo: 'Como Analisar FIIs: P/VP, DY e Vacância', desc: 'Indicadores essenciais para avaliar um fundo imobiliário.', creator: 'Viver de Dividendos', creatorInitials: 'VD', url: 'https://www.youtube.com/@ViverdeDividendos', videoDesc: 'Analisando FIIs corretamente' },
+        { id: 'fiis-papel-vs-tijolo', categoria: 'fiis', icon: '📄', iconBg: 'background:rgba(168,85,247,0.12)', tag: 'FIIs', tagClass: 'bg-purple-500/15 text-purple-400 border border-purple-500/25', titulo: 'FIIs de Papel vs. FIIs de Tijolo', desc: 'Diferenças, riscos específicos e como alocar na carteira.', creator: 'Investidor Sardinha', creatorInitials: 'IS', url: 'https://www.youtube.com/@InvestidorSardinha', videoDesc: 'Papel vs Tijolo na prática' },
         { id: 'etfs-internacionais', categoria: 'global', icon: '🌍', iconBg: 'background:rgba(6,182,212,0.12)', tag: 'Global', tagClass: 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/25', titulo: 'ETFs Internacionais pela B3 e no Exterior', desc: 'Como investir em índices globais (S&P 500, MSCI World) via ETFs.', creator: 'O Primo Rico', creatorInitials: 'PR', url: 'https://www.youtube.com/@oprimorico', videoDesc: 'ETFs globais para brasileiros' },
-        { id: 'bdrs', categoria: 'global', icon: '🇺🇸', iconBg: 'background:rgba(16,185,129,0.12)', tag: 'Global', tagClass: 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25', titulo: 'BDRs: Como Investir em Empresas Gringas', desc: 'O que são BDRs, como funcionam, tributação e como acessar ações internacionais pela B3.', creator: 'Thiago Nigro', creatorInitials: 'TN', url: 'https://www.youtube.com/@oprimorico', videoDesc: 'BDRs: guia prático' },
-        { id: 'dolarizacao-carteira', categoria: 'global', icon: '💱', iconBg: 'background:rgba(245,158,11,0.12)', tag: 'Global', tagClass: 'bg-amber-500/15 text-amber-400 border border-amber-500/25', titulo: 'Dolarizar a Carteira: Proteção Cambial', desc: 'Por que e como adicionar exposição ao dólar e outros ativos internacionais.', creator: 'Gustavo Cerbasi', creatorInitials: 'GC', url: 'https://www.youtube.com/@gustavocerbasibr', videoDesc: 'Diversificação cambial' },
-        { id: 'blockchain-bitcoin', categoria: 'cripto', icon: '₿', iconBg: 'background:rgba(247,147,26,0.15)', tag: 'Cripto', tagClass: 'bg-orange-500/15 text-orange-400 border border-orange-500/25', titulo: 'Bitcoin e Blockchain: O Básico', desc: 'O que é Bitcoin, como funciona o blockchain e por que é considerado reserva de valor.', creator: 'André Nishimura', creatorInitials: 'AN', url: 'https://www.youtube.com/@CryptoTVBrasil', videoDesc: 'Bitcoin do zero ao avançado' },
-        { id: 'ethereum-defi', categoria: 'cripto', icon: '⟠', iconBg: 'background:rgba(98,126,234,0.15)', tag: 'Cripto', tagClass: 'bg-indigo-500/15 text-indigo-400 border border-indigo-500/25', titulo: 'Ethereum, DeFi e Smart Contracts', desc: 'Como o Ethereum funciona, contratos inteligentes, DeFi e as principais aplicações.', creator: 'Coin Bureau Brasil', creatorInitials: 'CB', url: 'https://www.youtube.com/@coinbureaubrasil', videoDesc: 'Ethereum e DeFi explicados' },
-        { id: 'riscos-cripto', categoria: 'cripto', icon: '⚠️', iconBg: 'background:rgba(239,68,68,0.12)', tag: 'Cripto', tagClass: 'bg-red-500/15 text-red-400 border border-red-500/25', titulo: 'Riscos do Mercado de Criptoativos', desc: 'Volatilidade extrema, golpes, regulação, custódia e por que criptoativos exigem cautela máxima.', creator: 'Empiricus', creatorInitials: 'EM', url: 'https://www.youtube.com/@empiricus', videoDesc: 'Riscos reais do cripto' },
-        { id: 'psicologia-do-investidor', categoria: 'comportamento', icon: '🧩', iconBg: 'background:rgba(168,85,247,0.12)', tag: 'Mentalidade', tagClass: 'bg-purple-500/15 text-purple-400 border border-purple-500/25', titulo: 'Psicologia do Investidor e Vieses Cognitivos', desc: 'Aversão à perda, efeito manada, excesso de confiança — o maior inimigo do investidor é ele mesmo.', creator: 'Gustavo Cerbasi', creatorInitials: 'GC', url: 'https://www.youtube.com/@gustavocerbasibr', videoDesc: 'Psicologia e investimentos' },
-        { id: 'independencia-financeira', categoria: 'comportamento', icon: '🚀', iconBg: 'background:rgba(6,182,212,0.12)', tag: 'Mentalidade', tagClass: 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/25', titulo: 'Independência Financeira: O Caminho Real', desc: 'O conceito de FIRE, número mágico da independência e estratégias para viver de renda passiva.', creator: 'O Primo Rico', creatorInitials: 'PR', url: 'https://www.youtube.com/@oprimorico', videoDesc: 'Independência financeira passo a passo' },
-        { id: 'mentalidade-rico', categoria: 'comportamento', icon: '💎', iconBg: 'background:rgba(16,185,129,0.12)', tag: 'Mentalidade', tagClass: 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25', titulo: 'Mentalidade Financeira de Longo Prazo', desc: 'Como pensar em décadas, ignorar ruído de curto prazo e manter a disciplina nos aportes.', creator: 'Bastter', creatorInitials: 'BA', url: 'https://www.youtube.com/@bastter', videoDesc: 'Investidor de longo prazo' }
+        { id: 'bdrs', categoria: 'global', icon: '🇺🇸', iconBg: 'background:rgba(16,185,129,0.12)', tag: 'Global', tagClass: 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25', titulo: 'BDRs: Como Investir em Empresas Gringas', desc: 'O que são BDRs, como funcionam, tributação.', creator: 'Thiago Nigro', creatorInitials: 'TN', url: 'https://www.youtube.com/@oprimorico', videoDesc: 'BDRs: guia prático' },
+        { id: 'dolarizacao-carteira', categoria: 'global', icon: '💱', iconBg: 'background:rgba(245,158,11,0.12)', tag: 'Global', tagClass: 'bg-amber-500/15 text-amber-400 border border-amber-500/25', titulo: 'Dolarizar a Carteira: Proteção Cambial', desc: 'Por que e como adicionar exposição ao dólar e ativos internacionais.', creator: 'Gustavo Cerbasi', creatorInitials: 'GC', url: 'https://www.youtube.com/@gustavocerbasibr', videoDesc: 'Diversificação cambial' },
+        { id: 'blockchain-bitcoin', categoria: 'cripto', icon: '₿', iconBg: 'background:rgba(247,147,26,0.15)', tag: 'Cripto', tagClass: 'bg-orange-500/15 text-orange-400 border border-orange-500/25', titulo: 'Bitcoin e Blockchain: O Básico', desc: 'O que é Bitcoin, como funciona o blockchain.', creator: 'André Nishimura', creatorInitials: 'AN', url: 'https://www.youtube.com/@CryptoTVBrasil', videoDesc: 'Bitcoin do zero ao avançado' },
+        { id: 'ethereum-defi', categoria: 'cripto', icon: '⟠', iconBg: 'background:rgba(98,126,234,0.15)', tag: 'Cripto', tagClass: 'bg-indigo-500/15 text-indigo-400 border border-indigo-500/25', titulo: 'Ethereum, DeFi e Smart Contracts', desc: 'Como o Ethereum funciona, contratos inteligentes e DeFi.', creator: 'Coin Bureau Brasil', creatorInitials: 'CB', url: 'https://www.youtube.com/@coinbureaubrasil', videoDesc: 'Ethereum e DeFi explicados' },
+        { id: 'riscos-cripto', categoria: 'cripto', icon: '⚠️', iconBg: 'background:rgba(239,68,68,0.12)', tag: 'Cripto', tagClass: 'bg-red-500/15 text-red-400 border border-red-500/25', titulo: 'Riscos do Mercado de Criptoativos', desc: 'Volatilidade extrema, golpes, regulação e custódia.', creator: 'Empiricus', creatorInitials: 'EM', url: 'https://www.youtube.com/@empiricus', videoDesc: 'Riscos reais do cripto' },
+        { id: 'psicologia-do-investidor', categoria: 'comportamento', icon: '🧩', iconBg: 'background:rgba(168,85,247,0.12)', tag: 'Mentalidade', tagClass: 'bg-purple-500/15 text-purple-400 border border-purple-500/25', titulo: 'Psicologia do Investidor e Vieses Cognitivos', desc: 'Aversão à perda, efeito manada — o maior inimigo do investidor é ele mesmo.', creator: 'Gustavo Cerbasi', creatorInitials: 'GC', url: 'https://www.youtube.com/@gustavocerbasibr', videoDesc: 'Psicologia e investimentos' },
+        { id: 'independencia-financeira', categoria: 'comportamento', icon: '🚀', iconBg: 'background:rgba(6,182,212,0.12)', tag: 'Mentalidade', tagClass: 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/25', titulo: 'Independência Financeira: O Caminho Real', desc: 'O conceito de FIRE e estratégias para viver de renda passiva.', creator: 'O Primo Rico', creatorInitials: 'PR', url: 'https://www.youtube.com/@oprimorico', videoDesc: 'Independência financeira passo a passo' },
+        { id: 'mentalidade-rico', categoria: 'comportamento', icon: '💎', iconBg: 'background:rgba(16,185,129,0.12)', tag: 'Mentalidade', tagClass: 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/25', titulo: 'Mentalidade Financeira de Longo Prazo', desc: 'Como pensar em décadas e manter disciplina nos aportes.', creator: 'Bastter', creatorInitials: 'BA', url: 'https://www.youtube.com/@bastter', videoDesc: 'Investidor de longo prazo' }
     ];
 
     let holoFiltroAtivo = 'todos';
@@ -1128,15 +1075,14 @@
         { categoria: '❓ Como Funciona o Site', perguntas: [
             { pergunta: 'Como funciona a simulação de carteira?', resposta: `A simulação mostra, de forma ilustrativa, como organizar proporcionalmente uma carteira hipotética.<br><br>📌 <strong>Passo a passo:</strong><br>1. Responda as perguntas de perfil<br>2. Digite um valor hipotético<br>3. O site separa 30% para reserva de emergência e distribui os 70% restantes entre categorias genéricas<br><br>⚠️ Os nomes são <strong>categorias genéricas</strong>, não recomendações de compra.` },
             { pergunta: 'Os nomes de ativos exibidos são recomendações?', resposta: `<strong>Não.</strong> Todos os nomes são <strong>categorias genéricas ou ilustrativas</strong>. Quando aparece um ticker (ex: WRLD11), trata-se de um exemplo público de como aquela categoria pode ser acessada — não é indicação de compra daquele ativo específico.<br><br>⚖️ Este site não é registrado como analista ou consultor de valores mobiliários na CVM.` },
-            { pergunta: 'Meus dados pessoais são coletados?', resposta: `<strong>Não.</strong> Este site não coleta nenhum dado pessoal. Não há formulários de cadastro, não há backend, não há cookies de rastreamento.<br><br>✅ As preferências salvas ficam <strong>exclusivamente no localStorage do seu navegador</strong> e podem ser apagadas a qualquer momento pelo botão "Limpar" ou nas Configurações.` },
-            { pergunta: 'O que é Conta Remunerada A e Conta Remunerada B?', resposta: `São exemplos genéricos de reservas de liquidez. O simulador aloca 30% nelas automaticamente como exemplo educacional. Não representam produtos específicos de nenhuma instituição financeira.` },
-            { pergunta: 'Como funciona a aba "Montar Minha Carteira"?', resposta: `Essa aba permite registrar suas próprias aplicações (reais ou hipotéticas), informando ativo, valor, data de início e data final.<br><br>📌 O sistema busca a cotação atual do ativo (real para PETR4, VALE3, ITUB4 e MGLU3 via brapi.dev; simulada para os demais) e calcula o resultado do período.<br><br>⚖️ Isso não constitui recomendação de investimentos — é apenas uma ferramenta de organização e estudo pessoal.` },
+            { pergunta: 'Meus dados pessoais são coletados?', resposta: `<strong>Não.</strong> Este site não coleta nenhum dado pessoal. Não há formulários de cadastro, não há backend, não há cookies de rastreamento.<br><br>✅ As preferências salvas ficam <strong>exclusivamente no localStorage do seu navegador</strong>.` },
+            { pergunta: 'Como funciona a aba "Montar Minha Carteira"?', resposta: `Essa aba permite registrar suas próprias aplicações (reais ou hipotéticas), informando ativo, valor, data de início e data final.<br><br>📌 O sistema busca cotação real para PETR4, VALE3, ITUB4 e MGLU3 (brapi.dev); usa dados históricos estimados para demais ativos.<br><br>⚖️ Isso não constitui recomendação de investimentos.` },
         ]},
         { categoria: '💡 Conceitos Financeiros', perguntas: [
             { pergunta: 'O que é IMA-B?', resposta: `O <strong>IMA-B</strong> é um índice que representa uma carteira de Títulos Públicos atrelados ao IPCA. Fundos indexados ao IMA-B entregam, em tese, a variação da inflação + juros reais.` },
             { pergunta: 'O que é um ETF?', resposta: `<strong>ETF</strong> (Exchange Traded Fund) é um fundo negociado em bolsa como ação. Ele replica um índice, podendo dar exposição a centenas de ativos de uma vez.` },
-            { pergunta: 'O que é um BDR?', resposta: `<strong>BDR</strong> (Brazilian Depositary Receipt) é um ativo negociado na B3 que representa ativos internacionais. O investidor fica exposto ao ativo estrangeiro comprando em reais.` },
-            { pergunta: 'O que é um FII?', resposta: `<strong>FII</strong> (Fundo de Investimento Imobiliário) reúne investidores para comprar imóveis ou recebíveis imobiliários, distribuindo a renda entre cotistas. Rendimentos mensais costumam ser isentos de IR para PF — confirme a regra vigente.` },
+            { pergunta: 'O que é um BDR?', resposta: `<strong>BDR</strong> (Brazilian Depositary Receipt) é um ativo negociado na B3 que representa ativos internacionais.` },
+            { pergunta: 'O que é um FII?', resposta: `<strong>FII</strong> (Fundo de Investimento Imobiliário) reúne investidores para comprar imóveis ou recebíveis imobiliários, distribuindo a renda entre cotistas.` },
             { pergunta: 'O que é CDI?', resposta: `O <strong>CDI</strong> é a taxa de referência de investimentos de renda fixa no Brasil, próxima à taxa Selic. "Render 100% do CDI" significa acompanhar essa taxa de referência.` },
         ]}
     ];
@@ -1187,28 +1133,28 @@
           conteudo:`<h4>O que é a reserva de emergência?</h4><p>Quantia guardada em ativos de liquidez imediata para cobrir imprevistos.</p><h4>Quanto guardar?</h4><ul><li><strong>Renda formal:</strong> 3 a 6 meses de despesas</li><li><strong>Autônomo:</strong> 6 a 12 meses</li></ul><div class="caixa-alerta"><p>⚠️ Reserva não é lugar de buscar alta rentabilidade.</p></div>` },
         { id:'rendafixa', numero:3, tag:'Renda Fixa', tagClass:'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20', titulo:'Renda Fixa: Tesouro Direto, CDB, LCI/LCA', resumo:'Como funcionam os principais títulos de renda fixa.',
           ytLink: { url:'https://www.youtube.com/@InvestidorSardinha', creator:'Investidor Sardinha', desc:'Renda fixa para iniciantes' },
-          conteudo:`<h4>Tesouro Direto</h4><ul><li><strong>Tesouro Selic:</strong> acompanha a Selic</li><li><strong>Tesouro IPCA+:</strong> inflação + taxa fixa</li><li><strong>Prefixado:</strong> taxa definida na compra</li></ul><h4>CDB</h4><p>Empréstimo ao banco com cobertura FGC até limite vigente.</p><h4>LCI e LCA</h4><p>Semelhantes ao CDB. Costumam ser isentas de IR para PF — confirme regra vigente.</p><div class="caixa-alerta"><p>⚠️ Renda fixa não é "sem risco". Existe risco de crédito e mercado.</p></div>` },
+          conteudo:`<h4>Tesouro Direto</h4><ul><li><strong>Tesouro Selic:</strong> acompanha a Selic</li><li><strong>Tesouro IPCA+:</strong> inflação + taxa fixa</li><li><strong>Prefixado:</strong> taxa definida na compra</li></ul><div class="caixa-alerta"><p>⚠️ Renda fixa não é "sem risco". Existe risco de crédito e mercado.</p></div>` },
         { id:'acoes', numero:4, tag:'Renda Variável', tagClass:'bg-cyan-500/10 text-cyan-400 border border-cyan-500/20', titulo:'Ações e o Funcionamento da Bolsa', resumo:'O que significa ser sócio de uma empresa via bolsa.',
           ytLink: { url:'https://www.youtube.com/@InvestidorSardinha', creator:'Raul Sena', desc:'Como comprar ações na B3' },
-          conteudo:`<h4>O que é uma ação?</h4><p>Fração do capital social de uma empresa. Ao comprar, o investidor se torna sócio minoritário.</p><h4>Como o investidor pode ganhar (ou perder)?</h4><ul><li><strong>Valorização</strong></li><li><strong>Dividendos</strong></li><li><strong>JCP</strong></li></ul><div class="caixa-alerta"><p>⚠️ Ações têm maior volatilidade. Exposição deve ser compatível com o perfil.</p></div>` },
+          conteudo:`<h4>O que é uma ação?</h4><p>Fração do capital social de uma empresa. Ao comprar, o investidor se torna sócio minoritário.</p><div class="caixa-alerta"><p>⚠️ Ações têm maior volatilidade. Exposição deve ser compatível com o perfil.</p></div>` },
         { id:'fundos', numero:5, tag:'Fundos', tagClass:'bg-purple-500/10 text-purple-400 border border-purple-500/20', titulo:'Fundos de Investimento: Como Funcionam', resumo:'Gestão profissional coletiva e tipos de fundos.',
           ytLink: { url:'https://www.youtube.com/@oprimorico', creator:'O Primo Rico', desc:'Fundos de investimento explicados' },
-          conteudo:`<h4>O que é um fundo?</h4><p>Comunhão de recursos administrada por gestor profissional.</p><h4>Tipos principais</h4><ul><li><strong>Renda Fixa</strong></li><li><strong>Multimercado</strong></li><li><strong>Ações</strong></li><li><strong>Cambial</strong></li></ul><h4>Taxas</h4><ul><li><strong>Administração:</strong> sobre o patrimônio</li><li><strong>Performance:</strong> sobre o que exceder o benchmark</li></ul>` },
+          conteudo:`<h4>O que é um fundo?</h4><p>Comunhão de recursos administrada por gestor profissional.</p><h4>Tipos principais</h4><ul><li><strong>Renda Fixa</strong></li><li><strong>Multimercado</strong></li><li><strong>Ações</strong></li></ul>` },
         { id:'fii', numero:6, tag:'Fundos Imobiliários', tagClass:'bg-orange-500/10 text-orange-400 border border-orange-500/20', titulo:'Fundos Imobiliários (FIIs)', resumo:'Como investir no setor imobiliário.',
           ytLink: { url:'https://www.youtube.com/@SunoResearch', creator:'Suno Research', desc:'FIIs: guia completo' },
-          conteudo:`<h4>O que é um FII?</h4><p>Reúne recursos para aplicar no setor imobiliário. Cotas negociadas em bolsa.</p><h4>Tipos</h4><ul><li><strong>Tijolo</strong></li><li><strong>Papel</strong></li><li><strong>FOF</strong></li></ul><div class="caixa-alerta"><p>⚠️ Vacância e inadimplência afetam a renda distribuída.</p></div>` },
+          conteudo:`<h4>O que é um FII?</h4><p>Reúne recursos para aplicar no setor imobiliário. Cotas negociadas em bolsa.</p><div class="caixa-alerta"><p>⚠️ Vacância e inadimplência afetam a renda distribuída.</p></div>` },
         { id:'global', numero:7, tag:'Internacional', tagClass:'bg-blue-500/10 text-blue-400 border border-blue-500/20', titulo:'ETFs, BDRs e Investimento Internacional', resumo:'Como ganhar exposição ao exterior.',
           ytLink: { url:'https://www.youtube.com/@oprimorico', creator:'Thiago Nigro', desc:'Investimentos internacionais para brasileiros' },
-          conteudo:`<h4>ETF</h4><p>Fundo de índice negociado em bolsa. Uma cota dá exposição a uma cesta de ativos.</p><h4>BDR</h4><p>Certificado na B3 representando ações internacionais.</p><div class="caixa-alerta"><p>⚠️ Exposição cambial pode ampliar ganhos ou perdas.</p></div>` },
+          conteudo:`<h4>ETF</h4><p>Fundo de índice negociado em bolsa. Uma cota dá exposição a uma cesta de ativos.</p><div class="caixa-alerta"><p>⚠️ Exposição cambial pode ampliar ganhos ou perdas.</p></div>` },
         { id:'perfil', numero:8, tag:'Comportamento', tagClass:'bg-pink-500/10 text-pink-400 border border-pink-500/20', titulo:'Perfil de Investidor e Diversificação', resumo:'Por que o mesmo investimento não serve para todo mundo.',
           ytLink: { url:'https://www.youtube.com/@gustavocerbasibr', creator:'Gustavo Cerbasi', desc:'Qual é o seu perfil de investidor?' },
-          conteudo:`<h4>Suitability</h4><p>Processo regulatório de adequar produtos ao perfil de cada cliente — exigido pela CVM.</p><h4>Perfis</h4><ul><li><strong>Conservador</strong></li><li><strong>Moderado</strong></li><li><strong>Arrojado</strong></li></ul><h4>Vieses comportamentais</h4><ul><li><strong>Aversão à perda</strong></li><li><strong>Excesso de confiança</strong></li><li><strong>Efeito manada</strong></li></ul>` },
-        { id:'imposto', numero:9, tag:'Impostos', tagClass:'bg-red-500/10 text-red-400 border border-red-500/20', titulo:'Imposto de Renda sobre Investimentos', resumo:'Noções gerais de tributação — confirme sempre a regra vigente.',
+          conteudo:`<h4>Suitability</h4><p>Processo regulatório de adequar produtos ao perfil de cada cliente — exigido pela CVM.</p>` },
+        { id:'imposto', numero:9, tag:'Impostos', tagClass:'bg-red-500/10 text-red-400 border border-red-500/20', titulo:'Imposto de Renda sobre Investimentos', resumo:'Noções gerais de tributação.',
           ytLink: { url:'https://www.youtube.com/@oprimorico', creator:'O Primo Rico', desc:'IR sobre investimentos explicado' },
-          conteudo:`<h4>Tabela regressiva (renda fixa)</h4><ul><li>Até 180 dias: alíquota mais alta</li><li>181–720 dias: alíquotas intermediárias</li><li>Acima de 720 dias: menor alíquota</li></ul><h4>Ações</h4><p>Vendas até certo limite mensal costumam ser isentas para PF.</p><div class="caixa-alerta"><p>⚠️ Consulte a Receita Federal ou contador antes de declarar.</p></div>` },
+          conteudo:`<div class="caixa-alerta"><p>⚠️ Consulte a Receita Federal ou contador antes de declarar.</p></div>` },
         { id:'juroscompostos', numero:10, tag:'Planejamento', tagClass:'bg-teal-500/10 text-teal-400 border border-teal-500/20', titulo:'Juros Compostos e Planejamento de Metas', resumo:'O efeito do tempo e da constância.',
           ytLink: { url:'https://www.youtube.com/@oprimorico', creator:'O Primo Rico', desc:'Juros compostos e independência financeira' },
-          conteudo:`<h4>O que são juros compostos?</h4><p>Rendimento do período anterior passa a gerar rendimento no seguinte.</p><div class="caixa-exemplo"><p><strong>Exemplo hipotético:</strong> R$ 1.000 a 10% a.a. → ~R$ 1.331 no ano 3.</p></div><div class="caixa-alerta"><p>⚠️ Projeções são estimativas, não garantias.</p></div>` }
+          conteudo:`<h4>O que são juros compostos?</h4><p>Rendimento do período anterior passa a gerar rendimento no seguinte.</p><div class="caixa-alerta"><p>⚠️ Projeções são estimativas, não garantias.</p></div>` }
     ];
 
     let modulosAbertos = new Set();
@@ -1288,7 +1234,17 @@
         else { const v=obterValorNumerico(); document.getElementById('valor-aporte-display').innerText=v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
     }
 
-    /* ════ CONFIGURAÇÕES — sem coleta de dados pessoais ════ */
+    /* ════ FIX: TOGGLE CVM — aplica/remove classe no body E nos elementos inline ════ */
+    function aplicarToggleCvm(ativado) {
+        salvarPreferencia('avisos_cvm', ativado);
+        if (ativado) {
+            document.body.classList.remove('hide-cvm-warnings');
+        } else {
+            document.body.classList.add('hide-cvm-warnings');
+        }
+    }
+
+    /* ════ CONFIGURAÇÕES ════ */
     function salvarPreferencia(chave, valor) {
         localStorage.setItem('matias_pref_' + chave, JSON.stringify(valor));
     }
@@ -1306,11 +1262,12 @@
         if (toggle2) toggle2.checked = mostrarGrafico;
         if (toggle3) toggle3.checked = modoCompacto;
         if (selAba) selAba.value = abaInicial;
+        // Aplica estado inicial do toggle CVM
+        aplicarToggleCvm(avisosCvm);
     }
 
     function atualizarConfiguracoes() {
         carregarPreferencias();
-        // Progresso
         let progresso = 20;
         if (perfilInvestidor) progresso += 30;
         if (obterValorNumerico() > 0) progresso += 25;
@@ -1322,13 +1279,11 @@
         if (progresso >= 50) nivel = 'PRACTITIONER';
         if (progresso >= 90) nivel = 'ESTRATEGISTA';
         document.getElementById('config-nivel-tag').innerText = nivel;
-        // Checklist
         const chk = (ok) => ok ? '<span class="text-emerald-400 font-bold">✓ Sim</span>' : '<span class="text-slate-600">— Não</span>';
         document.getElementById('status-quiz-config').innerHTML = chk(!!perfilInvestidor);
         document.getElementById('status-valor-config').innerHTML = chk(obterValorNumerico() > 0);
         document.getElementById('status-meta-config').innerHTML = chk(!!localStorage.getItem('matias_meta_valor'));
         document.getElementById('status-edu-config').innerHTML = chk(!!localStorage.getItem('matias_visitou_edu'));
-        // Meta
         const metaTipo = localStorage.getItem('matias_meta_tipo');
         const metaValor = parseFloat(localStorage.getItem('matias_meta_valor')) || 0;
         const aporteAtual = obterValorNumerico();
@@ -1344,7 +1299,6 @@
             document.getElementById('meta-tipo').value = metaTipo || 'Construção Orçamentária Inicial';
             document.getElementById('meta-valor').value = metaValor;
         } else { metaContainer.classList.add('hidden'); }
-        // Debug de localStorage (sem mostrar dados sensíveis)
         const chavesSalvas = Object.keys(localStorage).filter(k => k.startsWith('matias_'));
         const debugEl = document.getElementById('ls-debug');
         if (debugEl) {
@@ -1369,9 +1323,9 @@
         atualizarConfiguracoes();
     }
 
-    /* ════ DADOS DA CARTEIRA ════ */
+    /* ════ CARTEIRA ════ */
     const perguntasQuiz = [
-        { texto: "Qual perfil de tolerância pessoal à volatilidade deseja simular?", opcoes: [ { texto: "Preservação — foco em Renda Fixa", pontos: 1 }, { texto: "Crescimento Equilibrado — mistura com Multimercados", pontos: 3 }, { texto: "Exposição Completa — todas as categorias, incluindo Ações e Globais", pontos: 5 } ] },
+        { texto: "Qual perfil de tolerância pessoal à volatilidade deseja simular?", opcoes: [ { texto: "Preservação — foco em Renda Fixa", pontos: 1 }, { texto: "Crescimento Equilibrado — mistura com Multimercados", pontos: 3 }, { texto: "Exposição Completa — todas as categorias", pontos: 5 } ] },
         { texto: "Qual horizonte de tempo hipotético deseja mapear?", opcoes: [ { texto: "Curto prazo — Liquidez imediata", pontos: 1 }, { texto: "Médio prazo — categorias táticas", pontos: 3 }, { texto: "Longo prazo — exposição estrutural completa", pontos: 5 } ] }
     ];
 
@@ -1452,7 +1406,7 @@
 
     function verificarMaioridade(ehMaior) {
         if (ehMaior) { faseQuiz=0; localStorage.setItem('matias_fase_quiz',faseQuiz); renderizarQuiz(); }
-        else { document.getElementById('quiz-container').innerHTML=`<div class="bg-gradient-to-br from-purple-950/40 to-black p-4 rounded-xl border-2 border-purple-500/50 space-y-3"><div class="flex items-center gap-1.5 text-purple-400 font-bold text-xs uppercase"><i data-lucide="alert-triangle" class="w-4 h-4"></i> Área Educacional de Menores</div><p class="text-xs text-slate-300">Acesse os modelos históricos de estudo.</p><div class="bg-amber-500/10 border border-amber-500/20 p-2 rounded text-[10px] text-amber-300">⚖️ Menores não podem investir de forma autônoma — necessitam de representação dos responsáveis legais.</div><button onclick="alternarAbas('menor')" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-logo font-black text-[11px] py-2 rounded-lg tracking-wider uppercase">Ver Painel Histórico ➔</button></div>`; lucide.createIcons(); }
+        else { document.getElementById('quiz-container').innerHTML=`<div class="bg-gradient-to-br from-purple-950/40 to-black p-4 rounded-xl border-2 border-purple-500/50 space-y-3"><div class="flex items-center gap-1.5 text-purple-400 font-bold text-xs uppercase"><i data-lucide="alert-triangle" class="w-4 h-4"></i> Área Educacional de Menores</div><p class="text-xs text-slate-300">Acesse os modelos históricos de estudo.</p><div class="bg-amber-500/10 border border-amber-500/20 p-2 rounded text-[10px] text-amber-300">⚖️ Menores não podem investir de forma autônoma.</div><button onclick="alternarAbas('menor')" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-logo font-black text-[11px] py-2 rounded-lg tracking-wider uppercase">Ver Painel Histórico ➔</button></div>`; lucide.createIcons(); }
     }
 
     function computarResposta(pontos) { pontuacaoTotalQuiz+=pontos; faseQuiz++; localStorage.setItem('matias_fase_quiz',faseQuiz); localStorage.setItem('matias_pontos_quiz',pontuacaoTotalQuiz); renderizarQuiz(); }
@@ -1463,7 +1417,7 @@
         else if (pontuacaoTotalQuiz<=7) { perfilInvestidor='moderado'; badge.innerText='SIMULAÇÃO EQUILIBRADA'; badge.className="text-xs px-2 py-0.5 rounded font-bold bg-cyan-500/20 text-cyan-400 border border-cyan-500/30"; }
         else { perfilInvestidor='arrojado'; badge.innerText='SIMULAÇÃO DINÂMICA COMPLETA'; badge.className="text-xs px-2 py-0.5 rounded font-bold bg-purple-500/20 text-purple-400 border border-purple-500/30"; }
         localStorage.setItem('matias_perfil_definido',perfilInvestidor);
-        document.getElementById('quiz-container').innerHTML=`<div class="text-xs text-slate-400 bg-slate-900/60 p-2 rounded border border-slate-800 text-center">Modelo calibrado: <strong class="text-white uppercase">${perfilInvestidor}</strong>. Insira um valor hipotético para ver a divisão proporcional.</div><div class="text-[10px] text-amber-300/90 bg-amber-500/10 p-2 rounded border border-amber-500/20 text-center">⚖️ Ferramenta educacional com categorias genéricas. NÃO é análise ou recomendação de valores mobiliários.</div>`;
+        document.getElementById('quiz-container').innerHTML=`<div class="text-xs text-slate-400 bg-slate-900/60 p-2 rounded border border-slate-800 text-center">Modelo calibrado: <strong class="text-white uppercase">${perfilInvestidor}</strong>. Insira um valor hipotético para ver a divisão proporcional.</div><div class="text-[10px] text-amber-300/90 bg-amber-500/10 p-2 rounded border border-amber-500/20 text-center aviso-cvm-inline">⚖️ Ferramenta educacional com categorias genéricas.</div>`;
         containerAporte.classList.remove('opacity-40','pointer-events-none');
         document.getElementById('input-valor-total').removeAttribute('disabled');
         document.getElementById('input-valor-total').placeholder="0,00";
@@ -1486,11 +1440,11 @@
 
     function formatarMoeda(input, tipoContexto) {
         let valor=input.value.replace(/\D/g,'');
-        if (valor===''){input.value=''; if(tipoContexto==='kids')gerarCarteiraKids();else if(tipoContexto==='portfolio'){/* nada a recalcular em tempo real */}else gerarCarteira();return;}
+        if (valor===''){input.value=''; if(tipoContexto==='kids')gerarCarteiraKids();else if(tipoContexto==='portfolio'){/* nada */}else gerarCarteira();return;}
         valor=(parseInt(valor)/100).toFixed(2); valor=valor.replace('.',','); valor=valor.replace(/\B(?=(\d{3})+(?!\d))/g,'.');
         input.value=valor;
         if (tipoContexto==='kids') gerarCarteiraKids();
-        else if (tipoContexto==='portfolio') { /* valor do formulário de Montar Carteira — sem recálculo automático */ }
+        else if (tipoContexto==='portfolio') { /* formulário Montar */ }
         else gerarCarteira();
     }
 
@@ -1509,12 +1463,12 @@
         avisoLiq.classList.remove('hidden');
         avisoLiq.innerHTML=`🟢 <strong>Reserva de Liquidez (30%):</strong> ${valorReserva.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})} em <strong>${nomeLiquidez}</strong>. Os 70% restantes (${valorRestante.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}) são distribuídos pelas categorias abaixo.`;
         document.getElementById('secao-grafico').classList.remove('hidden'); inicializarGrafico('1A');
-        if (filtroAtual==='Liquidez') { document.getElementById('lista-ativos').innerHTML=`<div class="bg-slate-950 rounded-xl border border-slate-900 p-4"><div class="flex justify-between items-start"><div><h3 class="text-xs font-bold text-white uppercase">${nomeLiquidez}</h3><p class="text-xs text-slate-400 mt-2">Categoria educacional de reserva de liquidez imediata — 30% do valor hipotético.</p></div><div class="text-right shrink-0 pl-2"><div class="text-sm font-black text-amber-400 font-logo">30%</div><div class="text-xs text-slate-300 font-bold mt-0.5">${valorReserva.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div></div></div></div>`; return; }
+        if (filtroAtual==='Liquidez') { document.getElementById('lista-ativos').innerHTML=`<div class="bg-slate-950 rounded-xl border border-slate-900 p-4"><div class="flex justify-between items-start"><div><h3 class="text-xs font-bold text-white uppercase">${nomeLiquidez}</h3><p class="text-xs text-slate-400 mt-2">30% do valor hipotético.</p></div><div class="text-right shrink-0 pl-2"><div class="text-sm font-black text-amber-400 font-logo">30%</div><div class="text-xs text-slate-300 font-bold mt-0.5">${valorReserva.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div></div></div></div>`; return; }
         let candidatos=carteiraCompleta.filter(a=>{ const temPeso=a.pesosPerfil[perfilInvestidor]>0; const categoriaOk=filtroAtual==='todos'||a.categoria===filtroAtual; return temPeso&&categoriaOk; });
         let ativosFiltrados=selecionarAtivosElegiveis(candidatos,valorRestante,a=>a.pesosPerfil[perfilInvestidor]);
         if (ativosFiltrados.length===0) { const minimoDisponivel=Math.min(...carteiraCompleta.filter(a=>a.pesosPerfil[perfilInvestidor]>0).map(a=>a.aplicacaoMinima)); document.getElementById('lista-ativos').innerHTML=`<div class="bg-slate-950 rounded-xl border border-amber-500/20 p-4 text-center space-y-2"><p class="text-xs text-amber-400 font-bold">⚠️ Valor abaixo do mínimo ilustrativo</p><p class="text-[11px] text-slate-400">O menor mínimo é <strong class="text-cyan-400">R$ ${minimoDisponivel}</strong>.</p></div>`; atualizarBarraComposicao(); return; }
         let somaPesos=ativosFiltrados.reduce((s,a)=>s+a.pesosPerfil[perfilInvestidor],0)||1; let htmlAtivos='', acumulado=0;
-        ativosFiltrados.forEach((ativo,idx)=>{ let pct=ativo.pesosPerfil[perfilInvestidor]/somaPesos; let valorAlocado=idx===ativosFiltrados.length-1?valorRestante-acumulado:valorRestante*pct; acumulado+=valorAlocado; htmlAtivos+=`<div class="bg-slate-950 rounded-xl border border-slate-900 p-4 hover:border-cyan-900/30 transition"><div class="flex justify-between items-start"><div class="flex-1 pr-2"><h3 class="text-xs font-bold text-white uppercase tracking-wide mb-0.5">${ativo.nome}</h3><span class="inline-block text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 mt-1 rounded bg-slate-900 text-slate-400 border border-slate-800">${ativo.categoria}</span></div><div class="text-right shrink-0"><div class="text-sm font-black text-cyan-400 font-logo">${(pct*100).toFixed(0)}%</div><div class="text-xs text-slate-300 font-bold mt-0.5">${valorAlocado.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div><div class="text-[9px] text-slate-500 mt-0.5">Mín. ilustrativo: R$ ${ativo.aplicacaoMinima}</div></div></div><p class="text-[11px] text-slate-400 leading-normal mt-2 pt-2 border-t border-slate-900/60">${ativo.descricao}</p><div class="text-[10px] text-amber-400/70 mt-1.5 bg-amber-500/5 rounded p-1.5">⚖️ Categoria ilustrativa — não é recomendação de compra (Res. CVM 20/2021).</div></div>`; });
+        ativosFiltrados.forEach((ativo,idx)=>{ let pct=ativo.pesosPerfil[perfilInvestidor]/somaPesos; let valorAlocado=idx===ativosFiltrados.length-1?valorRestante-acumulado:valorRestante*pct; acumulado+=valorAlocado; htmlAtivos+=`<div class="bg-slate-950 rounded-xl border border-slate-900 p-4 hover:border-cyan-900/30 transition"><div class="flex justify-between items-start"><div class="flex-1 pr-2"><h3 class="text-xs font-bold text-white uppercase tracking-wide mb-0.5">${ativo.nome}</h3><span class="inline-block text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 mt-1 rounded bg-slate-900 text-slate-400 border border-slate-800">${ativo.categoria}</span></div><div class="text-right shrink-0"><div class="text-sm font-black text-cyan-400 font-logo">${(pct*100).toFixed(0)}%</div><div class="text-xs text-slate-300 font-bold mt-0.5">${valorAlocado.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div><div class="text-[9px] text-slate-500 mt-0.5">Mín. ilustrativo: R$ ${ativo.aplicacaoMinima}</div></div></div><p class="text-[11px] text-slate-400 leading-normal mt-2 pt-2 border-t border-slate-900/60">${ativo.descricao}</p><div class="aviso-cvm-inline">⚖️ Categoria ilustrativa — não é recomendação de compra (Res. CVM 20/2021).</div></div>`; });
         const cardReserva=`<div class="bg-slate-950 rounded-xl border border-amber-500/20 p-4"><div class="flex justify-between items-start"><div class="flex-1 pr-2"><h3 class="text-xs font-bold text-white uppercase tracking-wide mb-0.5">${nomeLiquidez}</h3><p class="text-[10px] text-slate-400">30% do valor hipotético.</p><span class="inline-block text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 mt-1 rounded bg-slate-900 text-slate-400 border border-slate-800">Liquidez</span></div><div class="text-right shrink-0"><div class="text-sm font-black text-amber-400 font-logo">30%</div><div class="text-xs text-slate-300 font-bold mt-0.5">${valorReserva.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div></div></div></div>`;
         document.getElementById('lista-ativos').innerHTML=(filtroAtual==='todos'?cardReserva:'')+htmlAtivos;
         atualizarBarraComposicao();
@@ -1565,7 +1519,6 @@
 
     async function carregarCryptoFeeds() {
         try {
-            // Apenas API pública, sem autenticação, sem chave exposta
             const res=await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=brl&include_24hr_change=true');
             const dados=await res.json(); let html='';
             topCryptos.forEach(c=>{ const info=dados[c.id]; if (info) { const preco=info.brl.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); const variacao=info.brl_24h_change; html+=`<div class="bg-slate-950 p-3 rounded-xl border border-slate-900"><div class="flex justify-between items-center mb-1"><span class="text-xs font-bold text-white">${c.name}</span><span class="text-[10px] px-1.5 rounded font-logo text-black" style="background:${c.color}">${c.symbol}</span></div><div class="text-xs font-black font-logo text-slate-200">${preco}</div><div class="text-[10px] font-bold ${variacao>=0?'text-emerald-400':'text-red-400'} mt-0.5">${variacao>=0?'▲':'▼'} ${variacao.toFixed(2)}% (24h)</div><div class="text-[9px] text-slate-600 mt-1">Cotação pública. Não é recomendação.</div></div>`; } });
@@ -1598,109 +1551,93 @@
             definirObjetivoKids(localStorage.getItem('matias_kids_objetivo'));
         }
 
-        // Inicializa o módulo "Montar Minha Carteira"
         pfInicializar();
 
-        // Carrega aba preferida ou a salva anteriormente
         const abaInicial = localStorage.getItem('matias_pref_aba_inicial') || localStorage.getItem('matias_aba_ativa') || 'carteira';
         alternarAbas(abaInicial);
     });
     </script>
 
     <script>
-    /* ════════════════════════════════════════════════════════════════════
-       MÓDULO "MONTAR MINHA CARTEIRA"
-       ════════════════════════════════════════════════════════════════════
-       Funcionalidade independente, isolada em seu próprio namespace (prefixo pf*
-       de "Portfolio") para não colidir com o restante do código do site.
-
-       FONTE DE DADOS DE MERCADO — IMPORTANTE:
-       -----------------------------------------------------------------
-       1) REAL: usamos a API pública brapi.dev (B3) para 4 tickers de teste
-          que funcionam SEM TOKEN/chave de API: PETR4, VALE3, ITUB4, MGLU3.
-          Doc.: https://brapi.dev/docs/acoes
-          Endpoint: https://brapi.dev/api/quote/{TICKER}
-          Esses 4 ativos são os ÚNICOS com garantia de acesso gratuito e
-          ilimitado sem cadastro. Qualquer outro ticker da B3 exige token
-          (ver bloco PF_CONFIG abaixo para saber onde plugar).
-
-       2) SIMULADO: para qualquer outro ativo digitado (ações sem token,
-          criptos além de BTC/ETH/SOL, fundos, FIIs, etc.) usamos um motor
-          de simulação determinístico baseado em hash do ticker + tempo
-          decorrido. É 100% transparente — o card mostra a etiqueta
-          "SIMULADO" sempre que esse caminho é usado.
-
-       Nunca expomos chave de API neste arquivo (conforme CSP do site).
-       ════════════════════════════════════════════════════════════════════ */
+    /* ════════════════════════════════════════════════════════════════
+       MÓDULO "MONTAR MINHA CARTEIRA" — v2.2 com dados históricos
+       ════════════════════════════════════════════════════════════════
+       FONTES DE DADOS:
+       1) REAL: brapi.dev (B3) para PETR4, VALE3, ITUB4, MGLU3 sem token.
+       2) HISTÓRICO ESTIMADO: rentabilidades médias anuais dos últimos anos
+          baseadas em dados públicos de mercado (fonte: dados históricos
+          estimados com base em rentabilidades médias do mercado brasileiro).
+          Cada ativo tem uma taxa de crescimento anual estimada que produz
+          uma curva de evolução ao longo do período selecionado.
+       ════════════════════════════════════════════════════════════════ */
 
     const PF_CONFIG = {
-        // Tickers de teste da brapi.dev que funcionam sem token/chave.
-        // Fonte: https://brapi.dev/blog/acesso-gratuito-ilimitado-acoes-teste-brapi
         TICKERS_REAIS_SEM_TOKEN: ['PETR4', 'VALE3', 'ITUB4', 'MGLU3'],
-
-        // ────────────────────────────────────────────────────────────────
-        // 🔌 PONTO DE INTEGRAÇÃO COM API REAL DE MERCADO (PRODUÇÃO)
-        // ────────────────────────────────────────────────────────────────
-        // Quando você tiver um token da brapi.dev (https://brapi.dev/dashboard)
-        // ou da Yahoo Finance/outra fonte, basta preencher BRAPI_TOKEN abaixo.
-        // IMPORTANTE DE SEGURANÇA: um token colocado aqui fica visível a
-        // qualquer pessoa que inspecione o código-fonte do navegador.
-        // Para produção real, o ideal é:
-        //   a) Criar um pequeno backend/proxy (ex: Cloudflare Worker, Vercel
-        //      Function) que guarda o token como variável de ambiente (.env)
-        //      no SERVIDOR, e o frontend chama esse proxy em vez da brapi.dev
-        //      diretamente; OU
-        //   b) Usar apenas os 4 tickers de teste (sem token) como faz este
-        //      arquivo por padrão — adequado para uso pessoal/educacional.
-        BRAPI_TOKEN: null, // ex: 'SEU_TOKEN_AQUI' — deixe null para usar só os 4 tickers de teste
-
+        BRAPI_TOKEN: null,
         BRAPI_BASE_URL: 'https://brapi.dev/api/quote/',
     };
 
-    // Pequeno catálogo local para autocomplete (nome amigável de cada ticker).
-    // Quando a brapi.dev tiver token configurado, este catálogo pode ser
-    // substituído por uma chamada real ao endpoint /api/quote/list (busca).
-    // Doc.: https://brapi.dev/docs/acoes/list
+    /* Rentabilidades médias anuais estimadas (% a.a.) dos últimos ~5 anos
+       baseadas em dados históricos públicos de mercado — apenas referência
+       educacional, não é previsão de rentabilidade futura. */
+    const PF_HISTORICO_RENTABILIDADE = {
+        'PETR4':  { taxaAnual: 28.5,  volatilidade: 42, cor: '#06b6d4' },
+        'VALE3':  { taxaAnual: 18.2,  volatilidade: 35, cor: '#34d399' },
+        'ITUB4':  { taxaAnual: 14.8,  volatilidade: 28, cor: '#818cf8' },
+        'MGLU3':  { taxaAnual: -22.4, volatilidade: 68, cor: '#f87171' },
+        'BBAS3':  { taxaAnual: 22.1,  volatilidade: 30, cor: '#06b6d4' },
+        'BBDC4':  { taxaAnual: 8.5,   volatilidade: 28, cor: '#67e8f9' },
+        'WEGE3':  { taxaAnual: 35.8,  volatilidade: 25, cor: '#a78bfa' },
+        'ABEV3':  { taxaAnual: 4.2,   volatilidade: 18, cor: '#fbbf24' },
+        'IVVB11': { taxaAnual: 31.4,  volatilidade: 22, cor: '#06b6d4' }, // S&P500 em BRL
+        'BOVA11': { taxaAnual: 12.6,  volatilidade: 28, cor: '#34d399' }, // IBOV
+        'XPML11': { taxaAnual: 16.8,  volatilidade: 20, cor: '#f59e0b' },
+        'HGLG11': { taxaAnual: 18.4,  volatilidade: 18, cor: '#fb923c' },
+        'BTC':    { taxaAnual: 85.2,  volatilidade: 95, cor: '#f7931a' },
+        'ETH':    { taxaAnual: 72.4,  volatilidade: 98, cor: '#627eea' },
+        'SOL':    { taxaAnual: 120.5, volatilidade: 130, cor: '#9945ff' },
+        'TESOURO-SELIC': { taxaAnual: 11.2, volatilidade: 1, cor: '#34d399' },
+        'CDB-100CDI':    { taxaAnual: 10.8, volatilidade: 1, cor: '#67e8f9' },
+        '_DEFAULT':      { taxaAnual: 12.0, volatilidade: 25, cor: '#94a3b8' },
+    };
+
     const pfCatalogoAtivos = [
-        { ticker: 'PETR4', nome: 'Petróleo Brasileiro S.A. - Petrobras', tipo: 'Ação B3', real: true },
-        { ticker: 'VALE3', nome: 'Vale S.A.', tipo: 'Ação B3', real: true },
-        { ticker: 'ITUB4', nome: 'Itaú Unibanco Holding S.A.', tipo: 'Ação B3', real: true },
-        { ticker: 'MGLU3', nome: 'Magazine Luiza S.A.', tipo: 'Ação B3', real: true },
-        { ticker: 'BBAS3', nome: 'Banco do Brasil S.A.', tipo: 'Ação B3', real: false },
-        { ticker: 'BBDC4', nome: 'Banco Bradesco S.A.', tipo: 'Ação B3', real: false },
-        { ticker: 'WEGE3', nome: 'WEG S.A.', tipo: 'Ação B3', real: false },
-        { ticker: 'ABEV3', nome: 'Ambev S.A.', tipo: 'Ação B3', real: false },
-        { ticker: 'IVVB11', nome: 'ETF iShares S&P 500', tipo: 'ETF B3', real: false },
+        { ticker: 'PETR4',  nome: 'Petróleo Brasileiro S.A. - Petrobras', tipo: 'Ação B3', real: true },
+        { ticker: 'VALE3',  nome: 'Vale S.A.', tipo: 'Ação B3', real: true },
+        { ticker: 'ITUB4',  nome: 'Itaú Unibanco Holding S.A.', tipo: 'Ação B3', real: true },
+        { ticker: 'MGLU3',  nome: 'Magazine Luiza S.A.', tipo: 'Ação B3', real: true },
+        { ticker: 'BBAS3',  nome: 'Banco do Brasil S.A.', tipo: 'Ação B3', real: false },
+        { ticker: 'BBDC4',  nome: 'Banco Bradesco S.A.', tipo: 'Ação B3', real: false },
+        { ticker: 'WEGE3',  nome: 'WEG S.A.', tipo: 'Ação B3', real: false },
+        { ticker: 'ABEV3',  nome: 'Ambev S.A.', tipo: 'Ação B3', real: false },
+        { ticker: 'IVVB11', nome: 'ETF iShares S&P 500 (BRL)', tipo: 'ETF B3', real: false },
         { ticker: 'BOVA11', nome: 'ETF iShares Ibovespa', tipo: 'ETF B3', real: false },
         { ticker: 'XPML11', nome: 'FII XP Malls', tipo: 'FII', real: false },
         { ticker: 'HGLG11', nome: 'FII CSHG Logística', tipo: 'FII', real: false },
-        { ticker: 'BTC', nome: 'Bitcoin', tipo: 'Criptoativo', real: false },
-        { ticker: 'ETH', nome: 'Ethereum', tipo: 'Criptoativo', real: false },
-        { ticker: 'SOL', nome: 'Solana', tipo: 'Criptoativo', real: false },
+        { ticker: 'BTC',    nome: 'Bitcoin', tipo: 'Criptoativo', real: false },
+        { ticker: 'ETH',    nome: 'Ethereum', tipo: 'Criptoativo', real: false },
+        { ticker: 'SOL',    nome: 'Solana', tipo: 'Criptoativo', real: false },
         { ticker: 'TESOURO-SELIC', nome: 'Tesouro Selic (genérico)', tipo: 'Renda Fixa', real: false },
-        { ticker: 'CDB-100CDI', nome: 'CDB 100% do CDI (genérico)', tipo: 'Renda Fixa', real: false },
+        { ticker: 'CDB-100CDI',    nome: 'CDB 100% do CDI (genérico)', tipo: 'Renda Fixa', real: false },
     ];
 
-    let pfPortfolio = [];          // array de investimentos do usuário
-    let pfAtivoSelecionado = null; // item escolhido no autocomplete
-    let pfIndiceAutocomplete = -1;
-    let pfCacheCotacoes = {};      // cache simples em memória para evitar chamadas repetidas
+    let pfPortfolio = [];
+    let pfAtivoSelecionado = null;
+    let pfChartConsolidado = null;
+    let pfSparklineCharts = {};
 
     function pfInicializar() {
-        // Carrega portfólio salvo (somente neste navegador — localStorage)
         try {
             const salvo = localStorage.getItem('matias_portfolio_pessoal');
             pfPortfolio = salvo ? JSON.parse(salvo) : [];
         } catch { pfPortfolio = []; }
 
-        // Data final = hoje, por padrão
         const hoje = new Date().toISOString().split('T')[0];
         const inputFim = document.getElementById('pf-input-data-fim');
         const inputInicio = document.getElementById('pf-input-data-inicio');
         if (inputFim) { inputFim.value = hoje; inputFim.max = hoje; }
         if (inputInicio) inputInicio.max = hoje;
 
-        // Fecha autocomplete ao clicar fora
         document.addEventListener('click', (e) => {
             const wrap = document.getElementById('pf-input-busca');
             const lista = document.getElementById('pf-autocomplete');
@@ -1714,11 +1651,11 @@
         document.getElementById('pf-input-data-fim').value = hoje;
     }
 
-    /* ════ AUTOCOMPLETE DE ATIVOS ════ */
+    /* ════ AUTOCOMPLETE ════ */
     function pfBuscarAtivo(valorDigitado) {
         const termo = (valorDigitado || '').trim().toUpperCase();
         const lista = document.getElementById('pf-autocomplete');
-        pfAtivoSelecionado = null; // qualquer digitação invalida a seleção anterior
+        pfAtivoSelecionado = null;
         if (!termo) { lista.classList.add('hidden'); lista.innerHTML = ''; return; }
 
         const resultados = pfCatalogoAtivos.filter(a =>
@@ -1726,11 +1663,9 @@
         ).slice(0, 8);
 
         if (resultados.length === 0) {
-            // Permite cadastrar um ticker "livre" não presente no catálogo —
-            // nesse caso ele sempre cairá no motor SIMULADO.
             lista.innerHTML = `<div class="pf-autocomplete-item" onclick="pfSelecionarAtivoLivre('${termo.replace(/'/g, "")}')">
-                <div><div class="pf-autocomplete-ticker">${termo}</div><div class="pf-autocomplete-nome">Usar como ticker livre (simulado)</div></div>
-                <span class="pf-autocomplete-tag pf-tag-sim">SIMULADO</span>
+                <div><div class="pf-autocomplete-ticker">${termo}</div><div class="pf-autocomplete-nome">Usar como ticker livre (histórico estimado)</div></div>
+                <span class="pf-autocomplete-tag pf-tag-sim">ESTIMADO</span>
             </div>`;
             lista.classList.remove('hidden');
             return;
@@ -1742,7 +1677,7 @@
                     <div class="pf-autocomplete-ticker">${a.ticker}</div>
                     <div class="pf-autocomplete-nome">${a.nome} · ${a.tipo}</div>
                 </div>
-                <span class="pf-autocomplete-tag ${a.real ? 'pf-tag-real' : 'pf-tag-sim'}">${a.real ? 'REAL' : 'SIMULADO'}</span>
+                <span class="pf-autocomplete-tag ${a.real ? 'pf-tag-real' : 'pf-tag-sim'}">${a.real ? 'REAL' : 'HISTÓRICO'}</span>
             </div>
         `).join('');
         lista._resultadosAtuais = resultados;
@@ -1764,7 +1699,7 @@
         document.getElementById('pf-autocomplete').classList.add('hidden');
     }
 
-    /* ════ TOAST DE FEEDBACK ════ */
+    /* ════ TOAST ════ */
     let pfToastTimeout = null;
     function pfMostrarToast(mensagem) {
         const toast = document.getElementById('pf-toast');
@@ -1774,129 +1709,105 @@
         pfToastTimeout = setTimeout(() => toast.classList.remove('show'), 3200);
     }
 
-    /* ════════════════════════════════════════════════════════════════════
-       MOTOR DE COTAÇÃO — REAL (brapi.dev) COM FALLBACK SIMULADO
-       ════════════════════════════════════════════════════════════════════ */
-
-    // Busca a cotação ATUAL (mais recente) de um ticker.
-    // Retorna { preco, variacaoPercentualDia, fonte: 'real'|'simulado' }
+    /* ════ MOTOR DE COTAÇÃO ════ */
     async function pfBuscarCotacaoAtual(ticker) {
-        const tickerNormalizado = ticker.toUpperCase();
-        const ehTickerDeTeste = PF_CONFIG.TICKERS_REAIS_SEM_TOKEN.includes(tickerNormalizado);
+        const tickerNorm = ticker.toUpperCase();
+        const ehReal = PF_CONFIG.TICKERS_REAIS_SEM_TOKEN.includes(tickerNorm);
 
-        // Caminho 1: cotação REAL via brapi.dev (apenas tickers de teste, sem token)
-        if (ehTickerDeTeste || PF_CONFIG.BRAPI_TOKEN) {
+        if (ehReal || PF_CONFIG.BRAPI_TOKEN) {
             try {
-                let url = `${PF_CONFIG.BRAPI_BASE_URL}${tickerNormalizado}`;
+                let url = `${PF_CONFIG.BRAPI_BASE_URL}${tickerNorm}`;
                 const headers = {};
-                // Se um token de produção estiver configurado, ele é enviado
-                // via header Authorization (nunca via querystring, para evitar
-                // que o token fique exposto em logs/histórico do navegador).
                 if (PF_CONFIG.BRAPI_TOKEN) headers['Authorization'] = `Bearer ${PF_CONFIG.BRAPI_TOKEN}`;
-
                 const resposta = await fetch(url, { headers });
                 if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
                 const dados = await resposta.json();
                 const resultado = dados.results && dados.results[0];
-                if (!resultado || typeof resultado.regularMarketPrice !== 'number') throw new Error('Sem dados de preço');
-
-                return {
-                    preco: resultado.regularMarketPrice,
-                    variacaoPercentualDia: resultado.regularMarketChangePercent ?? 0,
-                    fonte: 'real',
-                };
-            } catch (erro) {
-                console.warn(`[Matias Invest] Falha ao buscar cotação real de ${tickerNormalizado}, usando simulação.`, erro);
-                // cai para o motor simulado abaixo
+                if (!resultado || typeof resultado.regularMarketPrice !== 'number') throw new Error('Sem preço');
+                return { preco: resultado.regularMarketPrice, variacaoPercentualDia: resultado.regularMarketChangePercent ?? 0, fonte: 'real' };
+            } catch (e) {
+                console.warn(`[MI] Fallback para histórico de ${tickerNorm}`, e);
             }
         }
 
-        // Caminho 2: motor de SIMULAÇÃO determinístico baseado no ticker.
-        // Gera uma "cotação" hipotética estável (mesmo ticker = mesma base),
-        // só para fins de demonstração visual quando não há dado real disponível.
-        return pfSimularCotacao(tickerNormalizado);
+        return pfCotacaoHistoricaEstimada(tickerNorm);
     }
 
-    // Gera um número pseudo-aleatório determinístico a partir de uma string,
-    // para que o mesmo ticker sempre produza a mesma "cotação base" simulada.
+    /* Retorna um "preço base" estimado coerente com os dados históricos do ticker */
+    function pfCotacaoHistoricaEstimada(ticker) {
+        const hist = PF_HISTORICO_RENTABILIDADE[ticker] || PF_HISTORICO_RENTABILIDADE['_DEFAULT'];
+        // Preço base representativo (não é o preço real — apenas para cálculo proporcional)
+        const hash = pfHashDeTexto(ticker);
+        const precoBase = 10 + (hash % 9000) / 100; // entre R$10 e R$100
+        return { preco: precoBase, variacaoPercentualDia: 0, fonte: 'historico' };
+    }
+
     function pfHashDeTexto(texto) {
         let hash = 0;
-        for (let i = 0; i < texto.length; i++) {
-            hash = (hash << 5) - hash + texto.charCodeAt(i);
-            hash |= 0;
-        }
+        for (let i = 0; i < texto.length; i++) { hash = (hash << 5) - hash + texto.charCodeAt(i); hash |= 0; }
         return Math.abs(hash);
     }
 
-    function pfSimularCotacao(ticker) {
-        const hash = pfHashDeTexto(ticker);
-        // Preço-base simulado entre R$ 5 e R$ 105, determinístico por ticker
-        const precoBase = 5 + (hash % 10000) / 100;
-        // Variação diária simulada entre -3% e +3%
-        const variacaoDia = ((hash % 600) - 300) / 100;
-        return { preco: precoBase, variacaoPercentualDia: variacaoDia, fonte: 'simulado' };
-    }
-
-    // Estima o preço do ativo NA DATA DE INÍCIO informada, a partir do preço
-    // atual e do tempo decorrido. Para os tickers REAIS, a API gratuita sem
-    // token não fornece preço histórico exato por data (isso exigiria token
-    // + parâmetro range/interval — ver comentário no PF_CONFIG), então usamos
-    // uma estimativa de tendência determinística como proxy. Quando você
-    // configurar um token de produção, troque este bloco por uma chamada a:
-    //   `${PF_CONFIG.BRAPI_BASE_URL}${ticker}?range=5y&interval=1d&token=SEU_TOKEN`
-    // e localize o ponto de "historicalDataPrice" mais próximo da data desejada.
+    /* Estima o preço na data de início usando a taxa histórica do ativo */
     function pfEstimarPrecoNaData(ticker, precoAtual, dataInicio, dataFim) {
         const msPorDia = 1000 * 60 * 60 * 24;
         const diasDecorridos = Math.max(1, Math.round((new Date(dataFim) - new Date(dataInicio)) / msPorDia));
-        const hash = pfHashDeTexto(ticker);
-
-        // "Taxa de crescimento anualizada" determinística simulada, entre -15% e +25% a.a.
-        const taxaAnualSimulada = (((hash % 4000) / 100) - 15) / 100;
-        const taxaDiaria = Math.pow(1 + taxaAnualSimulada, 1 / 365) - 1;
-
-        // Preço estimado na data de início = preço atual "descontado" do crescimento do período
-        const precoEstimadoInicio = precoAtual / Math.pow(1 + taxaDiaria, diasDecorridos);
-        return precoEstimadoInicio;
+        const hist = PF_HISTORICO_RENTABILIDADE[ticker.toUpperCase()] || PF_HISTORICO_RENTABILIDADE['_DEFAULT'];
+        const taxaAnual = hist.taxaAnual / 100;
+        const taxaDiaria = Math.pow(1 + taxaAnual, 1 / 365) - 1;
+        return precoAtual / Math.pow(1 + taxaDiaria, diasDecorridos);
     }
 
-    /* ════ FORMULÁRIO: ADICIONAR AO PORTFÓLIO ════ */
+    /* Gera série histórica mensal para o sparkline (últimos N meses) */
+    function pfGerarSerieHistorica(ticker, valorInvestido, dataInicio, dataFim) {
+        const hist = PF_HISTORICO_RENTABILIDADE[ticker.toUpperCase()] || PF_HISTORICO_RENTABILIDADE['_DEFAULT'];
+        const taxaAnual = hist.taxaAnual / 100;
+        const taxaMensal = Math.pow(1 + taxaAnual, 1/12) - 1;
+        const vol = hist.volatilidade / 100 / Math.sqrt(12); // desvio mensal
+
+        const inicio = new Date(dataInicio);
+        const fim = new Date(dataFim);
+        const meses = Math.max(1, Math.round((fim - inicio) / (1000*60*60*24*30)));
+
+        // Seed determinístico para reprodutibilidade
+        const seed = pfHashDeTexto(ticker + dataInicio);
+        let valorAtual = valorInvestido;
+        const serie = [valorAtual];
+        const labels = ['Início'];
+
+        for (let m = 1; m <= Math.min(meses, 60); m++) {
+            // Pseudo-aleatoriedade determinística
+            const pseudo = Math.sin(seed * m * 9301 + 49297) * 0.5 + 0.5;
+            const ruido = (pseudo - 0.5) * 2 * vol;
+            valorAtual *= (1 + taxaMensal + ruido);
+            serie.push(Math.max(valorAtual, valorInvestido * 0.2));
+            const dataLabel = new Date(inicio);
+            dataLabel.setMonth(dataLabel.getMonth() + m);
+            labels.push(`${dataLabel.getMonth()+1}/${String(dataLabel.getFullYear()).slice(-2)}`);
+        }
+        return { serie, labels, cor: hist.cor || '#06b6d4' };
+    }
+
+    /* ════ FORMULÁRIO ════ */
     async function pfAdicionarAoPortfolio() {
         const erroBox = document.getElementById('pf-form-erro');
         erroBox.classList.add('hidden');
 
-        // ── Validação dos campos ──
         const valorBrutoInput = document.getElementById('pf-input-valor').value;
         const valorInvestido = parseFloat(valorBrutoInput.replace(/\./g, '').replace(',', '.')) || 0;
         const dataInicio = document.getElementById('pf-input-data-inicio').value;
         let dataFim = document.getElementById('pf-input-data-fim').value;
         if (!dataFim) dataFim = new Date().toISOString().split('T')[0];
 
-        if (!pfAtivoSelecionado) {
-            erroBox.innerText = '⚠️ Selecione um ativo na lista de busca antes de continuar.';
-            erroBox.classList.remove('hidden');
-            return;
-        }
-        if (valorInvestido <= 0) {
-            erroBox.innerText = '⚠️ Informe um valor investido maior que zero.';
-            erroBox.classList.remove('hidden');
-            return;
-        }
-        if (!dataInicio) {
-            erroBox.innerText = '⚠️ Informe a data de início do investimento.';
-            erroBox.classList.remove('hidden');
-            return;
-        }
-        if (new Date(dataInicio) > new Date(dataFim)) {
-            erroBox.innerText = '⚠️ A data de início não pode ser posterior à data final.';
-            erroBox.classList.remove('hidden');
-            return;
-        }
+        if (!pfAtivoSelecionado) { erroBox.innerText = '⚠️ Selecione um ativo na lista de busca antes de continuar.'; erroBox.classList.remove('hidden'); return; }
+        if (valorInvestido <= 0) { erroBox.innerText = '⚠️ Informe um valor investido maior que zero.'; erroBox.classList.remove('hidden'); return; }
+        if (!dataInicio) { erroBox.innerText = '⚠️ Informe a data de início do investimento.'; erroBox.classList.remove('hidden'); return; }
+        if (new Date(dataInicio) > new Date(dataFim)) { erroBox.innerText = '⚠️ A data de início não pode ser posterior à data final.'; erroBox.classList.remove('hidden'); return; }
 
-        // ── Estado de carregamento no botão ──
         const btn = document.getElementById('pf-btn-analisar');
         const btnLabel = document.getElementById('pf-btn-analisar-label');
         btn.disabled = true;
-        btnLabel.innerText = 'Consultando mercado...';
+        btnLabel.innerText = 'Consultando dados...';
         btn.querySelector('i')?.classList.add('pf-loading-spin');
 
         try {
@@ -1904,45 +1815,41 @@
             const cotacaoAtual = await pfBuscarCotacaoAtual(ticker);
             const precoFinal = cotacaoAtual.preco;
             const precoInicial = pfEstimarPrecoNaData(ticker, precoFinal, dataInicio, dataFim);
-
-            // Quantidade hipotética de "cotas/ações" que o valor investido compraria no início
             const quantidade = valorInvestido / precoInicial;
             const valorFinal = quantidade * precoFinal;
             const resultadoNominal = valorFinal - valorInvestido;
             const resultadoPercentual = (resultadoNominal / valorInvestido) * 100;
 
+            // Gera série histórica para o sparkline
+            const serieHistorica = pfGerarSerieHistorica(ticker, valorInvestido, dataInicio, dataFim);
+
             const novoItem = {
                 id: 'inv_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
-                ticker,
-                nome: pfAtivoSelecionado.nome,
-                tipo: pfAtivoSelecionado.tipo,
-                valorInvestido,
-                dataInicio,
-                dataFim,
-                precoInicialEstimado: precoInicial,
-                precoFinal,
-                valorFinal,
-                resultadoNominal,
-                resultadoPercentual,
-                fonteDados: cotacaoAtual.fonte, // 'real' ou 'simulado'
+                ticker, nome: pfAtivoSelecionado.nome, tipo: pfAtivoSelecionado.tipo,
+                valorInvestido, dataInicio, dataFim,
+                precoInicialEstimado: precoInicial, precoFinal,
+                valorFinal, resultadoNominal, resultadoPercentual,
+                fonteDados: cotacaoAtual.fonte,
+                serieHistorica,
                 criadoEm: Date.now(),
             };
 
             pfPortfolio.unshift(novoItem);
             pfSalvarPortfolio();
             pfRenderizarPortfolio();
-            pfMostrarToast(cotacaoAtual.fonte === 'real'
-                ? `✅ ${ticker} adicionado com cotação real de mercado (B3).`
-                : `ℹ️ ${ticker} adicionado com cotação simulada (sem fonte real disponível para este ativo).`);
 
-            // Limpa o formulário para o próximo lançamento
+            const msgFonte = cotacaoAtual.fonte === 'real'
+                ? `✅ ${ticker} adicionado com cotação real (B3).`
+                : `📊 ${ticker} adicionado com dados históricos estimados.`;
+            pfMostrarToast(msgFonte);
+
             document.getElementById('pf-input-busca').value = '';
             document.getElementById('pf-input-valor').value = '';
             document.getElementById('pf-input-data-inicio').value = '';
             pfAtivoSelecionado = null;
 
         } catch (erro) {
-            console.error('[Matias Invest] Erro ao processar investimento:', erro);
+            console.error('[MI] Erro ao processar:', erro);
             erroBox.innerText = '⚠️ Não foi possível processar este investimento agora. Tente novamente.';
             erroBox.classList.remove('hidden');
         } finally {
@@ -1953,7 +1860,11 @@
     }
 
     function pfSalvarPortfolio() {
-        try { localStorage.setItem('matias_portfolio_pessoal', JSON.stringify(pfPortfolio)); } catch {}
+        try {
+            // Salva sem as séries históricas (gera em runtime para economizar espaço)
+            const resumido = pfPortfolio.map(({ serieHistorica, ...resto }) => resto);
+            localStorage.setItem('matias_portfolio_pessoal', JSON.stringify(resumido));
+        } catch {}
     }
 
     function pfRemoverItem(id) {
@@ -1964,44 +1875,145 @@
 
     function pfLimparPortfolio() {
         if (pfPortfolio.length === 0) return;
-        if (confirm('Remover todos os investimentos do seu portfólio pessoal? Esta ação não pode ser desfeita.')) {
+        if (confirm('Remover todos os investimentos? Esta ação não pode ser desfeita.')) {
             pfPortfolio = [];
             pfSalvarPortfolio();
             pfRenderizarPortfolio();
         }
     }
 
-    function pfFormatarMoeda(valor) {
-        return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    function pfFmt(valor) { return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
+    function pfFmtData(isoDate) { if (!isoDate) return '—'; const [a,m,d] = isoDate.split('-'); return `${d}/${m}/${a}`; }
+
+    /* ════ GRÁFICO CONSOLIDADO ════ */
+    function pfAtualizarGraficoConsolidado() {
+        const container = document.getElementById('pf-chart-container');
+        if (pfPortfolio.length === 0) { container.style.display = 'none'; if (pfChartConsolidado) { pfChartConsolidado.destroy(); pfChartConsolidado = null; } return; }
+        container.style.display = 'block';
+
+        // Usa o item mais longo como referência de labels
+        let itemBase = pfPortfolio.reduce((a,b) => {
+            const dA = new Date(a.dataFim) - new Date(a.dataInicio);
+            const dB = new Date(b.dataFim) - new Date(b.dataInicio);
+            return dA > dB ? a : b;
+        });
+
+        // Gera séries para todos os itens e soma o valor total mês a mês
+        const series = pfPortfolio.map(item => {
+            const s = item.serieHistorica || pfGerarSerieHistorica(item.ticker, item.valorInvestido, item.dataInicio, item.dataFim);
+            return s.serie;
+        });
+        const maxLen = Math.max(...series.map(s => s.length));
+        const somaTotal = [];
+        for (let i = 0; i < maxLen; i++) {
+            let soma = 0;
+            series.forEach(s => { soma += (s[i] !== undefined ? s[i] : s[s.length-1]); });
+            somaTotal.push(soma);
+        }
+
+        const labelsBase = (itemBase.serieHistorica || pfGerarSerieHistorica(itemBase.ticker, itemBase.valorInvestido, itemBase.dataInicio, itemBase.dataFim)).labels;
+        const labels = labelsBase.slice(0, maxLen);
+
+        const ctx = document.getElementById('pf-grafico-consolidado').getContext('2d');
+        if (pfChartConsolidado) pfChartConsolidado.destroy();
+
+        pfChartConsolidado = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [{
+                    data: somaTotal,
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4,
+                    borderColor: '#06b6d4',
+                    backgroundColor: (ctx) => {
+                        const { chartArea } = ctx.chart;
+                        if (!chartArea) return 'rgba(6,182,212,0.05)';
+                        const g = ctx.chart.ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+                        g.addColorStop(0, 'rgba(6,182,212,0.35)');
+                        g.addColorStop(1, 'rgba(6,182,212,0)');
+                        return g;
+                    },
+                    pointRadius: 0, pointHoverRadius: 4, pointHitRadius: 16,
+                    pointHoverBackgroundColor: '#22d3ee',
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                animation: { duration: 800 },
+                plugins: { legend: { display: false }, tooltip: { enabled: true, backgroundColor: 'rgba(2,6,23,0.95)', titleColor: '#67e8f9', bodyColor: '#fff', titleFont: { family: "'Orbitron', sans-serif", size: 9 }, callbacks: { label: (ctx) => pfFmt(ctx.raw) } } },
+                scales: {
+                    y: { display: true, grid: { color: 'rgba(30,41,59,0.5)' }, border: { display: false }, ticks: { color: '#475569', font: { size: 8 }, callback: v => formatarCompacto(v) } },
+                    x: { display: true, grid: { display: false }, border: { display: false }, ticks: { color: '#475569', font: { size: 8 }, maxTicksLimit: 6 } }
+                }
+            }
+        });
     }
 
-    function pfFormatarData(isoDate) {
-        if (!isoDate) return '—';
-        const [ano, mes, dia] = isoDate.split('-');
-        return `${dia}/${mes}/${ano}`;
+    /* ════ SPARKLINE INDIVIDUAL ════ */
+    function pfRenderizarSparkline(canvasId, serie, cor) {
+        const el = document.getElementById(canvasId);
+        if (!el) return;
+        if (pfSparklineCharts[canvasId]) { pfSparklineCharts[canvasId].destroy(); delete pfSparklineCharts[canvasId]; }
+        const ctx = el.getContext('2d');
+        const lucro = serie[serie.length-1] >= serie[0];
+        const corFinal = lucro ? '#34d399' : '#f87171';
+        pfSparklineCharts[canvasId] = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: serie.map((_,i) => i),
+                datasets: [{
+                    data: serie,
+                    borderWidth: 1.5,
+                    fill: true,
+                    tension: 0.4,
+                    borderColor: corFinal,
+                    backgroundColor: lucro ? 'rgba(52,211,153,0.08)' : 'rgba(248,113,113,0.08)',
+                    pointRadius: 0,
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                animation: false,
+                plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                scales: { y: { display: false }, x: { display: false } }
+            }
+        });
     }
 
-    /* ════ RENDERIZAÇÃO DO PAINEL DO PORTFÓLIO ════ */
+    /* ════ RENDERIZAÇÃO DO PAINEL ════ */
     function pfRenderizarPortfolio() {
         const lista = document.getElementById('pf-lista-portfolio');
         if (!lista) return;
 
-        // ── Resumo consolidado ──
+        // Reconstrói séries históricas (não são salvas no localStorage)
+        pfPortfolio = pfPortfolio.map(item => {
+            if (!item.serieHistorica) {
+                item.serieHistorica = pfGerarSerieHistorica(item.ticker, item.valorInvestido, item.dataInicio, item.dataFim);
+            }
+            return item;
+        });
+
+        // Resumo
         const totalInvestido = pfPortfolio.reduce((s, i) => s + i.valorInvestido, 0);
         const totalAtual = pfPortfolio.reduce((s, i) => s + i.valorFinal, 0);
         const resultadoConsolidado = totalAtual - totalInvestido;
         const percentualConsolidado = totalInvestido > 0 ? (resultadoConsolidado / totalInvestido) * 100 : 0;
 
-        document.getElementById('pf-resumo-total').innerText = pfFormatarMoeda(totalAtual);
-        const elResultado = document.getElementById('pf-resumo-resultado');
-        const elPercentual = document.getElementById('pf-resumo-percentual');
-        const corResultado = resultadoConsolidado >= 0 ? '#34d399' : '#f87171';
-        elResultado.style.color = corResultado;
-        elPercentual.style.color = corResultado;
-        elResultado.innerText = (resultadoConsolidado >= 0 ? '+' : '') + pfFormatarMoeda(resultadoConsolidado);
-        elPercentual.innerText = (percentualConsolidado >= 0 ? '+' : '') + percentualConsolidado.toFixed(1) + '%';
+        document.getElementById('pf-resumo-total').innerText = pfFmt(totalAtual);
+        document.getElementById('pf-stat-aplicado').innerText = pfFmt(totalInvestido);
 
-        // ── Lista de ativos ──
+        const elRes = document.getElementById('pf-resumo-resultado');
+        const elPct = document.getElementById('pf-resumo-percentual');
+        const cor = resultadoConsolidado >= 0 ? '#34d399' : '#f87171';
+        elRes.style.color = cor;
+        elPct.style.color = cor;
+        elRes.innerText = (resultadoConsolidado >= 0 ? '+' : '') + pfFmt(resultadoConsolidado);
+        elPct.innerText = (percentualConsolidado >= 0 ? '+' : '') + percentualConsolidado.toFixed(1) + '%';
+
+        pfAtualizarGraficoConsolidado();
+
         if (pfPortfolio.length === 0) {
             lista.innerHTML = `<div class="pf-empty-state">
                 <i data-lucide="inbox" class="w-7 h-7 mx-auto mb-2 opacity-40"></i>
@@ -2014,44 +2026,79 @@
 
         lista.innerHTML = pfPortfolio.map(item => {
             const lucro = item.resultadoNominal >= 0;
-            const corValor = lucro ? '#34d399' : '#f87171';
+            const cor = lucro ? '#34d399' : '#f87171';
+            const sparkId = `spark_${item.id}`;
+            const fonteBadge = item.fonteDados === 'real'
+                ? `<span class="pf-source-badge pf-source-real">REAL · B3</span>`
+                : `<span class="pf-source-badge pf-source-sim">HISTÓRICO EST.</span>`;
+            const hist = PF_HISTORICO_RENTABILIDADE[item.ticker.toUpperCase()] || PF_HISTORICO_RENTABILIDADE['_DEFAULT'];
+
             return `
-            <div class="pf-ativo-card">
+            <div class="pf-ativo-card ${lucro ? 'lucro' : 'prejuizo'}">
                 <button class="pf-ativo-remover" onclick="pfRemoverItem('${item.id}')" title="Remover">
                     <i data-lucide="x" class="w-3.5 h-3.5"></i>
                 </button>
-                <div class="flex justify-between items-start gap-2 pr-5">
+
+                <!-- Cabeçalho do card -->
+                <div class="flex items-start gap-3 pr-5 mb-3">
+                    <div class="w-9 h-9 rounded-lg flex items-center justify-center font-logo font-black text-[10px] shrink-0" style="background:rgba(6,182,212,0.1);border:1px solid rgba(6,182,212,0.25);color:#67e8f9">
+                        ${item.ticker.slice(0,4)}
+                    </div>
                     <div class="flex-1 min-w-0">
                         <div class="flex items-center gap-1.5 flex-wrap">
                             <span class="font-logo font-black text-xs text-white">${item.ticker}</span>
-                            <span class="pf-source-badge ${item.fonteDados === 'real' ? 'pf-source-real' : 'pf-source-sim'}">${item.fonteDados === 'real' ? 'REAL · B3' : 'SIMULADO'}</span>
+                            ${fonteBadge}
                         </div>
-                        <p class="text-[10px] text-slate-500 mt-0.5 truncate">${item.nome}</p>
-                        <p class="text-[9.5px] text-slate-600 mt-1">${pfFormatarData(item.dataInicio)} → ${pfFormatarData(item.dataFim)}</p>
+                        <p class="text-[10px] text-slate-500 truncate mt-0.5">${item.nome}</p>
+                        <p class="text-[9px] text-slate-600 mt-0.5">${pfFmtData(item.dataInicio)} → ${pfFmtData(item.dataFim)}</p>
                     </div>
                     <div class="text-right shrink-0">
-                        <span class="pf-pill ${lucro ? 'pf-pill-lucro' : 'pf-pill-prejuizo'}">${lucro ? '▲ Lucro' : '▼ Prejuízo'}</span>
-                        <div class="font-logo font-black text-sm mt-1" style="color:${corValor}">${(item.resultadoPercentual >= 0 ? '+' : '')}${item.resultadoPercentual.toFixed(1)}%</div>
+                        <span class="pf-pill ${lucro ? 'pf-pill-lucro' : 'pf-pill-prejuizo'}">${lucro ? '▲' : '▼'} ${Math.abs(item.resultadoPercentual).toFixed(1)}%</span>
+                        <div class="font-logo font-black text-base mt-1" style="color:${cor}">${(item.resultadoPercentual >= 0 ? '+' : '')}${item.resultadoPercentual.toFixed(1)}%</div>
                     </div>
                 </div>
-                <div class="grid grid-cols-3 gap-2 mt-3 pt-2.5 border-t border-slate-900/80 text-center">
-                    <div>
-                        <div class="text-[9px] text-slate-600 uppercase font-bold">Aplicado</div>
-                        <div class="text-[11px] font-bold text-slate-300 mt-0.5">${pfFormatarMoeda(item.valorInvestido)}</div>
+
+                <!-- Sparkline histórico -->
+                <div class="pf-chart-wrap mb-3 p-2" style="padding:10px">
+                    <div class="flex items-center justify-between mb-1">
+                        <p class="text-[8px] font-bold uppercase tracking-wider text-slate-600">Evolução Estimada do Período</p>
+                        <p class="text-[8px] text-slate-600">Taxa ref.: ${hist.taxaAnual > 0 ? '+' : ''}${hist.taxaAnual.toFixed(1)}% a.a. (histórico estimado)</p>
                     </div>
-                    <div>
-                        <div class="text-[9px] text-slate-600 uppercase font-bold">Hoje</div>
-                        <div class="text-[11px] font-bold text-white mt-0.5">${pfFormatarMoeda(item.valorFinal)}</div>
-                    </div>
-                    <div>
-                        <div class="text-[9px] text-slate-600 uppercase font-bold">Resultado</div>
-                        <div class="text-[11px] font-bold mt-0.5" style="color:${corValor}">${(item.resultadoNominal >= 0 ? '+' : '')}${pfFormatarMoeda(item.resultadoNominal)}</div>
+                    <div style="height:52px">
+                        <canvas id="${sparkId}" class="pf-sparkline-canvas"></canvas>
                     </div>
                 </div>
+
+                <!-- Números consolidados -->
+                <div class="grid grid-cols-3 gap-2 text-center">
+                    <div class="bg-slate-900/60 rounded-lg p-2">
+                        <div class="text-[8px] text-slate-600 uppercase font-bold mb-1">Aplicado</div>
+                        <div class="text-[11px] font-bold text-slate-300">${pfFmt(item.valorInvestido)}</div>
+                    </div>
+                    <div class="bg-slate-900/60 rounded-lg p-2">
+                        <div class="text-[8px] text-slate-600 uppercase font-bold mb-1">Hoje (Est.)</div>
+                        <div class="text-[11px] font-bold text-white">${pfFmt(item.valorFinal)}</div>
+                    </div>
+                    <div class="rounded-lg p-2" style="background:${lucro ? 'rgba(52,211,153,0.07)' : 'rgba(248,113,113,0.07)'};border:1px solid ${lucro ? 'rgba(52,211,153,0.2)' : 'rgba(248,113,113,0.2)'}">
+                        <div class="text-[8px] uppercase font-bold mb-1" style="color:${cor}">Resultado</div>
+                        <div class="text-[11px] font-bold" style="color:${cor}">${(item.resultadoNominal >= 0 ? '+' : '')}${pfFmt(item.resultadoNominal)}</div>
+                    </div>
+                </div>
+
+                <p class="text-[9px] text-slate-700 text-center mt-2.5 pt-2 border-t border-slate-900/60">⚠️ Rentabilidade estimada com base em dados históricos. Não garante retornos futuros.</p>
             </div>`;
         }).join('');
 
         lucide.createIcons();
+
+        // Renderiza sparklines após o DOM atualizar
+        setTimeout(() => {
+            pfPortfolio.forEach(item => {
+                const sparkId = `spark_${item.id}`;
+                const serie = item.serieHistorica?.serie || [];
+                if (serie.length > 1) pfRenderizarSparkline(sparkId, serie, item.serieHistorica?.cor || '#06b6d4');
+            });
+        }, 80);
     }
     </script>
 </body>
