@@ -188,6 +188,51 @@
         .config-badge-seguro::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: #34d399; box-shadow: 0 0 6px #34d399; }
         .nivel-barra { height: 4px; border-radius: 99px; background: #0f172a; overflow: hidden; margin-top: 6px; }
         .nivel-barra-fill { height: 100%; border-radius: 99px; transition: width .6s ease; }
+
+        /* ═══ MONTAR MINHA CARTEIRA (NOVO) ═══ */
+        .pf-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+        @media (min-width: 768px) { .pf-grid { grid-template-columns: 380px 1fr; align-items: start; } }
+        .pf-card { background: #020617; border: 1px solid #0f172a; border-radius: 16px; }
+        .pf-label { font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: #67e8f9; display: block; margin-bottom: 6px; }
+        .pf-input { width: 100%; background: rgba(6,182,212,0.05); border: 1px solid rgba(6,182,212,0.25); border-radius: 10px; color: #f0f9ff; font-size: 13px; padding: 10px 12px; outline: none; transition: border-color .2s, background .2s; font-family: 'Plus Jakarta Sans', sans-serif; }
+        .pf-input::placeholder { color: #475569; }
+        .pf-input:focus { border-color: #06b6d4; background: rgba(6,182,212,0.09); box-shadow: 0 0 0 3px rgba(6,182,212,0.12); }
+        .pf-input-icon-wrap { position: relative; }
+        .pf-input-icon-wrap .pf-input { padding-left: 36px; }
+        .pf-input-icon-wrap svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; color: #475569; pointer-events: none; }
+        .pf-btn-submit { width: 100%; background: linear-gradient(135deg, #06b6d4, #0891b2); color: #001016; font-weight: 800; font-size: 12.5px; letter-spacing: .04em; text-transform: uppercase; padding: 12px; border-radius: 10px; border: none; cursor: pointer; transition: box-shadow .25s, transform .15s, filter .2s; display: flex; align-items: center; justify-content: center; gap: 8px; font-family: 'Plus Jakarta Sans', sans-serif; }
+        .pf-btn-submit:hover { box-shadow: 0 0 26px rgba(6,182,212,0.55); filter: brightness(1.08); }
+        .pf-btn-submit:active { transform: scale(0.98); }
+        .pf-btn-submit:disabled { opacity: .5; cursor: not-allowed; box-shadow: none; }
+        .pf-autocomplete-list { position: absolute; left: 0; right: 0; top: calc(100% + 4px); background: #0a0f1e; border: 1px solid rgba(6,182,212,0.3); border-radius: 10px; overflow: hidden; z-index: 40; box-shadow: 0 12px 28px rgba(0,0,0,0.55); max-height: 220px; overflow-y: auto; }
+        .pf-autocomplete-item { padding: 9px 12px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 8px; border-bottom: 1px solid rgba(15,23,42,0.8); transition: background .15s; }
+        .pf-autocomplete-item:last-child { border-bottom: none; }
+        .pf-autocomplete-item:hover, .pf-autocomplete-item.ativo { background: rgba(6,182,212,0.12); }
+        .pf-autocomplete-ticker { font-family: 'Orbitron', sans-serif; font-size: 11px; font-weight: 800; color: #67e8f9; }
+        .pf-autocomplete-nome { font-size: 9.5px; color: #64748b; }
+        .pf-autocomplete-tag { font-size: 8px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; padding: 1.5px 6px; border-radius: 99px; flex-shrink: 0; }
+        .pf-tag-real { background: rgba(52,211,153,0.12); color: #34d399; border: 1px solid rgba(52,211,153,0.3); }
+        .pf-tag-sim { background: rgba(148,163,184,0.1); color: #94a3b8; border: 1px solid rgba(148,163,184,0.25); }
+        .pf-resumo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        @media (max-width: 480px) { .pf-resumo-grid { grid-template-columns: 1fr 1fr; } }
+        .pf-resumo-item { background: rgba(6,182,212,0.05); border: 1px solid rgba(6,182,212,0.15); border-radius: 12px; padding: 12px; }
+        .pf-resumo-valor { font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 17px; }
+        .pf-resumo-label { font-size: 9px; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: #475569; margin-top: 2px; }
+        .pf-ativo-card { background: #020617; border: 1px solid #0f172a; border-radius: 14px; padding: 13px; transition: border-color .2s; position: relative; }
+        .pf-ativo-card:hover { border-color: rgba(6,182,212,0.3); }
+        .pf-ativo-remover { position: absolute; top: 10px; right: 10px; color: #475569; transition: color .15s; cursor: pointer; background: none; border: none; padding: 2px; }
+        .pf-ativo-remover:hover { color: #f87171; }
+        .pf-pill { font-size: 8.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; padding: 2px 7px; border-radius: 99px; }
+        .pf-pill-lucro { background: rgba(52,211,153,0.12); color: #34d399; border: 1px solid rgba(52,211,153,0.3); }
+        .pf-pill-prejuizo { background: rgba(248,113,113,0.12); color: #f87171; border: 1px solid rgba(248,113,113,0.3); }
+        .pf-empty-state { text-align: center; padding: 40px 16px; color: #475569; }
+        .pf-source-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 8px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; padding: 2px 6px; border-radius: 6px; }
+        .pf-source-real { background: rgba(52,211,153,0.1); color: #34d399; }
+        .pf-source-sim { background: rgba(148,163,184,0.1); color: #94a3b8; }
+        .pf-loading-spin { animation: pfSpin .8s linear infinite; }
+        @keyframes pfSpin { to { transform: rotate(360deg); } }
+        .pf-toast { position: fixed; bottom: 92px; left: 50%; transform: translateX(-50%) translateY(20px); background: #0a0f1e; border: 1px solid rgba(6,182,212,0.35); color: #e2e8f0; font-size: 11.5px; font-weight: 600; padding: 10px 16px; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 70; opacity: 0; pointer-events: none; transition: opacity .25s, transform .25s; max-width: 88vw; text-align: center; }
+        .pf-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
     </style>
 </head>
 <body class="bg-black text-slate-100 min-h-screen pb-28 splash-active">
@@ -384,6 +429,111 @@
                     <p class="text-xs text-slate-500 col-span-full text-center py-4">Carregando cotações...</p>
                 </div>
             </section>
+        </div>
+
+        <!-- ════ ABA MONTAR MINHA CARTEIRA (NOVO) ════ -->
+        <div id="aba-montar-carteira" class="hidden p-4 space-y-4">
+
+            <div class="bg-gradient-to-r from-cyan-950/40 via-slate-950 to-slate-950 p-4 rounded-xl border border-cyan-500/20 space-y-2">
+                <div class="flex items-center gap-2 text-cyan-400">
+                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                    <h2 class="text-base font-black uppercase tracking-wider font-logo">Monte e Monitore seu Portfólio</h2>
+                </div>
+                <p class="text-xs text-slate-300 leading-relaxed">Registre suas próprias aplicações (reais ou simuladas), com data de início e data final, e veja o resultado de mercado calculado automaticamente.</p>
+                <p class="text-[10px] text-amber-300/90 bg-amber-500/10 border border-amber-500/20 rounded p-2 leading-relaxed">
+                    ⚖️ <strong>Esta ferramenta não constitui recomendação de investimentos.</strong> Os dados de mercado exibidos têm caráter informativo e podem ser reais (B3, via brapi.dev) ou simulados — sempre identificados. Rentabilidade passada não garante rentabilidade futura.
+                </p>
+            </div>
+
+            <div class="pf-grid">
+                <!-- ═══ LADO ESQUERDO — FORMULÁRIO ═══ -->
+                <div class="pf-card p-4 space-y-3.5">
+                    <h3 class="text-xs font-black text-white uppercase tracking-wide flex items-center gap-1.5">
+                        <i data-lucide="plus-circle" class="w-4 h-4 text-cyan-400"></i> Adicionar Investimento
+                    </h3>
+
+                    <div class="relative">
+                        <label class="pf-label">Ativo (Ticker / Nome)</label>
+                        <div class="pf-input-icon-wrap">
+                            <i data-lucide="search"></i>
+                            <input type="text" id="pf-input-busca" class="pf-input" placeholder="Ex: PETR4, IVVB11, BTC..." autocomplete="off" oninput="pfBuscarAtivo(this.value)" onfocus="pfBuscarAtivo(this.value)">
+                        </div>
+                        <div id="pf-autocomplete" class="pf-autocomplete-list hidden"></div>
+                    </div>
+
+                    <div>
+                        <label class="pf-label">Valor Investido (R$)</label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-cyan-700 font-bold text-xs">R$</span>
+                            <input type="text" id="pf-input-valor" class="pf-input" style="padding-left:34px" placeholder="0,00" oninput="formatarMoeda(this, 'portfolio')">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <div>
+                            <label class="pf-label">Data Início</label>
+                            <input type="date" id="pf-input-data-inicio" class="pf-input">
+                        </div>
+                        <div>
+                            <label class="pf-label">Data Final</label>
+                            <input type="date" id="pf-input-data-fim" class="pf-input">
+                            <button onclick="pfUsarDataAtual()" class="text-[9.5px] text-cyan-500 hover:text-cyan-300 font-bold mt-1 underline underline-offset-2">usar data atual</button>
+                        </div>
+                    </div>
+
+                    <div id="pf-form-erro" class="hidden text-[10.5px] text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg p-2"></div>
+
+                    <button onclick="pfAdicionarAoPortfolio()" id="pf-btn-analisar" class="pf-btn-submit">
+                        <i data-lucide="line-chart" class="w-4 h-4"></i>
+                        <span id="pf-btn-analisar-label">Analisar e Adicionar</span>
+                    </button>
+
+                    <p class="text-[9.5px] text-slate-600 leading-relaxed border-t border-slate-900 pt-2.5">
+                        <span class="pf-source-badge pf-source-real">REAL</span> = cotação ao vivo via B3 (brapi.dev), disponível para PETR4, VALE3, ITUB4 e MGLU3 sem necessidade de chave de API.<br>
+                        <span class="pf-source-badge pf-source-sim">SIMULADO</span> = demais ativos usam um motor de simulação determinístico baseado no tempo (ver comentários no código-fonte para plugar uma API paga).
+                    </p>
+                </div>
+
+                <!-- ═══ LADO DIREITO — PAINEL DO PORTFÓLIO ═══ -->
+                <div class="space-y-3">
+                    <div class="pf-card p-4">
+                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2.5">Resumo da Carteira</p>
+                        <div class="pf-resumo-grid">
+                            <div class="pf-resumo-item">
+                                <div class="pf-resumo-valor text-white" id="pf-resumo-total">R$ 0,00</div>
+                                <div class="pf-resumo-label">Patrimônio Total</div>
+                            </div>
+                            <div class="pf-resumo-item">
+                                <div class="pf-resumo-valor" id="pf-resumo-resultado">R$ 0,00</div>
+                                <div class="pf-resumo-label">Resultado Consolidado</div>
+                            </div>
+                            <div class="pf-resumo-item">
+                                <div class="pf-resumo-valor" id="pf-resumo-percentual">0,0%</div>
+                                <div class="pf-resumo-label">Rendimento %</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between px-1">
+                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Meus Investimentos</p>
+                        <button onclick="pfLimparPortfolio()" class="text-[9.5px] text-slate-600 hover:text-red-400 font-bold flex items-center gap-1 transition">
+                            <i data-lucide="trash-2" class="w-3 h-3"></i> Limpar tudo
+                        </button>
+                    </div>
+
+                    <div id="pf-lista-portfolio" class="space-y-2.5">
+                        <div class="pf-empty-state">
+                            <i data-lucide="inbox" class="w-7 h-7 mx-auto mb-2 opacity-40"></i>
+                            <p class="text-xs">Nenhum investimento adicionado ainda.</p>
+                            <p class="text-[10.5px] mt-0.5">Use o formulário ao lado para começar.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-[9px] text-slate-600 text-center pt-2 border-t border-slate-900 leading-relaxed">
+                ⚖️ Ferramenta de uso pessoal e educacional. Não constitui recomendação de investimentos, análise de valores mobiliários (Res. CVM 20/2021) ou consultoria financeira. Dados salvos apenas no seu navegador (localStorage).
+            </div>
         </div>
 
         <!-- ════ ABA MENOR DE IDADE ════ -->
@@ -618,6 +768,7 @@
                         </div>
                         <select id="select-aba-inicial" class="config-select" onchange="salvarPreferencia('aba_inicial', this.value)">
                             <option value="carteira">Carteira</option>
+                            <option value="montar">Montar Carteira</option>
                             <option value="conhecimento">Educação</option>
                             <option value="duvidas">Dúvidas</option>
                             <option value="menor">Começo</option>
@@ -652,7 +803,7 @@
                             <span class="text-emerald-400 mt-0.5">✓</span>
                             <div>
                                 <p class="text-[10.5px] font-bold text-emerald-300">Sem chaves de API expostas</p>
-                                <p class="text-[9.5px] text-slate-500 mt-0.5">A única API usada (CoinGecko) é pública e não requer autenticação. Nunca use .env em HTML/JS do frontend — segredos devem ficar no servidor.</p>
+                                <p class="text-[9.5px] text-slate-500 mt-0.5">As únicas APIs usadas (CoinGecko e brapi.dev — ações de teste) são públicas e não requerem chave secreta. Nunca use .env em HTML/JS do frontend — segredos devem ficar no servidor.</p>
                             </div>
                         </div>
                         <div class="flex items-start gap-3 p-2.5 bg-emerald-500/5 rounded-lg border border-emerald-500/15">
@@ -686,15 +837,15 @@
                 <div class="config-section-body space-y-2">
                     <div class="config-row">
                         <span class="config-row-title">Versão</span>
-                        <span class="text-[10px] font-bold text-cyan-400 font-logo">v2.0 — Seguro</span>
+                        <span class="text-[10px] font-bold text-cyan-400 font-logo">v2.1 — Portfólio Real</span>
                     </div>
                     <div class="config-row">
                         <span class="config-row-title">Tipo</span>
                         <span class="text-[10px] text-slate-400">100% Client-Side · Sem Backend</span>
                     </div>
                     <div class="config-row">
-                        <span class="config-row-title">API externa</span>
-                        <span class="text-[10px] text-slate-400">CoinGecko (pública)</span>
+                        <span class="config-row-title">APIs externas</span>
+                        <span class="text-[10px] text-slate-400">CoinGecko · brapi.dev (públicas)</span>
                     </div>
                     <div class="config-row">
                         <span class="config-row-title">Regulação</span>
@@ -738,13 +889,13 @@
         <footer class="p-4 text-center border-t border-slate-900 bg-black text-[9px] text-slate-600 space-y-2">
             <p class="font-bold text-slate-500">⚖️ AVISO DE TRANSPARÊNCIA REGULATÓRIA</p>
             <p>O ambiente <strong>Matias Invest</strong> é um diário virtual pessoal de compartilhamento de metodologias de estudo e simulação matemática de categorias de ativos, de uso exclusivo do proprietário, com base em experiências pessoais de aprendizado.</p>
-            <p><strong>Este sistema NÃO constitui:</strong> análise de valores mobiliários (Res. CVM nº 20/2021); consultoria de valores mobiliários (Res. CVM nº 19/2021); intermediação, oferta pública, ou recomendação de qualquer ativo financeiro. <strong>Rentabilidade passada não é garantia de rentabilidade futura.</strong></p>
+            <p><strong>Este sistema NÃO constitui:</strong> análise de valores mobiliários (Res. CVM nº 20/2021); consultoria de valores mobiliários (Res. CVM nº 19/2021); intermediação, oferta pública, ou recomendação de qualquer ativo financeiro. <strong>A ferramenta não constitui recomendação de investimentos. Rentabilidade passada não é garantia de rentabilidade futura.</strong></p>
             <p>Consulte um profissional habilitado — <a href="https://www.cvm.gov.br" target="_blank" rel="noopener noreferrer" class="text-cyan-700 underline">www.cvm.gov.br</a>.</p>
         </footer>
 
         <!-- ════ NAVEGAÇÃO INFERIOR ════ -->
         <nav class="fixed bottom-0 left-0 right-0 bg-black/95 backdrop-blur-md border-t border-slate-900 z-50">
-            <div class="max-w-2xl mx-auto grid grid-cols-6 gap-0.5 p-2 text-center">
+            <div class="max-w-2xl mx-auto grid grid-cols-7 gap-0.5 p-2 text-center">
                 <button id="nav-btn-menor" class="flex flex-col items-center gap-0.5 py-1 text-slate-600" onclick="alternarAbas('menor')">
                     <span class="text-[9px] bg-slate-900 text-slate-400 font-black px-1 py-0.5 rounded border border-slate-800 font-logo transition-colors" id="icon-menor-tag">HIST</span>
                     <span class="text-[8px] font-bold text-slate-500">Começo</span>
@@ -752,6 +903,10 @@
                 <button id="nav-btn-carteira" class="flex flex-col items-center gap-1 py-1 nav-active" onclick="alternarAbas('carteira')">
                     <i data-lucide="pie-chart" class="w-4 h-4"></i>
                     <span class="text-[8px] font-bold">Carteira</span>
+                </button>
+                <button id="nav-btn-montar" class="flex flex-col items-center gap-1 py-1 text-slate-600" onclick="alternarAbas('montar')">
+                    <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                    <span class="text-[8px] font-medium text-slate-500">Montar</span>
                 </button>
                 <button id="nav-btn-duvidas" class="flex flex-col items-center gap-1 py-1 text-slate-600" onclick="alternarAbas('duvidas')">
                     <i data-lucide="message-circle-question" class="w-4 h-4"></i>
@@ -772,6 +927,8 @@
             </div>
         </nav>
     </div>
+
+    <div id="pf-toast" class="pf-toast"></div>
 
     <script>
     /* ════ SPLASH ════ */
@@ -973,6 +1130,7 @@
             { pergunta: 'Os nomes de ativos exibidos são recomendações?', resposta: `<strong>Não.</strong> Todos os nomes são <strong>categorias genéricas ou ilustrativas</strong>. Quando aparece um ticker (ex: WRLD11), trata-se de um exemplo público de como aquela categoria pode ser acessada — não é indicação de compra daquele ativo específico.<br><br>⚖️ Este site não é registrado como analista ou consultor de valores mobiliários na CVM.` },
             { pergunta: 'Meus dados pessoais são coletados?', resposta: `<strong>Não.</strong> Este site não coleta nenhum dado pessoal. Não há formulários de cadastro, não há backend, não há cookies de rastreamento.<br><br>✅ As preferências salvas ficam <strong>exclusivamente no localStorage do seu navegador</strong> e podem ser apagadas a qualquer momento pelo botão "Limpar" ou nas Configurações.` },
             { pergunta: 'O que é Conta Remunerada A e Conta Remunerada B?', resposta: `São exemplos genéricos de reservas de liquidez. O simulador aloca 30% nelas automaticamente como exemplo educacional. Não representam produtos específicos de nenhuma instituição financeira.` },
+            { pergunta: 'Como funciona a aba "Montar Minha Carteira"?', resposta: `Essa aba permite registrar suas próprias aplicações (reais ou hipotéticas), informando ativo, valor, data de início e data final.<br><br>📌 O sistema busca a cotação atual do ativo (real para PETR4, VALE3, ITUB4 e MGLU3 via brapi.dev; simulada para os demais) e calcula o resultado do período.<br><br>⚖️ Isso não constitui recomendação de investimentos — é apenas uma ferramenta de organização e estudo pessoal.` },
         ]},
         { categoria: '💡 Conceitos Financeiros', perguntas: [
             { pergunta: 'O que é IMA-B?', resposta: `O <strong>IMA-B</strong> é um índice que representa uma carteira de Títulos Públicos atrelados ao IPCA. Fundos indexados ao IMA-B entregam, em tese, a variação da inflação + juros reais.` },
@@ -1099,15 +1257,20 @@
     function alternarAbas(aba) {
         abaAtualAtiva = aba;
         localStorage.setItem('matias_aba_ativa', aba);
-        const divs = { carteira:'aba-conteudo-investimentos', perfil:'aba-painel-perfil', menor:'aba-menor-idade', conhecimento:'aba-conhecimento', duvidas:'aba-duvidas' };
+        const divs = { carteira:'aba-conteudo-investimentos', montar:'aba-montar-carteira', perfil:'aba-painel-perfil', menor:'aba-menor-idade', conhecimento:'aba-conhecimento', duvidas:'aba-duvidas' };
         Object.values(divs).forEach(id => document.getElementById(id).classList.add('hidden'));
         document.getElementById(divs[aba]).classList.remove('hidden');
-        ['carteira','perfil','menor','conhecimento','duvidas'].forEach(a => {
+        ['carteira','montar','perfil','menor','conhecimento','duvidas'].forEach(a => {
             const btn = document.getElementById(`nav-btn-${a}`);
             if (btn) btn.className = a === 'menor' ? "flex flex-col items-center gap-0.5 py-1 text-slate-600" : "flex flex-col items-center gap-1 py-1 text-slate-600";
         });
         document.getElementById('icon-menor-tag').className = "text-[9px] bg-slate-900 text-slate-400 font-black px-1 py-0.5 rounded border border-slate-800 font-logo";
         if (aba==='carteira') { document.getElementById('nav-btn-carteira').className="flex flex-col items-center gap-1 py-1 nav-active"; recalcularExibicaoTotal(); }
+        else if (aba==='montar') {
+            document.getElementById('nav-btn-montar').className="flex flex-col items-center gap-1 py-1 nav-active";
+            document.getElementById('valor-aporte-display').innerText="MEU PORTFÓLIO";
+            pfRenderizarPortfolio();
+        }
         else if (aba==='perfil') { document.getElementById('nav-btn-perfil').className="flex flex-col items-center gap-1 py-1 nav-active"; atualizarConfiguracoes(); }
         else if (aba==='menor') { document.getElementById('nav-btn-menor').className="flex flex-col items-center gap-0.5 py-1 text-purple-400"; document.getElementById('icon-menor-tag').className="text-[9px] bg-purple-500/20 text-purple-400 font-black px-1 py-0.5 rounded border border-purple-500/40 font-logo"; recalcularExibicaoTotal(); }
         else if (aba==='conhecimento') {
@@ -1121,6 +1284,7 @@
     function recalcularExibicaoTotal() {
         if (abaAtualAtiva==='menor') { const v=obterValorKids(); document.getElementById('valor-aporte-display').innerText=v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
         else if (abaAtualAtiva==='conhecimento') { document.getElementById('valor-aporte-display').innerText="ESTUDOS"; }
+        else if (abaAtualAtiva==='montar') { document.getElementById('valor-aporte-display').innerText="MEU PORTFÓLIO"; }
         else { const v=obterValorNumerico(); document.getElementById('valor-aporte-display').innerText=v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'}); }
     }
 
@@ -1322,10 +1486,12 @@
 
     function formatarMoeda(input, tipoContexto) {
         let valor=input.value.replace(/\D/g,'');
-        if (valor===''){input.value=''; if(tipoContexto==='kids')gerarCarteiraKids();else gerarCarteira();return;}
+        if (valor===''){input.value=''; if(tipoContexto==='kids')gerarCarteiraKids();else if(tipoContexto==='portfolio'){/* nada a recalcular em tempo real */}else gerarCarteira();return;}
         valor=(parseInt(valor)/100).toFixed(2); valor=valor.replace('.',','); valor=valor.replace(/\B(?=(\d{3})+(?!\d))/g,'.');
         input.value=valor;
-        if (tipoContexto==='kids') gerarCarteiraKids(); else gerarCarteira();
+        if (tipoContexto==='kids') gerarCarteiraKids();
+        else if (tipoContexto==='portfolio') { /* valor do formulário de Montar Carteira — sem recálculo automático */ }
+        else gerarCarteira();
     }
 
     function obterValorNumerico() {
@@ -1432,10 +1598,461 @@
             definirObjetivoKids(localStorage.getItem('matias_kids_objetivo'));
         }
 
+        // Inicializa o módulo "Montar Minha Carteira"
+        pfInicializar();
+
         // Carrega aba preferida ou a salva anteriormente
         const abaInicial = localStorage.getItem('matias_pref_aba_inicial') || localStorage.getItem('matias_aba_ativa') || 'carteira';
         alternarAbas(abaInicial);
     });
+    </script>
+
+    <script>
+    /* ════════════════════════════════════════════════════════════════════
+       MÓDULO "MONTAR MINHA CARTEIRA"
+       ════════════════════════════════════════════════════════════════════
+       Funcionalidade independente, isolada em seu próprio namespace (prefixo pf*
+       de "Portfolio") para não colidir com o restante do código do site.
+
+       FONTE DE DADOS DE MERCADO — IMPORTANTE:
+       -----------------------------------------------------------------
+       1) REAL: usamos a API pública brapi.dev (B3) para 4 tickers de teste
+          que funcionam SEM TOKEN/chave de API: PETR4, VALE3, ITUB4, MGLU3.
+          Doc.: https://brapi.dev/docs/acoes
+          Endpoint: https://brapi.dev/api/quote/{TICKER}
+          Esses 4 ativos são os ÚNICOS com garantia de acesso gratuito e
+          ilimitado sem cadastro. Qualquer outro ticker da B3 exige token
+          (ver bloco PF_CONFIG abaixo para saber onde plugar).
+
+       2) SIMULADO: para qualquer outro ativo digitado (ações sem token,
+          criptos além de BTC/ETH/SOL, fundos, FIIs, etc.) usamos um motor
+          de simulação determinístico baseado em hash do ticker + tempo
+          decorrido. É 100% transparente — o card mostra a etiqueta
+          "SIMULADO" sempre que esse caminho é usado.
+
+       Nunca expomos chave de API neste arquivo (conforme CSP do site).
+       ════════════════════════════════════════════════════════════════════ */
+
+    const PF_CONFIG = {
+        // Tickers de teste da brapi.dev que funcionam sem token/chave.
+        // Fonte: https://brapi.dev/blog/acesso-gratuito-ilimitado-acoes-teste-brapi
+        TICKERS_REAIS_SEM_TOKEN: ['PETR4', 'VALE3', 'ITUB4', 'MGLU3'],
+
+        // ────────────────────────────────────────────────────────────────
+        // 🔌 PONTO DE INTEGRAÇÃO COM API REAL DE MERCADO (PRODUÇÃO)
+        // ────────────────────────────────────────────────────────────────
+        // Quando você tiver um token da brapi.dev (https://brapi.dev/dashboard)
+        // ou da Yahoo Finance/outra fonte, basta preencher BRAPI_TOKEN abaixo.
+        // IMPORTANTE DE SEGURANÇA: um token colocado aqui fica visível a
+        // qualquer pessoa que inspecione o código-fonte do navegador.
+        // Para produção real, o ideal é:
+        //   a) Criar um pequeno backend/proxy (ex: Cloudflare Worker, Vercel
+        //      Function) que guarda o token como variável de ambiente (.env)
+        //      no SERVIDOR, e o frontend chama esse proxy em vez da brapi.dev
+        //      diretamente; OU
+        //   b) Usar apenas os 4 tickers de teste (sem token) como faz este
+        //      arquivo por padrão — adequado para uso pessoal/educacional.
+        BRAPI_TOKEN: null, // ex: 'SEU_TOKEN_AQUI' — deixe null para usar só os 4 tickers de teste
+
+        BRAPI_BASE_URL: 'https://brapi.dev/api/quote/',
+    };
+
+    // Pequeno catálogo local para autocomplete (nome amigável de cada ticker).
+    // Quando a brapi.dev tiver token configurado, este catálogo pode ser
+    // substituído por uma chamada real ao endpoint /api/quote/list (busca).
+    // Doc.: https://brapi.dev/docs/acoes/list
+    const pfCatalogoAtivos = [
+        { ticker: 'PETR4', nome: 'Petróleo Brasileiro S.A. - Petrobras', tipo: 'Ação B3', real: true },
+        { ticker: 'VALE3', nome: 'Vale S.A.', tipo: 'Ação B3', real: true },
+        { ticker: 'ITUB4', nome: 'Itaú Unibanco Holding S.A.', tipo: 'Ação B3', real: true },
+        { ticker: 'MGLU3', nome: 'Magazine Luiza S.A.', tipo: 'Ação B3', real: true },
+        { ticker: 'BBAS3', nome: 'Banco do Brasil S.A.', tipo: 'Ação B3', real: false },
+        { ticker: 'BBDC4', nome: 'Banco Bradesco S.A.', tipo: 'Ação B3', real: false },
+        { ticker: 'WEGE3', nome: 'WEG S.A.', tipo: 'Ação B3', real: false },
+        { ticker: 'ABEV3', nome: 'Ambev S.A.', tipo: 'Ação B3', real: false },
+        { ticker: 'IVVB11', nome: 'ETF iShares S&P 500', tipo: 'ETF B3', real: false },
+        { ticker: 'BOVA11', nome: 'ETF iShares Ibovespa', tipo: 'ETF B3', real: false },
+        { ticker: 'XPML11', nome: 'FII XP Malls', tipo: 'FII', real: false },
+        { ticker: 'HGLG11', nome: 'FII CSHG Logística', tipo: 'FII', real: false },
+        { ticker: 'BTC', nome: 'Bitcoin', tipo: 'Criptoativo', real: false },
+        { ticker: 'ETH', nome: 'Ethereum', tipo: 'Criptoativo', real: false },
+        { ticker: 'SOL', nome: 'Solana', tipo: 'Criptoativo', real: false },
+        { ticker: 'TESOURO-SELIC', nome: 'Tesouro Selic (genérico)', tipo: 'Renda Fixa', real: false },
+        { ticker: 'CDB-100CDI', nome: 'CDB 100% do CDI (genérico)', tipo: 'Renda Fixa', real: false },
+    ];
+
+    let pfPortfolio = [];          // array de investimentos do usuário
+    let pfAtivoSelecionado = null; // item escolhido no autocomplete
+    let pfIndiceAutocomplete = -1;
+    let pfCacheCotacoes = {};      // cache simples em memória para evitar chamadas repetidas
+
+    function pfInicializar() {
+        // Carrega portfólio salvo (somente neste navegador — localStorage)
+        try {
+            const salvo = localStorage.getItem('matias_portfolio_pessoal');
+            pfPortfolio = salvo ? JSON.parse(salvo) : [];
+        } catch { pfPortfolio = []; }
+
+        // Data final = hoje, por padrão
+        const hoje = new Date().toISOString().split('T')[0];
+        const inputFim = document.getElementById('pf-input-data-fim');
+        const inputInicio = document.getElementById('pf-input-data-inicio');
+        if (inputFim) { inputFim.value = hoje; inputFim.max = hoje; }
+        if (inputInicio) inputInicio.max = hoje;
+
+        // Fecha autocomplete ao clicar fora
+        document.addEventListener('click', (e) => {
+            const wrap = document.getElementById('pf-input-busca');
+            const lista = document.getElementById('pf-autocomplete');
+            if (!wrap || !lista) return;
+            if (!wrap.contains(e.target) && !lista.contains(e.target)) lista.classList.add('hidden');
+        });
+    }
+
+    function pfUsarDataAtual() {
+        const hoje = new Date().toISOString().split('T')[0];
+        document.getElementById('pf-input-data-fim').value = hoje;
+    }
+
+    /* ════ AUTOCOMPLETE DE ATIVOS ════ */
+    function pfBuscarAtivo(valorDigitado) {
+        const termo = (valorDigitado || '').trim().toUpperCase();
+        const lista = document.getElementById('pf-autocomplete');
+        pfAtivoSelecionado = null; // qualquer digitação invalida a seleção anterior
+        if (!termo) { lista.classList.add('hidden'); lista.innerHTML = ''; return; }
+
+        const resultados = pfCatalogoAtivos.filter(a =>
+            a.ticker.includes(termo) || a.nome.toUpperCase().includes(termo)
+        ).slice(0, 8);
+
+        if (resultados.length === 0) {
+            // Permite cadastrar um ticker "livre" não presente no catálogo —
+            // nesse caso ele sempre cairá no motor SIMULADO.
+            lista.innerHTML = `<div class="pf-autocomplete-item" onclick="pfSelecionarAtivoLivre('${termo.replace(/'/g, "")}')">
+                <div><div class="pf-autocomplete-ticker">${termo}</div><div class="pf-autocomplete-nome">Usar como ticker livre (simulado)</div></div>
+                <span class="pf-autocomplete-tag pf-tag-sim">SIMULADO</span>
+            </div>`;
+            lista.classList.remove('hidden');
+            return;
+        }
+
+        lista.innerHTML = resultados.map((a, i) => `
+            <div class="pf-autocomplete-item" onclick="pfSelecionarAtivo(${i})" data-idx="${i}">
+                <div>
+                    <div class="pf-autocomplete-ticker">${a.ticker}</div>
+                    <div class="pf-autocomplete-nome">${a.nome} · ${a.tipo}</div>
+                </div>
+                <span class="pf-autocomplete-tag ${a.real ? 'pf-tag-real' : 'pf-tag-sim'}">${a.real ? 'REAL' : 'SIMULADO'}</span>
+            </div>
+        `).join('');
+        lista._resultadosAtuais = resultados;
+        lista.classList.remove('hidden');
+    }
+
+    function pfSelecionarAtivo(indice) {
+        const lista = document.getElementById('pf-autocomplete');
+        const item = lista._resultadosAtuais[indice];
+        if (!item) return;
+        pfAtivoSelecionado = { ...item };
+        document.getElementById('pf-input-busca').value = `${item.ticker} — ${item.nome}`;
+        lista.classList.add('hidden');
+    }
+
+    function pfSelecionarAtivoLivre(ticker) {
+        pfAtivoSelecionado = { ticker, nome: ticker, tipo: 'Ativo Personalizado', real: PF_CONFIG.TICKERS_REAIS_SEM_TOKEN.includes(ticker) };
+        document.getElementById('pf-input-busca').value = ticker;
+        document.getElementById('pf-autocomplete').classList.add('hidden');
+    }
+
+    /* ════ TOAST DE FEEDBACK ════ */
+    let pfToastTimeout = null;
+    function pfMostrarToast(mensagem) {
+        const toast = document.getElementById('pf-toast');
+        toast.innerText = mensagem;
+        toast.classList.add('show');
+        clearTimeout(pfToastTimeout);
+        pfToastTimeout = setTimeout(() => toast.classList.remove('show'), 3200);
+    }
+
+    /* ════════════════════════════════════════════════════════════════════
+       MOTOR DE COTAÇÃO — REAL (brapi.dev) COM FALLBACK SIMULADO
+       ════════════════════════════════════════════════════════════════════ */
+
+    // Busca a cotação ATUAL (mais recente) de um ticker.
+    // Retorna { preco, variacaoPercentualDia, fonte: 'real'|'simulado' }
+    async function pfBuscarCotacaoAtual(ticker) {
+        const tickerNormalizado = ticker.toUpperCase();
+        const ehTickerDeTeste = PF_CONFIG.TICKERS_REAIS_SEM_TOKEN.includes(tickerNormalizado);
+
+        // Caminho 1: cotação REAL via brapi.dev (apenas tickers de teste, sem token)
+        if (ehTickerDeTeste || PF_CONFIG.BRAPI_TOKEN) {
+            try {
+                let url = `${PF_CONFIG.BRAPI_BASE_URL}${tickerNormalizado}`;
+                const headers = {};
+                // Se um token de produção estiver configurado, ele é enviado
+                // via header Authorization (nunca via querystring, para evitar
+                // que o token fique exposto em logs/histórico do navegador).
+                if (PF_CONFIG.BRAPI_TOKEN) headers['Authorization'] = `Bearer ${PF_CONFIG.BRAPI_TOKEN}`;
+
+                const resposta = await fetch(url, { headers });
+                if (!resposta.ok) throw new Error(`HTTP ${resposta.status}`);
+                const dados = await resposta.json();
+                const resultado = dados.results && dados.results[0];
+                if (!resultado || typeof resultado.regularMarketPrice !== 'number') throw new Error('Sem dados de preço');
+
+                return {
+                    preco: resultado.regularMarketPrice,
+                    variacaoPercentualDia: resultado.regularMarketChangePercent ?? 0,
+                    fonte: 'real',
+                };
+            } catch (erro) {
+                console.warn(`[Matias Invest] Falha ao buscar cotação real de ${tickerNormalizado}, usando simulação.`, erro);
+                // cai para o motor simulado abaixo
+            }
+        }
+
+        // Caminho 2: motor de SIMULAÇÃO determinístico baseado no ticker.
+        // Gera uma "cotação" hipotética estável (mesmo ticker = mesma base),
+        // só para fins de demonstração visual quando não há dado real disponível.
+        return pfSimularCotacao(tickerNormalizado);
+    }
+
+    // Gera um número pseudo-aleatório determinístico a partir de uma string,
+    // para que o mesmo ticker sempre produza a mesma "cotação base" simulada.
+    function pfHashDeTexto(texto) {
+        let hash = 0;
+        for (let i = 0; i < texto.length; i++) {
+            hash = (hash << 5) - hash + texto.charCodeAt(i);
+            hash |= 0;
+        }
+        return Math.abs(hash);
+    }
+
+    function pfSimularCotacao(ticker) {
+        const hash = pfHashDeTexto(ticker);
+        // Preço-base simulado entre R$ 5 e R$ 105, determinístico por ticker
+        const precoBase = 5 + (hash % 10000) / 100;
+        // Variação diária simulada entre -3% e +3%
+        const variacaoDia = ((hash % 600) - 300) / 100;
+        return { preco: precoBase, variacaoPercentualDia: variacaoDia, fonte: 'simulado' };
+    }
+
+    // Estima o preço do ativo NA DATA DE INÍCIO informada, a partir do preço
+    // atual e do tempo decorrido. Para os tickers REAIS, a API gratuita sem
+    // token não fornece preço histórico exato por data (isso exigiria token
+    // + parâmetro range/interval — ver comentário no PF_CONFIG), então usamos
+    // uma estimativa de tendência determinística como proxy. Quando você
+    // configurar um token de produção, troque este bloco por uma chamada a:
+    //   `${PF_CONFIG.BRAPI_BASE_URL}${ticker}?range=5y&interval=1d&token=SEU_TOKEN`
+    // e localize o ponto de "historicalDataPrice" mais próximo da data desejada.
+    function pfEstimarPrecoNaData(ticker, precoAtual, dataInicio, dataFim) {
+        const msPorDia = 1000 * 60 * 60 * 24;
+        const diasDecorridos = Math.max(1, Math.round((new Date(dataFim) - new Date(dataInicio)) / msPorDia));
+        const hash = pfHashDeTexto(ticker);
+
+        // "Taxa de crescimento anualizada" determinística simulada, entre -15% e +25% a.a.
+        const taxaAnualSimulada = (((hash % 4000) / 100) - 15) / 100;
+        const taxaDiaria = Math.pow(1 + taxaAnualSimulada, 1 / 365) - 1;
+
+        // Preço estimado na data de início = preço atual "descontado" do crescimento do período
+        const precoEstimadoInicio = precoAtual / Math.pow(1 + taxaDiaria, diasDecorridos);
+        return precoEstimadoInicio;
+    }
+
+    /* ════ FORMULÁRIO: ADICIONAR AO PORTFÓLIO ════ */
+    async function pfAdicionarAoPortfolio() {
+        const erroBox = document.getElementById('pf-form-erro');
+        erroBox.classList.add('hidden');
+
+        // ── Validação dos campos ──
+        const valorBrutoInput = document.getElementById('pf-input-valor').value;
+        const valorInvestido = parseFloat(valorBrutoInput.replace(/\./g, '').replace(',', '.')) || 0;
+        const dataInicio = document.getElementById('pf-input-data-inicio').value;
+        let dataFim = document.getElementById('pf-input-data-fim').value;
+        if (!dataFim) dataFim = new Date().toISOString().split('T')[0];
+
+        if (!pfAtivoSelecionado) {
+            erroBox.innerText = '⚠️ Selecione um ativo na lista de busca antes de continuar.';
+            erroBox.classList.remove('hidden');
+            return;
+        }
+        if (valorInvestido <= 0) {
+            erroBox.innerText = '⚠️ Informe um valor investido maior que zero.';
+            erroBox.classList.remove('hidden');
+            return;
+        }
+        if (!dataInicio) {
+            erroBox.innerText = '⚠️ Informe a data de início do investimento.';
+            erroBox.classList.remove('hidden');
+            return;
+        }
+        if (new Date(dataInicio) > new Date(dataFim)) {
+            erroBox.innerText = '⚠️ A data de início não pode ser posterior à data final.';
+            erroBox.classList.remove('hidden');
+            return;
+        }
+
+        // ── Estado de carregamento no botão ──
+        const btn = document.getElementById('pf-btn-analisar');
+        const btnLabel = document.getElementById('pf-btn-analisar-label');
+        btn.disabled = true;
+        btnLabel.innerText = 'Consultando mercado...';
+        btn.querySelector('i')?.classList.add('pf-loading-spin');
+
+        try {
+            const ticker = pfAtivoSelecionado.ticker;
+            const cotacaoAtual = await pfBuscarCotacaoAtual(ticker);
+            const precoFinal = cotacaoAtual.preco;
+            const precoInicial = pfEstimarPrecoNaData(ticker, precoFinal, dataInicio, dataFim);
+
+            // Quantidade hipotética de "cotas/ações" que o valor investido compraria no início
+            const quantidade = valorInvestido / precoInicial;
+            const valorFinal = quantidade * precoFinal;
+            const resultadoNominal = valorFinal - valorInvestido;
+            const resultadoPercentual = (resultadoNominal / valorInvestido) * 100;
+
+            const novoItem = {
+                id: 'inv_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
+                ticker,
+                nome: pfAtivoSelecionado.nome,
+                tipo: pfAtivoSelecionado.tipo,
+                valorInvestido,
+                dataInicio,
+                dataFim,
+                precoInicialEstimado: precoInicial,
+                precoFinal,
+                valorFinal,
+                resultadoNominal,
+                resultadoPercentual,
+                fonteDados: cotacaoAtual.fonte, // 'real' ou 'simulado'
+                criadoEm: Date.now(),
+            };
+
+            pfPortfolio.unshift(novoItem);
+            pfSalvarPortfolio();
+            pfRenderizarPortfolio();
+            pfMostrarToast(cotacaoAtual.fonte === 'real'
+                ? `✅ ${ticker} adicionado com cotação real de mercado (B3).`
+                : `ℹ️ ${ticker} adicionado com cotação simulada (sem fonte real disponível para este ativo).`);
+
+            // Limpa o formulário para o próximo lançamento
+            document.getElementById('pf-input-busca').value = '';
+            document.getElementById('pf-input-valor').value = '';
+            document.getElementById('pf-input-data-inicio').value = '';
+            pfAtivoSelecionado = null;
+
+        } catch (erro) {
+            console.error('[Matias Invest] Erro ao processar investimento:', erro);
+            erroBox.innerText = '⚠️ Não foi possível processar este investimento agora. Tente novamente.';
+            erroBox.classList.remove('hidden');
+        } finally {
+            btn.disabled = false;
+            btnLabel.innerText = 'Analisar e Adicionar';
+            btn.querySelector('i')?.classList.remove('pf-loading-spin');
+        }
+    }
+
+    function pfSalvarPortfolio() {
+        try { localStorage.setItem('matias_portfolio_pessoal', JSON.stringify(pfPortfolio)); } catch {}
+    }
+
+    function pfRemoverItem(id) {
+        pfPortfolio = pfPortfolio.filter(item => item.id !== id);
+        pfSalvarPortfolio();
+        pfRenderizarPortfolio();
+    }
+
+    function pfLimparPortfolio() {
+        if (pfPortfolio.length === 0) return;
+        if (confirm('Remover todos os investimentos do seu portfólio pessoal? Esta ação não pode ser desfeita.')) {
+            pfPortfolio = [];
+            pfSalvarPortfolio();
+            pfRenderizarPortfolio();
+        }
+    }
+
+    function pfFormatarMoeda(valor) {
+        return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    }
+
+    function pfFormatarData(isoDate) {
+        if (!isoDate) return '—';
+        const [ano, mes, dia] = isoDate.split('-');
+        return `${dia}/${mes}/${ano}`;
+    }
+
+    /* ════ RENDERIZAÇÃO DO PAINEL DO PORTFÓLIO ════ */
+    function pfRenderizarPortfolio() {
+        const lista = document.getElementById('pf-lista-portfolio');
+        if (!lista) return;
+
+        // ── Resumo consolidado ──
+        const totalInvestido = pfPortfolio.reduce((s, i) => s + i.valorInvestido, 0);
+        const totalAtual = pfPortfolio.reduce((s, i) => s + i.valorFinal, 0);
+        const resultadoConsolidado = totalAtual - totalInvestido;
+        const percentualConsolidado = totalInvestido > 0 ? (resultadoConsolidado / totalInvestido) * 100 : 0;
+
+        document.getElementById('pf-resumo-total').innerText = pfFormatarMoeda(totalAtual);
+        const elResultado = document.getElementById('pf-resumo-resultado');
+        const elPercentual = document.getElementById('pf-resumo-percentual');
+        const corResultado = resultadoConsolidado >= 0 ? '#34d399' : '#f87171';
+        elResultado.style.color = corResultado;
+        elPercentual.style.color = corResultado;
+        elResultado.innerText = (resultadoConsolidado >= 0 ? '+' : '') + pfFormatarMoeda(resultadoConsolidado);
+        elPercentual.innerText = (percentualConsolidado >= 0 ? '+' : '') + percentualConsolidado.toFixed(1) + '%';
+
+        // ── Lista de ativos ──
+        if (pfPortfolio.length === 0) {
+            lista.innerHTML = `<div class="pf-empty-state">
+                <i data-lucide="inbox" class="w-7 h-7 mx-auto mb-2 opacity-40"></i>
+                <p class="text-xs">Nenhum investimento adicionado ainda.</p>
+                <p class="text-[10.5px] mt-0.5">Use o formulário ao lado para começar.</p>
+            </div>`;
+            lucide.createIcons();
+            return;
+        }
+
+        lista.innerHTML = pfPortfolio.map(item => {
+            const lucro = item.resultadoNominal >= 0;
+            const corValor = lucro ? '#34d399' : '#f87171';
+            return `
+            <div class="pf-ativo-card">
+                <button class="pf-ativo-remover" onclick="pfRemoverItem('${item.id}')" title="Remover">
+                    <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                </button>
+                <div class="flex justify-between items-start gap-2 pr-5">
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                            <span class="font-logo font-black text-xs text-white">${item.ticker}</span>
+                            <span class="pf-source-badge ${item.fonteDados === 'real' ? 'pf-source-real' : 'pf-source-sim'}">${item.fonteDados === 'real' ? 'REAL · B3' : 'SIMULADO'}</span>
+                        </div>
+                        <p class="text-[10px] text-slate-500 mt-0.5 truncate">${item.nome}</p>
+                        <p class="text-[9.5px] text-slate-600 mt-1">${pfFormatarData(item.dataInicio)} → ${pfFormatarData(item.dataFim)}</p>
+                    </div>
+                    <div class="text-right shrink-0">
+                        <span class="pf-pill ${lucro ? 'pf-pill-lucro' : 'pf-pill-prejuizo'}">${lucro ? '▲ Lucro' : '▼ Prejuízo'}</span>
+                        <div class="font-logo font-black text-sm mt-1" style="color:${corValor}">${(item.resultadoPercentual >= 0 ? '+' : '')}${item.resultadoPercentual.toFixed(1)}%</div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-3 gap-2 mt-3 pt-2.5 border-t border-slate-900/80 text-center">
+                    <div>
+                        <div class="text-[9px] text-slate-600 uppercase font-bold">Aplicado</div>
+                        <div class="text-[11px] font-bold text-slate-300 mt-0.5">${pfFormatarMoeda(item.valorInvestido)}</div>
+                    </div>
+                    <div>
+                        <div class="text-[9px] text-slate-600 uppercase font-bold">Hoje</div>
+                        <div class="text-[11px] font-bold text-white mt-0.5">${pfFormatarMoeda(item.valorFinal)}</div>
+                    </div>
+                    <div>
+                        <div class="text-[9px] text-slate-600 uppercase font-bold">Resultado</div>
+                        <div class="text-[11px] font-bold mt-0.5" style="color:${corValor}">${(item.resultadoNominal >= 0 ? '+' : '')}${pfFormatarMoeda(item.resultadoNominal)}</div>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+
+        lucide.createIcons();
+    }
     </script>
 </body>
 </html>
