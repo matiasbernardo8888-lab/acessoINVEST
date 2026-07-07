@@ -1340,6 +1340,7 @@
 
     const dadosGraficoPeriodos = { '1A': [5,12,19,26,38,48.3], '2A': [10,22,31,45,62,85.5], 'MAX': [15,35,58,82,110,145.2] };
 
+    /* ════ MOTOR DE SELEÇÃO POR ATIVO (mantido para uso dentro de cada categoria) ════ */
     function selecionarAtivosElegiveis(lista, valorDisponivel, obterPeso) {
         let candidatos = lista.filter(a => obterPeso(a) > 0 && a.aplicacaoMinima <= valorDisponivel);
         candidatos.sort((a,b) => a.aplicacaoMinima - b.aplicacaoMinima);
@@ -1356,6 +1357,74 @@
             if (violadores.length > 0) { violadores.sort((a,b) => b.minimo - a.minimo); selecionados.splice(violadores[0].idx, 1); estavel = false; }
         }
         return selecionados;
+    }
+
+    /* ════ FIX DIVERSIFICAÇÃO: aloca o orçamento por CATEGORIA primeiro,
+       e só depois escolhe os ativos dentro de cada categoria. Isso evita que
+       categorias com aplicação mínima mais alta (Renda Fixa, Multimercado,
+       Global) sejam "atropeladas" pela quantidade de ativos baratos de Ações. ════ */
+    function alocarPorCategorias(candidatosTotais, valorDisponivel, obterPesoAsset, obterPesoCategoriaFixo) {
+        if (valorDisponivel <= 0 || candidatosTotais.length === 0) return [];
+
+        let categoriasUnicas = [...new Set(candidatosTotais.map(a => a.categoria))];
+        let pesoCategoria = {};
+        categoriasUnicas.forEach(cat => {
+            if (obterPesoCategoriaFixo) {
+                pesoCategoria[cat] = obterPesoCategoriaFixo(cat) || 0;
+            } else {
+                pesoCategoria[cat] = candidatosTotais.filter(a => a.categoria === cat).reduce((s,a) => s + obterPesoAsset(a), 0);
+            }
+        });
+        categoriasUnicas = categoriasUnicas.filter(cat => pesoCategoria[cat] > 0);
+        if (categoriasUnicas.length === 0) return [];
+
+        // Remove categorias cujo orçamento proporcional não cobre nem o ativo
+        // mais barato dela — e redistribui o peso entre as demais categorias.
+        let estavel = false;
+        while (!estavel && categoriasUnicas.length > 0) {
+            estavel = true;
+            const somaPesos = categoriasUnicas.reduce((s,cat) => s + pesoCategoria[cat], 0) || 1;
+            let violadoras = categoriasUnicas.map(cat => {
+                const budget = valorDisponivel * (pesoCategoria[cat] / somaPesos);
+                const menorMinimo = Math.min(...candidatosTotais.filter(a => a.categoria === cat).map(a => a.aplicacaoMinima));
+                const deficit = budget < menorMinimo ? (menorMinimo - budget) / menorMinimo : 0;
+                return { cat, deficit, menorMinimo };
+            }).filter(v => v.deficit > 0);
+            if (violadoras.length > 0) {
+                violadoras.sort((a,b) => b.menorMinimo - a.menorMinimo);
+                categoriasUnicas = categoriasUnicas.filter(cat => cat !== violadoras[0].cat);
+                estavel = false;
+            }
+        }
+        if (categoriasUnicas.length === 0) return [];
+
+        const somaPesosFinal = categoriasUnicas.reduce((s,cat) => s + pesoCategoria[cat], 0) || 1;
+        let resultado = [];
+        let acumuladoGlobal = 0;
+
+        categoriasUnicas.forEach((cat, idxCat) => {
+            const budgetCategoria = idxCat === categoriasUnicas.length - 1
+                ? valorDisponivel - acumuladoGlobal
+                : valorDisponivel * (pesoCategoria[cat] / somaPesosFinal);
+            acumuladoGlobal += budgetCategoria;
+
+            const ativosCategoria = candidatosTotais.filter(a => a.categoria === cat);
+            const pesoParaSelecao = obterPesoCategoriaFixo ? (() => 1) : obterPesoAsset;
+            const selecionados = selecionarAtivosElegiveis(ativosCategoria, budgetCategoria, pesoParaSelecao);
+            if (selecionados.length === 0) return;
+
+            const somaPesosAtivos = selecionados.reduce((s,a) => s + pesoParaSelecao(a), 0) || 1;
+            let acumuladoCategoria = 0;
+            selecionados.forEach((ativo, idx) => {
+                const pctDentroCategoria = pesoParaSelecao(ativo) / somaPesosAtivos;
+                const valorAlocado = idx === selecionados.length - 1
+                    ? budgetCategoria - acumuladoCategoria
+                    : budgetCategoria * pctDentroCategoria;
+                acumuladoCategoria += valorAlocado;
+                resultado.push({ ativo, valorAlocado, categoria: cat });
+            });
+        });
+        return resultado;
     }
 
     function definirObjetivoKids(objetivo) {
@@ -1381,11 +1450,15 @@
         recalcularExibicaoTotal();
         if (valorTotal<=0||!objetivoKidsSelecionado) { document.getElementById('lista-ativos-kids').innerHTML='<p class="text-xs text-slate-500 text-center py-8">Defina o modelo e insira um valor hipotético.</p>'; return; }
         const distribuicaoAlvo = pesosKidsEstrategia[objetivoKidsSelecionado];
-        let ativosSelecionados = selecionarAtivosElegiveis(carteiraCompleta.filter(a=>distribuicaoAlvo[a.categoria]>0), valorTotal, a=>distribuicaoAlvo[a.categoria]);
-        if (ativosSelecionados.length===0) { document.getElementById('lista-ativos-kids').innerHTML=`<div class="bg-slate-950 rounded-xl border border-amber-500/20 p-4 text-center"><p class="text-xs text-amber-400 font-bold">⚠️ Valor abaixo do mínimo ilustrativo</p><p class="text-[11px] text-slate-400 mt-1">Tente a partir de <strong>R$ 8,00</strong>.</p></div>`; return; }
-        let somaPesos = ativosSelecionados.reduce((s,a)=>s+distribuicaoAlvo[a.categoria],0);
-        let html='', acumulado=0;
-        ativosSelecionados.forEach((ativo,idx)=>{ let pct=distribuicaoAlvo[ativo.categoria]/somaPesos; let valorAlocado=idx===ativosSelecionados.length-1?valorTotal-acumulado:valorTotal*pct; acumulado+=valorAlocado; html+=`<div class="bg-slate-950 rounded-xl border border-slate-900 p-4"><div class="flex justify-between items-start mb-2"><div class="flex-1 pr-2"><h3 class="text-xs font-bold text-white uppercase tracking-wide mb-1">${ativo.nome}</h3><p class="text-[10px] text-slate-400 leading-snug">${ativo.descricao}</p><span class="inline-block text-[9px] uppercase font-black tracking-wider px-2 py-0.5 mt-1 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">${ativo.categoria}</span></div><div class="text-right shrink-0"><div class="text-sm font-black text-purple-400 font-logo">${(pct*100).toFixed(0)}%</div><div class="text-xs text-slate-300 font-bold mt-0.5">${valorAlocado.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div></div></div></div>`; });
+        const candidatosKids = carteiraCompleta.filter(a => distribuicaoAlvo[a.categoria] > 0);
+        // FIX: aloca por categoria (respeitando o %-alvo do modelo) antes de escolher ativos
+        const alocacoesKids = alocarPorCategorias(candidatosKids, valorTotal, () => 1, cat => distribuicaoAlvo[cat] || 0);
+        if (alocacoesKids.length===0) { document.getElementById('lista-ativos-kids').innerHTML=`<div class="bg-slate-950 rounded-xl border border-amber-500/20 p-4 text-center"><p class="text-xs text-amber-400 font-bold">⚠️ Valor abaixo do mínimo ilustrativo</p><p class="text-[11px] text-slate-400 mt-1">Tente a partir de <strong>R$ 8,00</strong>.</p></div>`; return; }
+        let html='';
+        alocacoesKids.forEach(({ativo, valorAlocado}) => {
+            const pct = valorTotal > 0 ? valorAlocado/valorTotal : 0;
+            html+=`<div class="bg-slate-950 rounded-xl border border-slate-900 p-4"><div class="flex justify-between items-start mb-2"><div class="flex-1 pr-2"><h3 class="text-xs font-bold text-white uppercase tracking-wide mb-1">${ativo.nome}</h3><p class="text-[10px] text-slate-400 leading-snug">${ativo.descricao}</p><span class="inline-block text-[9px] uppercase font-black tracking-wider px-2 py-0.5 mt-1 rounded bg-purple-500/10 text-purple-400 border border-purple-500/20">${ativo.categoria}</span></div><div class="text-right shrink-0"><div class="text-sm font-black text-purple-400 font-logo">${(pct*100).toFixed(0)}%</div><div class="text-xs text-slate-300 font-bold mt-0.5">${valorAlocado.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div></div></div></div>`;
+        });
         document.getElementById('lista-ativos-kids').innerHTML=html;
     }
 
@@ -1457,28 +1530,54 @@
     function gerarCarteira() {
         const valorTotal=obterValorNumerico(); localStorage.setItem('matias_valor_cru',document.getElementById('input-valor-total').value); recalcularExibicaoTotal();
         const avisoLiq=document.getElementById('aviso-liquidez');
-        if (valorTotal<=0) { avisoLiq.classList.add('hidden'); document.getElementById('secao-grafico').classList.add('hidden'); document.getElementById('lista-ativos').innerHTML='<p class="text-xs text-slate-500 text-center py-8">Insira um valor hipotético para ver as proporções.</p>'; return; }
+        if (valorTotal<=0) { avisoLiq.classList.add('hidden'); document.getElementById('secao-grafico').classList.add('hidden'); document.getElementById('lista-ativos').innerHTML='<p class="text-xs text-slate-500 text-center py-8">Insira um valor hipotético para ver as proporções.</p>'; atualizarBarraComposicao({}, 0, 0); return; }
         const valorReserva=valorTotal*PERCENTUAL_RESERVA_EMERGENCIA; const valorRestante=valorTotal-valorReserva;
         const nomeLiquidez=liquidezSelecionada==='porquinho'?'Conta Remunerada A (Exemplo)':'Conta Remunerada B (Exemplo)';
         avisoLiq.classList.remove('hidden');
         avisoLiq.innerHTML=`🟢 <strong>Reserva de Liquidez (30%):</strong> ${valorReserva.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})} em <strong>${nomeLiquidez}</strong>. Os 70% restantes (${valorRestante.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}) são distribuídos pelas categorias abaixo.`;
         document.getElementById('secao-grafico').classList.remove('hidden'); inicializarGrafico('1A');
-        if (filtroAtual==='Liquidez') { document.getElementById('lista-ativos').innerHTML=`<div class="bg-slate-950 rounded-xl border border-slate-900 p-4"><div class="flex justify-between items-start"><div><h3 class="text-xs font-bold text-white uppercase">${nomeLiquidez}</h3><p class="text-xs text-slate-400 mt-2">30% do valor hipotético.</p></div><div class="text-right shrink-0 pl-2"><div class="text-sm font-black text-amber-400 font-logo">30%</div><div class="text-xs text-slate-300 font-bold mt-0.5">${valorReserva.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div></div></div></div>`; return; }
+        if (filtroAtual==='Liquidez') { document.getElementById('lista-ativos').innerHTML=`<div class="bg-slate-950 rounded-xl border border-slate-900 p-4"><div class="flex justify-between items-start"><div><h3 class="text-xs font-bold text-white uppercase">${nomeLiquidez}</h3><p class="text-xs text-slate-400 mt-2">30% do valor hipotético.</p></div><div class="text-right shrink-0 pl-2"><div class="text-sm font-black text-amber-400 font-logo">30%</div><div class="text-xs text-slate-300 font-bold mt-0.5">${valorReserva.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div></div></div></div>`; atualizarBarraComposicao({}, valorReserva, valorTotal); return; }
+
+        // FIX DIVERSIFICAÇÃO: candidatos elegíveis para o perfil e filtro atuais,
+        // alocação feita por categoria (Renda Fixa / Multimercado / Ações / Global)
+        // e só então distribuída entre os ativos de cada categoria.
         let candidatos=carteiraCompleta.filter(a=>{ const temPeso=a.pesosPerfil[perfilInvestidor]>0; const categoriaOk=filtroAtual==='todos'||a.categoria===filtroAtual; return temPeso&&categoriaOk; });
-        let ativosFiltrados=selecionarAtivosElegiveis(candidatos,valorRestante,a=>a.pesosPerfil[perfilInvestidor]);
-        if (ativosFiltrados.length===0) { const minimoDisponivel=Math.min(...carteiraCompleta.filter(a=>a.pesosPerfil[perfilInvestidor]>0).map(a=>a.aplicacaoMinima)); document.getElementById('lista-ativos').innerHTML=`<div class="bg-slate-950 rounded-xl border border-amber-500/20 p-4 text-center space-y-2"><p class="text-xs text-amber-400 font-bold">⚠️ Valor abaixo do mínimo ilustrativo</p><p class="text-[11px] text-slate-400">O menor mínimo é <strong class="text-cyan-400">R$ ${minimoDisponivel}</strong>.</p></div>`; atualizarBarraComposicao(); return; }
-        let somaPesos=ativosFiltrados.reduce((s,a)=>s+a.pesosPerfil[perfilInvestidor],0)||1; let htmlAtivos='', acumulado=0;
-        ativosFiltrados.forEach((ativo,idx)=>{ let pct=ativo.pesosPerfil[perfilInvestidor]/somaPesos; let valorAlocado=idx===ativosFiltrados.length-1?valorRestante-acumulado:valorRestante*pct; acumulado+=valorAlocado; htmlAtivos+=`<div class="bg-slate-950 rounded-xl border border-slate-900 p-4 hover:border-cyan-900/30 transition"><div class="flex justify-between items-start"><div class="flex-1 pr-2"><h3 class="text-xs font-bold text-white uppercase tracking-wide mb-0.5">${ativo.nome}</h3><span class="inline-block text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 mt-1 rounded bg-slate-900 text-slate-400 border border-slate-800">${ativo.categoria}</span></div><div class="text-right shrink-0"><div class="text-sm font-black text-cyan-400 font-logo">${(pct*100).toFixed(0)}%</div><div class="text-xs text-slate-300 font-bold mt-0.5">${valorAlocado.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div><div class="text-[9px] text-slate-500 mt-0.5">Mín. ilustrativo: R$ ${ativo.aplicacaoMinima}</div></div></div><p class="text-[11px] text-slate-400 leading-normal mt-2 pt-2 border-t border-slate-900/60">${ativo.descricao}</p><div class="aviso-cvm-inline">⚖️ Categoria ilustrativa — não é recomendação de compra (Res. CVM 20/2021).</div></div>`; });
+        let alocacoes = alocarPorCategorias(candidatos, valorRestante, a=>a.pesosPerfil[perfilInvestidor]);
+
+        if (alocacoes.length===0) { const minimoDisponivel=Math.min(...carteiraCompleta.filter(a=>a.pesosPerfil[perfilInvestidor]>0).map(a=>a.aplicacaoMinima)); document.getElementById('lista-ativos').innerHTML=`<div class="bg-slate-950 rounded-xl border border-amber-500/20 p-4 text-center space-y-2"><p class="text-xs text-amber-400 font-bold">⚠️ Valor abaixo do mínimo ilustrativo</p><p class="text-[11px] text-slate-400">O menor mínimo é <strong class="text-cyan-400">R$ ${minimoDisponivel}</strong>.</p></div>`; atualizarBarraComposicao({}, valorReserva, valorTotal); return; }
+
+        let htmlAtivos='';
+        alocacoes.forEach(({ativo, valorAlocado, categoria}) => {
+            const pct = valorRestante > 0 ? valorAlocado/valorRestante : 0;
+            htmlAtivos+=`<div class="bg-slate-950 rounded-xl border border-slate-900 p-4 hover:border-cyan-900/30 transition"><div class="flex justify-between items-start"><div class="flex-1 pr-2"><h3 class="text-xs font-bold text-white uppercase tracking-wide mb-0.5">${ativo.nome}</h3><span class="inline-block text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 mt-1 rounded bg-slate-900 text-slate-400 border border-slate-800">${categoria}</span></div><div class="text-right shrink-0"><div class="text-sm font-black text-cyan-400 font-logo">${(pct*100).toFixed(0)}%</div><div class="text-xs text-slate-300 font-bold mt-0.5">${valorAlocado.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div><div class="text-[9px] text-slate-500 mt-0.5">Mín. ilustrativo: R$ ${ativo.aplicacaoMinima}</div></div></div><p class="text-[11px] text-slate-400 leading-normal mt-2 pt-2 border-t border-slate-900/60">${ativo.descricao}</p><div class="aviso-cvm-inline">⚖️ Categoria ilustrativa — não é recomendação de compra (Res. CVM 20/2021).</div></div>`;
+        });
         const cardReserva=`<div class="bg-slate-950 rounded-xl border border-amber-500/20 p-4"><div class="flex justify-between items-start"><div class="flex-1 pr-2"><h3 class="text-xs font-bold text-white uppercase tracking-wide mb-0.5">${nomeLiquidez}</h3><p class="text-[10px] text-slate-400">30% do valor hipotético.</p><span class="inline-block text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 mt-1 rounded bg-slate-900 text-slate-400 border border-slate-800">Liquidez</span></div><div class="text-right shrink-0"><div class="text-sm font-black text-amber-400 font-logo">30%</div><div class="text-xs text-slate-300 font-bold mt-0.5">${valorReserva.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}</div></div></div></div>`;
         document.getElementById('lista-ativos').innerHTML=(filtroAtual==='todos'?cardReserva:'')+htmlAtivos;
-        atualizarBarraComposicao();
+
+        // Totais reais por categoria para a barra de composição (agora dinâmica)
+        let totaisPorCategoria = {};
+        alocacoes.forEach(a => { totaisPorCategoria[a.categoria] = (totaisPorCategoria[a.categoria]||0) + a.valorAlocado; });
+        atualizarBarraComposicao(totaisPorCategoria, valorReserva, valorTotal);
     }
 
-    function atualizarBarraComposicao() {
+    /* ════ FIX: barra de composição agora reflete a alocação REAL calculada,
+       em vez de percentuais fixos que não batiam com os ativos exibidos. ════ */
+    function atualizarBarraComposicao(totaisPorCategoria, valorReserva, valorTotal) {
         const barra=document.getElementById('barra-composicao');
-        if (perfilInvestidor==='conservador') barra.innerHTML='<div class="h-full bg-amber-500" style="width:30%"></div><div class="h-full bg-emerald-500" style="width:59.5%"></div><div class="h-full bg-cyan-500" style="width:10.5%"></div>';
-        else if (perfilInvestidor==='moderado') barra.innerHTML='<div class="h-full bg-amber-500" style="width:30%"></div><div class="h-full bg-emerald-500" style="width:31.5%"></div><div class="h-full bg-cyan-500" style="width:24.5%"></div><div class="h-full bg-purple-500" style="width:14%"></div>';
-        else barra.innerHTML='<div class="h-full bg-amber-500" style="width:30%"></div><div class="h-full bg-emerald-500" style="width:10.5%"></div><div class="h-full bg-cyan-500" style="width:17.5%"></div><div class="h-full bg-purple-500" style="width:42%"></div>';
+        if (!barra) return;
+        if (!valorTotal || valorTotal <= 0) { barra.innerHTML=''; return; }
+        const coresCategoria = { 'Renda Fixa': '#10b981', 'Multimercado': '#a855f7', 'Ações': '#06b6d4', 'Global': '#3b82f6' };
+        let segments = '';
+        if (valorReserva > 0) {
+            segments += `<div class="h-full bg-amber-500" style="width:${(valorReserva/valorTotal*100).toFixed(2)}%" title="Liquidez"></div>`;
+        }
+        ['Renda Fixa','Multimercado','Ações','Global'].forEach(cat => {
+            const valor = (totaisPorCategoria && totaisPorCategoria[cat]) || 0;
+            if (valor > 0) {
+                segments += `<div class="h-full" style="width:${(valor/valorTotal*100).toFixed(2)}%;background:${coresCategoria[cat]}" title="${cat}"></div>`;
+            }
+        });
+        barra.innerHTML = segments;
     }
 
     function atualizarPeriodoGrafico(periodo, btn) {
