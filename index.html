@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Matias Invest | Diário Gráfico de Carteira Pessoal</title>
+    <title>MTS Invest | Diário Gráfico de Carteira Pessoal</title>
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
         script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://unpkg.com https://cdn.jsdelivr.net;
         style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
         font-src https://fonts.gstatic.com;
         img-src 'self' data:;
-        connect-src https://api.coingecko.com https://brapi.dev;
+        connect-src https://api.coingecko.com https://brapi.dev https://api.anthropic.com;
         frame-src 'none';
         object-src 'none';
         base-uri 'self';
@@ -273,6 +273,140 @@
         /* FIX: quando o toggle é desabilitado, os avisos CVM inline somem */
         body.hide-cvm-warnings .aviso-cvm-inline { display: none; }
         body.hide-cvm-warnings .banner-cvm { display: none; }
+
+        /* ── ASSISTENTE IA — BOTÃO FLUTUANTE + PAINEL DE CHAT ── */
+        #assistente-fab {
+            position: fixed;
+            right: 18px;
+            bottom: 96px;
+            z-index: 60;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            box-shadow: 0 6px 22px rgba(6,182,212,0.45), 0 0 0 1px rgba(6,182,212,0.3);
+            border: none;
+            cursor: pointer;
+            transition: transform .2s ease, box-shadow .2s ease;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(10px) scale(.9);
+        }
+        #assistente-fab.visivel { opacity: 1; pointer-events: auto; transform: translateY(0) scale(1); }
+        #assistente-fab:hover { transform: translateY(-2px) scale(1.05); box-shadow: 0 10px 30px rgba(6,182,212,0.6), 0 0 0 1px rgba(6,182,212,0.4); }
+        #assistente-fab svg { width: 24px; height: 24px; color: #001016; stroke-width: 2.2; }
+        #assistente-fab .assistente-fab-pulso {
+            position: absolute; inset: -6px; border-radius: 50%;
+            border: 2px solid rgba(6,182,212,0.5);
+            animation: chartPulseRing 2.2s ease-out infinite;
+            pointer-events: none;
+        }
+        #assistente-fab .assistente-fab-dot {
+            position: absolute; top: 2px; right: 2px; width: 12px; height: 12px;
+            border-radius: 50%; background: #34d399; border: 2px solid #020617;
+            box-shadow: 0 0 6px #34d399;
+        }
+
+        #assistente-painel {
+            position: fixed;
+            right: 14px;
+            bottom: 160px;
+            z-index: 65;
+            width: min(360px, calc(100vw - 28px));
+            height: min(520px, calc(100vh - 220px));
+            background: #020617;
+            border: 1px solid rgba(6,182,212,0.3);
+            border-radius: 18px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(6,182,212,0.12);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(16px) scale(.97);
+            pointer-events: none;
+            transition: opacity .2s ease, transform .2s ease;
+        }
+        #assistente-painel.aberto { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+        .assistente-header {
+            display: flex; align-items: center; gap: 10px;
+            padding: 14px 14px 12px;
+            background: linear-gradient(135deg, rgba(6,182,212,0.12), rgba(2,6,23,1));
+            border-bottom: 1px solid rgba(6,182,212,0.18);
+            flex-shrink: 0;
+        }
+        .assistente-avatar {
+            width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 10px rgba(6,182,212,0.4);
+        }
+        .assistente-avatar svg { width: 18px; height: 18px; color: #001016; }
+        .assistente-titulo { font-size: 12px; font-weight: 800; color: #f0f9ff; line-height: 1.2; }
+        .assistente-status { font-size: 9.5px; color: #67e8f9; font-weight: 700; display: flex; align-items: center; gap: 4px; margin-top: 1px; }
+        .assistente-status::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: currentColor; box-shadow: 0 0 5px currentColor; }
+        .assistente-config-btn { margin-left: auto; color: #64748b; background: none; border: none; cursor: pointer; padding: 4px; flex-shrink: 0; }
+        .assistente-config-btn:hover { color: #67e8f9; }
+        .assistente-fechar { color: #64748b; background: none; border: none; cursor: pointer; padding: 4px; flex-shrink: 0; }
+        .assistente-fechar:hover { color: #f0f9ff; }
+        .assistente-config { flex: 1; overflow-y: auto; background: #020617; }
+        .assistente-config.hidden { display: none; }
+        .assistente-config-scroll { padding: 14px; }
+        .assistente-config-titulo { font-size: 12px; font-weight: 800; color: #f0f9ff; margin-bottom: 6px; }
+        .assistente-config-texto { font-size: 10.5px; color: #94a3b8; line-height: 1.6; }
+        .assistente-config-alerta { font-size: 9.5px; color: #fde68a; background: rgba(245,158,11,0.07); border: 1px solid rgba(245,158,11,0.25); border-radius: 8px; padding: 8px 10px; margin-top: 12px; line-height: 1.55; }
+        .assistente-config-botoes { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+        .assistente-config-remover { background: none; border: none; color: #f87171; font-size: 10.5px; font-weight: 700; cursor: pointer; padding: 6px; text-decoration: underline; text-underline-offset: 2px; }
+        .assistente-config-msg { margin-top: 10px; font-size: 10.5px; font-weight: 700; padding: 8px 10px; border-radius: 8px; }
+        .assistente-config-msg.hidden { display: none; }
+        .assistente-config-msg.sucesso { color: #34d399; background: rgba(52,211,153,0.08); border: 1px solid rgba(52,211,153,0.25); }
+        .assistente-config-msg.erro { color: #f87171; background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.25); }
+        .assistente-body {
+            flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px;
+            scrollbar-width: thin; scrollbar-color: rgba(6,182,212,0.3) transparent;
+        }
+        .assistente-msg { max-width: 86%; font-size: 12px; line-height: 1.55; padding: 9px 12px; border-radius: 12px; }
+        .assistente-msg-bot { align-self: flex-start; background: #0f172a; border: 1px solid rgba(6,182,212,0.18); color: #e2e8f0; border-bottom-left-radius: 3px; }
+        .assistente-msg-user { align-self: flex-end; background: linear-gradient(135deg, #0891b2, #06b6d4); color: #001016; font-weight: 600; border-bottom-right-radius: 3px; }
+        .assistente-msg-bot strong { color: #67e8f9; }
+        .assistente-sugestoes { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 14px 10px; flex-shrink: 0; }
+        .assistente-chip {
+            font-size: 10px; font-weight: 700; color: #67e8f9;
+            background: rgba(6,182,212,0.08); border: 1px solid rgba(6,182,212,0.25);
+            border-radius: 99px; padding: 5px 10px; cursor: pointer; transition: background .15s, border-color .15s;
+            white-space: nowrap;
+        }
+        .assistente-chip:hover { background: rgba(6,182,212,0.18); border-color: rgba(6,182,212,0.5); }
+        .assistente-input-row {
+            display: flex; align-items: center; gap: 8px;
+            padding: 10px 12px; border-top: 1px solid rgba(6,182,212,0.15);
+            background: #010a18; flex-shrink: 0;
+        }
+        .assistente-input {
+            flex: 1; background: rgba(6,182,212,0.06); border: 1px solid rgba(6,182,212,0.25);
+            border-radius: 10px; color: #f0f9ff; font-size: 16px !important; padding: 9px 12px;
+            outline: none; font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        .assistente-input:focus { border-color: #06b6d4; box-shadow: 0 0 0 3px rgba(6,182,212,0.12); }
+        .assistente-enviar {
+            width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+            background: linear-gradient(135deg, #06b6d4, #0891b2); border: none; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; transition: filter .15s;
+        }
+        .assistente-enviar:hover { filter: brightness(1.1); }
+        .assistente-enviar svg { width: 16px; height: 16px; color: #001016; }
+        .assistente-typing { display: flex; gap: 3px; align-self: flex-start; padding: 10px 12px; background: #0f172a; border: 1px solid rgba(6,182,212,0.18); border-radius: 12px; border-bottom-left-radius: 3px; }
+        .assistente-typing span { width: 5px; height: 5px; border-radius: 50%; background: #67e8f9; animation: assistenteTypingBounce 1.1s ease-in-out infinite; }
+        .assistente-typing span:nth-child(2) { animation-delay: .15s; }
+        .assistente-typing span:nth-child(3) { animation-delay: .3s; }
+        @keyframes assistenteTypingBounce { 0%, 60%, 100% { transform: translateY(0); opacity: .5; } 30% { transform: translateY(-4px); opacity: 1; } }
+        .assistente-disclaimer { font-size: 8.5px; color: #475569; text-align: center; padding: 6px 14px 10px; flex-shrink: 0; line-height: 1.4; }
+        @media (max-width: 420px) {
+            #assistente-painel { right: 8px; left: 8px; width: auto; bottom: 150px; }
+            #assistente-fab { right: 12px; bottom: 88px; }
+        }
     </style>
 </head>
 <body class="bg-black text-slate-100 min-h-screen pb-28 splash-active">
@@ -308,7 +442,7 @@
                 </svg>
                 <div class="hex-center-icon">M</div>
             </div>
-            <div class="logo-title">MATIAS INVEST</div>
+            <div class="logo-title">MTS INVEST</div>
             <div class="logo-sub">Diário Pessoal · Simulação · Educação</div>
             <div class="h-line"></div>
             <div class="status-block">
@@ -324,7 +458,7 @@
                 <svg class="enter-icon" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
             </button>
         </div>
-        <div class="footer-tag">© MATIAS INVEST · CONTEÚDO EXCLUSIVAMENTE EDUCACIONAL — NÃO É RECOMENDAÇÃO DE INVESTIMENTO</div>
+        <div class="footer-tag">© MTS INVEST · CONTEÚDO EXCLUSIVAMENTE EDUCACIONAL — NÃO É RECOMENDAÇÃO DE INVESTIMENTO</div>
     </div>
 
     <!-- ════ SITE PRINCIPAL ════ -->
@@ -332,7 +466,7 @@
         <header class="sticky top-0 z-50 bg-black/95 backdrop-blur-md border-b border-slate-900 p-4">
             <div class="flex justify-between items-center">
                 <h1 class="font-logo text-2xl font-black tracking-wider bg-gradient-to-r from-white to-cyan-400 bg-clip-text text-transparent">
-                    MATIAS INVEST
+                    MTS INVEST
                 </h1>
                 <div class="text-right">
                     <div class="text-xs text-slate-500">Simulação Educacional</div>
@@ -478,7 +612,7 @@
             <div class="wallet-hero">
                 <div class="flex items-center justify-between mb-4">
                     <div>
-                        <p class="text-[9px] font-black uppercase tracking-[.2em] text-cyan-700 mb-1">MATIAS INVEST</p>
+                        <p class="text-[9px] font-black uppercase tracking-[.2em] text-cyan-700 mb-1">MTS INVEST</p>
                         <h2 class="text-base font-black text-white uppercase tracking-wide font-logo">Minha Carteira</h2>
                     </div>
                     <div class="wallet-card-visual w-28">
@@ -803,7 +937,7 @@
             </div>
 
             <div class="config-section">
-                <div class="config-section-header"><i data-lucide="info" class="w-4 h-4 text-slate-400"></i><h3 class="text-xs font-bold text-white uppercase tracking-wider">Sobre o Matias Invest</h3></div>
+                <div class="config-section-header"><i data-lucide="info" class="w-4 h-4 text-slate-400"></i><h3 class="text-xs font-bold text-white uppercase tracking-wider">Sobre o MTS Invest</h3></div>
                 <div class="config-section-body space-y-2">
                     <div class="config-row"><span class="config-row-title">Versão</span><span class="text-[10px] font-bold text-cyan-400 font-logo">v2.2 — Carteira Premium</span></div>
                     <div class="config-row"><span class="config-row-title">Tipo</span><span class="text-[10px] text-slate-400">100% Client-Side · Sem Backend</span></div>
@@ -836,7 +970,7 @@
         <!-- ════ RODAPÉ ════ -->
         <footer class="p-4 text-center border-t border-slate-900 bg-black text-[9px] text-slate-600 space-y-2">
             <p class="font-bold text-slate-500">⚖️ AVISO DE TRANSPARÊNCIA REGULATÓRIA</p>
-            <p>O ambiente <strong>Matias Invest</strong> é um diário virtual pessoal de compartilhamento de metodologias de estudo. <strong>Este sistema NÃO constitui:</strong> análise de valores mobiliários (Res. CVM nº 20/2021); consultoria ou recomendação de qualquer ativo financeiro.</p>
+            <p>O ambiente <strong>MTS Invest</strong> é um diário virtual pessoal de compartilhamento de metodologias de estudo. <strong>Este sistema NÃO constitui:</strong> análise de valores mobiliários (Res. CVM nº 20/2021); consultoria ou recomendação de qualquer ativo financeiro.</p>
             <p>Consulte um profissional habilitado — <a href="https://www.cvm.gov.br" target="_blank" rel="noopener noreferrer" class="text-cyan-700 underline">www.cvm.gov.br</a>.</p>
         </footer>
 
@@ -876,6 +1010,78 @@
     </div>
 
     <div id="pf-toast" class="pf-toast"></div>
+
+    <!-- ════ ASSISTENTE IA — BOTÃO FLUTUANTE (apenas na aba Carteira) ════ -->
+    <button id="assistente-fab" onclick="assistenteAlternarPainel()" title="Falar com o Assistente MTS" aria-label="Abrir assistente de investimentos">
+        <span class="assistente-fab-pulso"></span>
+        <span class="assistente-fab-dot"></span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 14v-3a9 9 0 0 1 18 0v3"/>
+            <path d="M21 15a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h3z"/>
+            <path d="M3 15a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2H3z"/>
+            <path d="M8 19a4 4 0 0 0 8 0" opacity="0"/>
+        </svg>
+    </button>
+
+    <!-- ════ ASSISTENTE IA — PAINEL DE CHAT ════ -->
+    <div id="assistente-painel">
+        <div class="assistente-header">
+            <div class="assistente-avatar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2">
+                    <path d="M3 14v-3a9 9 0 0 1 18 0v3"/>
+                    <path d="M21 15a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h3z"/>
+                    <path d="M3 15a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2H3z"/>
+                </svg>
+            </div>
+            <div>
+                <div class="assistente-titulo">Assistente MTS</div>
+                <div class="assistente-status" id="assistente-status-texto">Modo local (offline)</div>
+            </div>
+            <button class="assistente-config-btn" onclick="assistenteAlternarConfig()" aria-label="Configurar IA" title="Configurar IA">
+                <i data-lucide="settings" class="w-4 h-4"></i>
+            </button>
+            <button class="assistente-fechar" onclick="assistenteFechar()" aria-label="Fechar assistente">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+        </div>
+
+        <!-- ── VIEW: CONFIGURAR IA ── -->
+        <div id="assistente-config" class="assistente-config hidden">
+            <div class="assistente-config-scroll">
+                <p class="assistente-config-titulo">🤖 Conectar IA real (opcional)</p>
+                <p class="assistente-config-texto">Por padrão o assistente responde só com busca no conteúdo do site (offline, sem custo). Se você colar sua própria chave da API da Anthropic aqui, ele passa a responder com uma IA de verdade (Claude), entendendo qualquer pergunta.</p>
+
+                <label class="pf-label" style="margin-top:10px">Sua chave de API (Anthropic)</label>
+                <input type="password" id="assistente-input-apikey" class="assistente-input" placeholder="sk-ant-...">
+
+                <label class="pf-label" style="margin-top:10px">Modelo</label>
+                <input type="text" id="assistente-input-modelo" class="assistente-input" placeholder="claude-sonnet-5" value="claude-sonnet-5">
+
+                <div class="assistente-config-alerta">
+                    ⚠️ <strong>Sua chave fica salva só neste navegador</strong> (localStorage) e é enviada direto da sua tela pra Anthropic — nenhum servidor intermediário. Isso é seguro pra <strong>uso pessoal</strong>, mas se você publicar este site pra outras pessoas acessarem, qualquer visitante consegue ver sua chave pelo código-fonte/painel de rede e gastar seu saldo. Para um site público, o correto é ter um backend próprio guardando a chave.
+                </div>
+
+                <div class="assistente-config-botoes">
+                    <button class="pf-btn-submit" style="margin-top:4px" onclick="assistenteSalvarConfig()">Salvar e ativar IA</button>
+                    <button class="assistente-config-remover" onclick="assistenteRemoverConfig()">Remover chave e voltar ao modo local</button>
+                </div>
+
+                <div id="assistente-config-msg" class="assistente-config-msg hidden"></div>
+            </div>
+        </div>
+
+        <!-- ── VIEW: CHAT ── -->
+        <div id="assistente-body" class="assistente-body"></div>
+        <div id="assistente-sugestoes" class="assistente-sugestoes"></div>
+        <div class="assistente-input-row">
+            <input type="text" id="assistente-input" class="assistente-input" placeholder="Digite sua dúvida..." onkeydown="if(event.key==='Enter'){assistenteEnviarMensagem();}">
+            <button class="assistente-enviar" onclick="assistenteEnviarMensagem()" aria-label="Enviar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+        </div>
+        <div class="assistente-disclaimer">⚖️ Assistente educacional automatizado. Não substitui um profissional habilitado na CVM.</div>
+    </div>
+
 
     <script>
     /* ════ SPLASH ════ */
@@ -1225,6 +1431,7 @@
             recalcularExibicaoTotal(); renderizarHologramas(); renderizarTrilhaEstudos();
         }
         else if (aba==='duvidas') { document.getElementById('nav-btn-duvidas').className="flex flex-col items-center gap-1 py-1 nav-active"; renderizarDuvidas(); document.getElementById('valor-aporte-display').innerText="DÚVIDAS"; }
+        assistenteAtualizarVisibilidade();
     }
 
     function recalcularExibicaoTotal() {
@@ -2198,6 +2405,353 @@
                 if (serie.length > 1) pfRenderizarSparkline(sparkId, serie, item.serieHistorica?.cor || '#06b6d4');
             });
         }, 80);
+    }
+    </script>
+
+    <script>
+    /* ════════════════════════════════════════════════════════════════
+       ASSISTENTE MTS — chat de ajuda sobre investimentos
+       ════════════════════════════════════════════════════════════════
+       Como o site é 100% client-side e sem backend, este assistente
+       NÃO chama nenhuma API de IA externa (isso exigiria expor uma
+       chave secreta no navegador, o que não é seguro). Em vez disso,
+       ele faz uma busca inteligente por palavras-chave em todo o
+       conteúdo educacional que já existe no site (Central de Dúvidas,
+       Trilha de Estudos, Portal Educacional) e monta respostas guiadas
+       sobre como usar a simulação, o que é cada categoria de ativo, etc.
+       ════════════════════════════════════════════════════════════════ */
+
+    /* Base de conhecimento extra, focada em "como usar o site" e conceitos
+       rápidos que merecem uma resposta pronta e direta no chat. */
+    const assistenteBaseExtra = [
+        { chaves: ['como investir','como fazer','como comecar','como começar','primeiro investimento','por onde comecar','por onde começar'],
+          resposta: `Show, vamos por partes 🙂<br><br>1️⃣ Vá na aba <strong>Carteira</strong> e responda o <strong>quiz de perfil</strong> (é rapidinho, calibra a simulação pro seu jeito de lidar com risco).<br>2️⃣ Depois de calibrado, digite um <strong>valor hipotético</strong> no campo que aparece.<br>3️⃣ O site separa <strong>30% para reserva de liquidez</strong> e distribui os outros 70% entre categorias (Renda Fixa, Multimercado, Ações, Global), de acordo com o seu perfil.<br>4️⃣ Isso é só uma <strong>simulação educacional</strong> — pra investir de verdade, você abre conta numa corretora e consulta um profissional habilitado na CVM.` },
+        { chaves: ['nao entendi a simulacao','não entendi a simulação','como funciona a simulacao','como funciona a simulação','simulacao completa','simulação completa','o que e a simulacao','o que é a simulação'],
+          resposta: `A simulação mostra, de forma <strong>ilustrativa</strong>, como uma carteira poderia ser dividida proporcionalmente entre categorias, de acordo com o perfil que você escolheu.<br><br>📌 30% do valor fica reservado como <strong>liquidez</strong> (reserva de emergência).<br>📌 Os 70% restantes são divididos entre <strong>Renda Fixa, Multimercado, Ações e Global</strong> — quanto mais "arrojado" o perfil, maior a fatia de Ações/Global; quanto mais "conservador", maior a fatia de Renda Fixa.<br><br>⚠️ Os nomes de ativos exibidos são <strong>genéricos/ilustrativos</strong>, não é recomendação de compra.` },
+        { chaves: ['perfil conservador','perfil moderado','perfil arrojado','qual perfil','diferenca de perfil','diferença de perfil','tipos de perfil'],
+          resposta: `Os 3 perfis simulados representam diferentes tolerâncias à oscilação:<br><br>🟢 <strong>Conservador</strong> — prioriza estabilidade, concentra quase tudo em Renda Fixa.<br>🔵 <strong>Moderado</strong> — mistura Renda Fixa com uma fatia de Multimercado, Ações e Global.<br>🟣 <strong>Arrojado</strong> — maior exposição a Ações, Multimercado e Global, buscando mais crescimento (com mais oscilação).<br><br>Você pode refazer o quiz a qualquer momento em <strong>Configurações → Apagar dados</strong> ou simplesmente respondendo de novo.` },
+        { chaves: ['renda fixa','o que e renda fixa','o que é renda fixa'],
+          resposta: `<strong>Renda Fixa</strong> é a categoria de investimentos onde a regra de rentabilidade é definida no momento da aplicação (ex: uma taxa fixa, ou atrelada a um índice como CDI/IPCA). Costuma ter menos oscilação que ações, mas isso não significa "sem risco" — existe risco de crédito e de mercado.` },
+        { chaves: ['multimercado','o que e multimercado','o que é multimercado'],
+          resposta: `Fundos <strong>Multimercado</strong> podem transitar entre várias classes de ativos (juros, câmbio, ações) buscando aproveitar oportunidades táticas. Tendem a ter mais oscilação que a Renda Fixa pura.` },
+        { chaves: ['acoes','ações','o que e acao','o que é ação','bolsa de valores'],
+          resposta: `<strong>Ações</strong> representam uma fração do capital de uma empresa — ao comprar, você se torna sócio minoritário. É a categoria com maior potencial de valorização de longo prazo, mas também maior oscilação no curto prazo.` },
+        { chaves: ['fii','fundo imobiliario','fundo imobiliário','fiis'],
+          resposta: `<strong>FIIs</strong> (Fundos de Investimento Imobiliário) reúnem recursos de vários investidores para aplicar em imóveis ou recebíveis imobiliários, distribuindo a renda gerada entre os cotistas. As cotas são negociadas em bolsa, como uma ação.` },
+        { chaves: ['global','investir fora','exterior','dolarizar','etf','bdr'],
+          resposta: `A categoria <strong>Global</strong> reúne formas de ter exposição a ativos internacionais — ETFs de índices como S&P 500, BDRs de empresas estrangeiras, fundos cambiais, etc. Ajuda a diversificar a carteira fora do Brasil.` },
+        { chaves: ['reserva de emergencia','reserva de emergência','liquidez'],
+          resposta: `A <strong>reserva de emergência</strong> é uma quantia guardada em ativos de liquidez imediata (resgate rápido) para cobrir imprevistos, antes de qualquer outro investimento. Na simulação, ela corresponde a <strong>30% do valor hipotético</strong> informado.` },
+        { chaves: ['juros compostos'],
+          resposta: `<strong>Juros compostos</strong> são quando o rendimento de um período passa a gerar rendimento no período seguinte — é o efeito "bola de neve" que faz o dinheiro crescer de forma acelerada ao longo do tempo, principalmente em prazos longos.` },
+        { chaves: ['cdi','o que e cdi','o que é cdi'],
+          resposta: `O <strong>CDI</strong> é a taxa de referência mais usada na renda fixa brasileira, bem próxima da Selic. Quando um investimento "rende 100% do CDI", significa que ele acompanha essa taxa de referência.` },
+        { chaves: ['dado pessoal','dados pessoais','privacidade','coleta dado'],
+          resposta: `Fica tranquilo: este site <strong>não coleta nenhum dado pessoal</strong>. Não há cadastro, não há backend, não há cookies de rastreamento. Tudo que você preenche fica salvo <strong>só no seu navegador</strong> (localStorage).` },
+        { chaves: ['montar minha carteira','minha carteira','portfolio pessoal','aba montar'],
+          resposta: `Na aba <strong>Montar</strong> você registra investimentos que você já fez (ou hipotéticos), informando ativo, valor e datas. O site busca cotação real via B3 pra PETR4, VALE3, ITUB4 e MGLU3, e usa dados históricos estimados pros demais ativos — tudo isso fica salvo só no seu navegador.` },
+        { chaves: ['oi','ola','olá','bom dia','boa tarde','boa noite','tudo bem','eae','opa'],
+          resposta: `Oi! 👋 Eu sou o assistente do MTS Invest. Posso te ajudar a entender como a simulação funciona, o que significa cada categoria de ativo, ou tirar dúvidas gerais sobre investimentos. O que você gostaria de saber?` },
+        { chaves: ['obrigado','obrigada','valeu','vlw','thanks'],
+          resposta: `Disponha! 🙌 Se surgir outra dúvida sobre a simulação ou sobre investimentos, é só chamar.` },
+    ];
+
+    let assistenteHistorico = [];
+    let assistenteAberto = false;
+    let assistenteJaCumprimentou = false;
+    let assistenteConfigAberta = false;
+
+    /* ── Configuração da IA real (opcional) — chave fica só no localStorage do usuário ── */
+    function assistenteObterConfig() {
+        return {
+            apiKey: localStorage.getItem('matias_ia_api_key') || '',
+            modelo: localStorage.getItem('matias_ia_modelo') || 'claude-sonnet-5',
+        };
+    }
+
+    function assistenteAtualizarStatusUI() {
+        const cfg = assistenteObterConfig();
+        const statusEl = document.getElementById('assistente-status-texto');
+        if (!statusEl) return;
+        if (cfg.apiKey) { statusEl.textContent = 'IA conectada (' + cfg.modelo + ')'; statusEl.style.color = '#34d399'; }
+        else { statusEl.textContent = 'Modo local (offline)'; statusEl.style.color = '#67e8f9'; }
+    }
+
+    function assistenteAlternarConfig() {
+        assistenteConfigAberta = !assistenteConfigAberta;
+        const cfgEl = document.getElementById('assistente-config');
+        const bodyEl = document.getElementById('assistente-body');
+        const sugEl = document.getElementById('assistente-sugestoes');
+        const inputRow = document.querySelector('.assistente-input-row');
+        if (assistenteConfigAberta) {
+            const cfg = assistenteObterConfig();
+            document.getElementById('assistente-input-apikey').value = cfg.apiKey;
+            document.getElementById('assistente-input-modelo').value = cfg.modelo;
+            cfgEl.classList.remove('hidden');
+            bodyEl.style.display = 'none';
+            sugEl.style.display = 'none';
+            inputRow.style.display = 'none';
+        } else {
+            cfgEl.classList.add('hidden');
+            bodyEl.style.display = 'flex';
+            sugEl.style.display = 'flex';
+            inputRow.style.display = 'flex';
+        }
+        lucide.createIcons();
+    }
+
+    function assistenteMostrarMsgConfig(texto, tipo) {
+        const el = document.getElementById('assistente-config-msg');
+        el.textContent = texto;
+        el.className = 'assistente-config-msg ' + tipo;
+    }
+
+    function assistenteSalvarConfig() {
+        const apiKey = document.getElementById('assistente-input-apikey').value.trim();
+        const modelo = document.getElementById('assistente-input-modelo').value.trim() || 'claude-sonnet-5';
+        if (!apiKey) { assistenteMostrarMsgConfig('⚠️ Cole sua chave de API antes de salvar.', 'erro'); return; }
+        localStorage.setItem('matias_ia_api_key', apiKey);
+        localStorage.setItem('matias_ia_modelo', modelo);
+        assistenteAtualizarStatusUI();
+        assistenteMostrarMsgConfig('✅ Chave salva! A IA real já está ativa no chat.', 'sucesso');
+        assistenteHistorico = [];
+    }
+
+    function assistenteRemoverConfig() {
+        localStorage.removeItem('matias_ia_api_key');
+        localStorage.removeItem('matias_ia_modelo');
+        document.getElementById('assistente-input-apikey').value = '';
+        document.getElementById('assistente-input-modelo').value = 'claude-sonnet-5';
+        assistenteAtualizarStatusUI();
+        assistenteMostrarMsgConfig('Chave removida. Voltando ao modo local (offline).', 'sucesso');
+        assistenteHistorico = [];
+    }
+
+    function assistenteAtualizarVisibilidade() {
+        const fab = document.getElementById('assistente-fab');
+        if (!fab) return;
+        if (abaAtualAtiva === 'carteira') fab.classList.add('visivel');
+        else { fab.classList.remove('visivel'); assistenteFechar(); }
+    }
+
+    function assistenteAlternarPainel() {
+        assistenteAberto ? assistenteFechar() : assistenteAbrir();
+    }
+
+    function assistenteAbrir() {
+        assistenteAberto = true;
+        document.getElementById('assistente-painel').classList.add('aberto');
+        assistenteAtualizarStatusUI();
+        lucide.createIcons();
+        if (!assistenteJaCumprimentou) {
+            assistenteJaCumprimentou = true;
+            const cfg = assistenteObterConfig();
+            const msgInicial = cfg.apiKey
+                ? `Oi! 👋 Sou o <strong>Assistente MTS</strong>, agora com IA conectada. Pode perguntar qualquer coisa sobre a simulação ou sobre investimentos em geral.`
+                : `Oi! 👋 Sou o <strong>Assistente MTS</strong>. Posso te ajudar a entender a simulação de carteira, o que significa cada categoria de investimento, ou responder dúvidas gerais. Sobre o que você quer saber?`;
+            assistenteAdicionarMensagem('bot', msgInicial);
+            assistenteRenderizarSugestoes(['Como funciona a simulação?', 'Qual a diferença entre os perfis?', 'O que é renda fixa?', 'Meus dados ficam seguros?']);
+        }
+        setTimeout(() => document.getElementById('assistente-input')?.focus(), 150);
+    }
+
+    function assistenteFechar() {
+        assistenteAberto = false;
+        document.getElementById('assistente-painel').classList.remove('aberto');
+    }
+
+    function assistenteRenderizarSugestoes(lista) {
+        const box = document.getElementById('assistente-sugestoes');
+        if (!box) return;
+        box.innerHTML = lista.map(s => `<button class="assistente-chip" onclick="assistentePerguntarSugestao('${s.replace(/'/g,"’")}')">${s}</button>`).join('');
+    }
+
+    function assistentePerguntarSugestao(texto) {
+        document.getElementById('assistente-input').value = texto;
+        assistenteEnviarMensagem();
+    }
+
+    function assistenteAdicionarMensagem(tipo, html) {
+        const body = document.getElementById('assistente-body');
+        const div = document.createElement('div');
+        div.className = tipo === 'user' ? 'assistente-msg assistente-msg-user' : 'assistente-msg assistente-msg-bot';
+        div.innerHTML = html;
+        body.appendChild(div);
+        body.scrollTop = body.scrollHeight;
+    }
+
+    function assistenteNormalizarTexto(txt) {
+        return txt.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+    }
+
+    /* Busca a melhor resposta cruzando a base extra + Central de Dúvidas +
+       Portal Educacional + Trilha de Estudos, por pontuação de palavras-chave.
+       Usada sempre que não há chave de IA configurada, ou como fallback se a
+       chamada à IA real falhar. */
+    function assistenteBuscarRespostaLocal(perguntaOriginal) {
+        const termo = assistenteNormalizarTexto(perguntaOriginal);
+        const palavras = termo.split(/\s+/).filter(p => p.length > 2);
+        if (palavras.length === 0) return null;
+
+        let melhor = null;
+        let melhorPontos = 0;
+
+        assistenteBaseExtra.forEach(item => {
+            let pontos = 0;
+            item.chaves.forEach(chave => {
+                const chaveNorm = assistenteNormalizarTexto(chave);
+                if (termo.includes(chaveNorm)) pontos += chaveNorm.split(/\s+/).length * 3;
+            });
+            if (pontos > melhorPontos) { melhorPontos = pontos; melhor = { resposta: item.resposta }; }
+        });
+
+        if (typeof bancoDePerguntas !== 'undefined') {
+            bancoDePerguntas.forEach(grupo => grupo.perguntas.forEach(p => {
+                const alvo = assistenteNormalizarTexto(p.pergunta);
+                let pontos = 0;
+                palavras.forEach(pal => { if (alvo.includes(pal)) pontos += 2; });
+                if (pontos > melhorPontos) { melhorPontos = pontos; melhor = { resposta: p.resposta }; }
+            }));
+        }
+
+        if (typeof holoTopicos !== 'undefined') {
+            holoTopicos.forEach(h => {
+                const alvo = assistenteNormalizarTexto(h.titulo + ' ' + h.desc);
+                let pontos = 0;
+                palavras.forEach(pal => { if (alvo.includes(pal)) pontos += 1; });
+                if (pontos > melhorPontos) {
+                    melhorPontos = pontos;
+                    melhor = { resposta: `<strong>${h.titulo}</strong><br>${h.desc}<br><br>📚 Você encontra mais sobre isso na aba <strong>Educação</strong>.` };
+                }
+            });
+        }
+
+        if (typeof modulosEstudo !== 'undefined') {
+            modulosEstudo.forEach(m => {
+                const alvo = assistenteNormalizarTexto(m.titulo + ' ' + m.resumo);
+                let pontos = 0;
+                palavras.forEach(pal => { if (alvo.includes(pal)) pontos += 1; });
+                if (pontos > melhorPontos) {
+                    melhorPontos = pontos;
+                    melhor = { resposta: `<strong>${m.titulo}</strong><br>${m.resumo}<br><br>📖 Tem um módulo completo sobre isso na aba <strong>Educação → Trilha de Estudos</strong>.` };
+                }
+            });
+        }
+
+        return melhorPontos >= 2 ? melhor : null;
+    }
+
+    const ASSISTENTE_SYSTEM_PROMPT = `Você é o Assistente MTS, o assistente virtual embutido no site "MTS Invest", um diário pessoal de estudos sobre investimentos, com fins EXCLUSIVAMENTE educacionais (não é consultoria nem análise de valores mobiliários registrada na CVM).
+
+Como o site funciona (pra você poder explicar pro usuário quando perguntarem):
+- Aba Carteira: o usuário responde um quiz de perfil (conservador / moderado / arrojado), digita um valor hipotético, e o site simula uma divisão: 30% em reserva de liquidez e 70% distribuído entre categorias (Renda Fixa, Multimercado, Ações, Global) de acordo com o perfil.
+- Aba Montar: o usuário registra investimentos próprios (reais ou hipotéticos) e o site estima evolução com base em dados históricos ou cotação real da B3 (PETR4, VALE3, ITUB4, MGLU3).
+- Aba Educação: trilha de estudos com módulos e vídeos de criadores de educação financeira.
+- Aba Dúvidas: perguntas frequentes.
+- Aba Começo: histórico educacional pessoal do autor do site.
+- Aba Configurações: preferências, meta educacional, e as opções de privacidade.
+
+Regras que você DEVE seguir sempre:
+- Responda em português do Brasil, de forma direta, simpática e objetiva (poucos parágrafos, sem enrolação).
+- Nunca recomende comprar ou vender um ativo específico. Fale em termos de categorias e conceitos gerais.
+- Sempre que fizer sentido, lembre que isso é conteúdo educacional e que decisões reais de investimento devem passar por um profissional habilitado na CVM.
+- Se o usuário perguntar algo fora do escopo de investimentos/finanças pessoais/como usar o site, responda educadamente que seu foco é esse.
+- Não invente números de rentabilidade ou dados de mercado em tempo real — fale em termos conceituais.`;
+
+    /* Chama a API da Anthropic diretamente do navegador, usando a chave que o
+       próprio usuário configurou. Ver aviso de segurança no painel de config. */
+    async function assistenteChamarIA(pergunta) {
+        const cfg = assistenteObterConfig();
+        assistenteHistorico.push({ role: 'user', content: pergunta });
+        if (assistenteHistorico.length > 16) assistenteHistorico = assistenteHistorico.slice(-16);
+
+        const resposta = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': cfg.apiKey,
+                'anthropic-version': '2023-06-01',
+                'anthropic-dangerous-direct-browser-access': 'true',
+            },
+            body: JSON.stringify({
+                model: cfg.modelo,
+                max_tokens: 700,
+                system: ASSISTENTE_SYSTEM_PROMPT,
+                messages: assistenteHistorico,
+            }),
+        });
+
+        if (!resposta.ok) {
+            const erroTxt = await resposta.text().catch(() => '');
+            throw new Error(`HTTP ${resposta.status}: ${erroTxt.slice(0, 200)}`);
+        }
+
+        const dados = await resposta.json();
+        const texto = (dados.content || []).filter(b => b.type === 'text').map(b => b.text).join('\n').trim();
+        if (!texto) throw new Error('Resposta vazia da IA.');
+        assistenteHistorico.push({ role: 'assistant', content: texto });
+        return texto;
+    }
+
+    function assistenteFormatarTextoIA(texto) {
+        return texto
+            .replace(/</g, '&lt;')
+            .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\n/g, '<br>');
+    }
+
+    function assistenteEnviarMensagem() {
+        const input = document.getElementById('assistente-input');
+        const texto = input.value.trim();
+        if (!texto) return;
+        assistenteAdicionarMensagem('user', texto.replace(/</g,'&lt;'));
+        input.value = '';
+        document.getElementById('assistente-sugestoes').innerHTML = '';
+
+        const body = document.getElementById('assistente-body');
+        const digitando = document.createElement('div');
+        digitando.className = 'assistente-typing';
+        digitando.id = 'assistente-typing-indicador';
+        digitando.innerHTML = '<span></span><span></span><span></span>';
+        body.appendChild(digitando);
+        body.scrollTop = body.scrollHeight;
+
+        const removerDigitando = () => { const el = document.getElementById('assistente-typing-indicador'); if (el) el.remove(); };
+        const cfg = assistenteObterConfig();
+
+        if (cfg.apiKey) {
+            // ── Modo IA real ──
+            assistenteChamarIA(texto)
+                .then(respostaTexto => {
+                    removerDigitando();
+                    assistenteAdicionarMensagem('bot', assistenteFormatarTextoIA(respostaTexto));
+                })
+                .catch(erro => {
+                    console.warn('[Assistente MTS] Falha na IA real, usando busca local:', erro);
+                    removerDigitando();
+                    const local = assistenteBuscarRespostaLocal(texto);
+                    const avisoErro = `⚠️ Não consegui falar com a IA agora (verifique sua chave/conexão em <strong>⚙️ configurações do assistente</strong>). `;
+                    if (local) {
+                        assistenteAdicionarMensagem('bot', avisoErro + 'Respondendo com a busca local por enquanto:<br><br>' + local.resposta);
+                    } else {
+                        assistenteAdicionarMensagem('bot', avisoErro + 'Tente novamente em instantes, ou explore as abas <strong>Dúvidas</strong> e <strong>Educação</strong>.');
+                    }
+                    assistenteRenderizarSugestoes(['Como funciona a simulação?', 'O que é renda fixa?']);
+                });
+        } else {
+            // ── Modo local (offline) ──
+            setTimeout(() => {
+                removerDigitando();
+                const encontrada = assistenteBuscarRespostaLocal(texto);
+                if (encontrada) {
+                    assistenteAdicionarMensagem('bot', encontrada.resposta);
+                    assistenteRenderizarSugestoes(['Como funciona a simulação?', 'Diferença entre os perfis', 'O que é reserva de emergência?']);
+                } else {
+                    assistenteAdicionarMensagem('bot', `Ainda não tenho uma resposta pronta pra isso 🤔 Mas você pode explorar a aba <strong>Dúvidas</strong> (perguntas frequentes) ou <strong>Educação</strong> (trilha de estudos completa) — lá tem bastante conteúdo sobre investimentos.<br><br>💡 Dica: em <strong>⚙️</strong>, no topo deste chat, dá pra conectar uma IA real que entende qualquer pergunta.<br><br>Se quiser, tente um dos temas abaixo:`);
+                    assistenteRenderizarSugestoes(['Como investir?', 'O que é renda fixa?', 'O que são FIIs?', 'Meus dados ficam seguros?']);
+                }
+            }, 550 + Math.random() * 400);
+        }
     }
     </script>
 </body>
