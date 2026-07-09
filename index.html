@@ -876,21 +876,27 @@
 
                     <div id="pwa-status-instalado" class="hidden text-[10.5px] text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-2.5 font-bold text-center">✅ Este atalho já está instalado na sua tela inicial.</div>
 
-                    <button id="pwa-btn-instalar" onclick="pwaInstalar()" class="pf-btn-submit">
-                        <i data-lucide="download" class="w-4 h-4"></i>
-                        <span>Instalar App na Tela Inicial</span>
-                    </button>
+                    <!-- ── ANDROID / CHROME — instalação automática ── -->
+                    <div id="pwa-bloco-android" class="bg-slate-900/40 border border-slate-800/70 rounded-lg p-3 space-y-2">
+                        <p class="text-[10.5px] font-black text-emerald-400 uppercase tracking-wide flex items-center gap-1.5">🤖 Android / Chrome — 1 clique</p>
+                        <p class="text-[10px] text-slate-500 leading-relaxed">Aqui a instalação é automática: toque no botão e o próprio navegador cuida do resto.</p>
+                        <button id="pwa-btn-instalar" onclick="pwaInstalar()" class="pf-btn-submit">
+                            <i data-lucide="download" class="w-4 h-4"></i>
+                            <span>Instalar App na Tela Inicial</span>
+                        </button>
+                        <div id="pwa-instrucoes-generico" class="hidden text-[10px] text-amber-300 bg-amber-500/10 border border-amber-500/20 rounded-lg p-2.5 leading-relaxed">
+                            Seu navegador ainda não liberou a instalação automática (ou já foi instalado antes e recusado). Procure por <strong>"Adicionar à tela inicial"</strong> ou <strong>"Instalar app"</strong> no menu (⋮) do navegador.
+                        </div>
+                    </div>
 
-                    <div id="pwa-instrucoes-ios" class="hidden text-[10.5px] text-slate-300 bg-slate-900/60 border border-slate-800 rounded-lg p-3 leading-relaxed space-y-1.5">
-                        <p class="font-bold text-cyan-400">📲 No iPhone/iPad (Safari), a instalação é manual:</p>
+                    <!-- ── IPHONE / IPAD (SAFARI) — instalação manual ── -->
+                    <div id="pwa-bloco-ios" class="text-[10.5px] text-slate-300 bg-slate-900/60 border border-slate-800 rounded-lg p-3 leading-relaxed space-y-1.5">
+                        <p class="font-black text-cyan-400 uppercase tracking-wide flex items-center gap-1.5">🍏 iPhone / iPad (Safari) — passo a passo</p>
+                        <p class="text-slate-500">A Apple não libera instalação automática pelo navegador — nesse caso você mesmo faz em 3 toques:</p>
                         <p>1. Toque no ícone de <strong>Compartilhar</strong> <span class="text-slate-500">(o quadrado com a seta pra cima)</span> na barra do Safari.</p>
                         <p>2. Role e toque em <strong>"Adicionar à Tela de Início"</strong>.</p>
                         <p>3. Confirme o nome e toque em <strong>Adicionar</strong>.</p>
                         <p class="text-slate-500 pt-1 border-t border-slate-800">Isso é um recurso nativo do Safari — nenhuma informação passa por nós nesse processo.</p>
-                    </div>
-
-                    <div id="pwa-instrucoes-generico" class="hidden text-[10.5px] text-slate-300 bg-slate-900/60 border border-slate-800 rounded-lg p-3 leading-relaxed">
-                        Seu navegador ainda não ofereceu a instalação automática. Procure por <strong>"Adicionar à tela inicial"</strong> ou <strong>"Instalar app"</strong> no menu (⋮ ou ⋯) do seu navegador.
                     </div>
                 </div>
             </div>
@@ -3146,21 +3152,36 @@ Regras que você DEVE seguir sempre:
         return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
     }
 
+    function pwaEhIOS() {
+        const ua = window.navigator.userAgent;
+        return /iPad|iPhone|iPod/.test(ua) || (ua.includes('Macintosh') && 'ontouchend' in document);
+    }
+
     function pwaAtualizarUI() {
         const btn = document.getElementById('pwa-btn-instalar');
         const statusInstalado = document.getElementById('pwa-status-instalado');
-        const iosBox = document.getElementById('pwa-instrucoes-ios');
+        const blocoAndroid = document.getElementById('pwa-bloco-android');
+        const blocoIos = document.getElementById('pwa-bloco-ios');
         const genericoBox = document.getElementById('pwa-instrucoes-generico');
         if (!btn) return;
 
         if (pwaEstaInstalado()) {
-            btn.classList.add('hidden');
+            blocoAndroid.classList.add('hidden');
+            blocoIos.classList.add('hidden');
             statusInstalado.classList.remove('hidden');
-            iosBox.classList.add('hidden');
-            genericoBox.classList.add('hidden');
+            return;
+        }
+        statusInstalado.classList.add('hidden');
+
+        // No iPhone/iPad, esconde o bloco de instalação automática
+        // (a Apple não permite) e deixa só o passo a passo manual.
+        if (pwaEhIOS()) {
+            blocoAndroid.classList.add('hidden');
+            blocoIos.classList.remove('hidden');
         } else {
-            btn.classList.remove('hidden');
-            statusInstalado.classList.add('hidden');
+            blocoAndroid.classList.remove('hidden');
+            blocoIos.classList.add('hidden');
+            genericoBox.classList.add('hidden');
         }
     }
 
@@ -3180,18 +3201,10 @@ Regras que você DEVE seguir sempre:
         if (typeof pfMostrarToast === 'function') { pfMostrarToast(msg); }
     }
 
-    function pwaEhIOS() {
-        const ua = window.navigator.userAgent;
-        const iOS = /iPad|iPhone|iPod/.test(ua) || (ua.includes('Macintosh') && 'ontouchend' in document);
-        return iOS;
-    }
-
     async function pwaInstalar() {
-        const iosBox = document.getElementById('pwa-instrucoes-ios');
         const genericoBox = document.getElementById('pwa-instrucoes-generico');
 
         if (pwaDeferredPrompt) {
-            iosBox.classList.add('hidden');
             genericoBox.classList.add('hidden');
             pwaDeferredPrompt.prompt();
             const escolha = await pwaDeferredPrompt.userChoice;
@@ -3203,13 +3216,9 @@ Regras que você DEVE seguir sempre:
             return;
         }
 
-        if (pwaEhIOS()) {
-            genericoBox.classList.add('hidden');
-            iosBox.classList.toggle('hidden');
-        } else {
-            iosBox.classList.add('hidden');
-            genericoBox.classList.toggle('hidden');
-        }
+        // Chrome/Android ainda não disparou o evento de instalação
+        // automática (ex: já foi recusado antes, ou navegador não suporta).
+        genericoBox.classList.toggle('hidden');
     }
 
     window.addEventListener('DOMContentLoaded', pwaAtualizarUI);
